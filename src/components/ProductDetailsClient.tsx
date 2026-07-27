@@ -136,7 +136,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
 
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 flex flex-col md:flex-row gap-8 lg:gap-12">
         {/* Left: Image Gallery */}
-        <div className="md:w-[55%] flex flex-col md:flex-row gap-4 md:sticky md:top-[80px] self-start h-auto md:h-[calc(100vh-100px)]">
+        <div className="md:w-[55%] flex flex-col md:flex-row gap-4 md:sticky md:top-[80px] md:self-start h-auto md:h-[calc(100vh-100px)]">
           {/* Desktop Vertical Thumbnails */}
           {images.length > 1 && (
             <div className="hidden md:flex flex-col gap-3 overflow-y-auto no-scrollbar w-20 shrink-0 h-full pb-4">
