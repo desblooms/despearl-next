@@ -174,10 +174,10 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
 
           {/* Mobile Embla Carousel */}
           <div className="md:hidden w-full aspect-[4/5] relative bg-[#f8f9fa]">
-            <div className="embla w-full h-full overflow-hidden" ref={emblaRef}>
-              <div className="embla__container flex w-full h-full">
+            <div className="embla absolute inset-0 overflow-hidden" ref={emblaRef}>
+              <div className="embla__container flex h-full">
                 {images.map((img: string, index: number) => (
-                  <div key={index} className="embla__slide flex-[0_0_100%] min-w-0 relative w-full h-full">
+                  <div key={index} className="embla__slide flex-[0_0_100%] min-w-0 relative h-full">
                     {!imgLoaded[`mobile_${index}`] && (
                       <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
                         <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-500 rounded-full animate-spin"></div>
