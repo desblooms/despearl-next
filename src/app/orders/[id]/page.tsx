@@ -174,19 +174,19 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
               <div className="p-5 flex-1 flex flex-col gap-4">
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-brand-cream/20 flex items-center justify-center shrink-0"><User className="w-4 h-4 text-gray-900" /></div>
-                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Customer</div><div class="text-sm font-semibold text-gray-800">{order.customer_name}</div></div>
+                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Customer</div><div className="text-sm font-semibold text-gray-800">{order.customer_name}</div></div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-brand-cream/20 flex items-center justify-center shrink-0"><Phone className="w-4 h-4 text-gray-900" /></div>
-                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Phone</div><div class="text-sm font-semibold text-gray-800">{order.customer_phone||'—'}</div></div>
+                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Phone</div><div className="text-sm font-semibold text-gray-800">{order.customer_phone||'—'}</div></div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-brand-cream/20 flex items-center justify-center shrink-0"><Map className="w-4 h-4 text-gray-900" /></div>
-                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Address</div><div class="text-sm font-semibold text-gray-800 leading-tight">{order.delivery_address||'—'}</div></div>
+                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Address</div><div className="text-sm font-semibold text-gray-800 leading-tight">{order.delivery_address||'—'}</div></div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-brand-cream/20 flex items-center justify-center shrink-0"><CreditCard className="w-4 h-4 text-gray-900" /></div>
-                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Payment Method</div><div class="text-sm font-semibold text-gray-800">{order.payment_method||'COD'}</div></div>
+                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Payment Method</div><div className="text-sm font-semibold text-gray-800">{order.payment_method||'COD'}</div></div>
                 </div>
               </div>
             </div>
