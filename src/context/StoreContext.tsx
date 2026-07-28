@@ -35,6 +35,7 @@ type StoreContextType = {
   cartCount: number;
   toggleWishlist: (product: Product) => void;
   isWished: (id: number) => boolean;
+  isInCart: (id: number) => boolean;
   loginUser: (user: User) => void;
   logoutUser: () => void;
   toast: (msg: string, icon?: string) => void;
@@ -132,6 +133,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return wishlist.some((i) => i.id === id);
   };
 
+  const isInCart = (id: number) => {
+    return cart.some((i) => i.id === id);
+  };
+
   const loginUser = (newUser: User) => {
     setUser(newUser);
     localStorage.setItem('foxa_user', JSON.stringify(newUser));
@@ -157,6 +162,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         cartCount,
         toggleWishlist,
         isWished,
+        isInCart,
         loginUser,
         logoutUser,
         toast,

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Heart, Plus } from 'lucide-react';
+import { Heart, Plus, ShoppingBag } from 'lucide-react';
 import { useStore, Product } from '@/context/StoreContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -12,10 +12,11 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, horizontal = false }: ProductCardProps) {
-  const { toggleWishlist, isWished, addToCart, toast } = useStore();
+  const { toggleWishlist, isWished, addToCart, isInCart, toast } = useStore();
   const router = useRouter();
 
   const wished = isWished(product.id);
+  const inCart = isInCart(product.id);
   const inStock = Number(product.stock_quantity || 0) > 0;
   
   const getImageUrl = (url: string | undefined) => {
@@ -36,6 +37,10 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
     e.stopPropagation();
     if (!inStock) {
       toast('Out of stock', 'alert-circle');
+      return;
+    }
+    if (inCart) {
+      router.push('/cart');
       return;
     }
     addToCart(product);
@@ -85,12 +90,16 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
             <div className="text-[14px] font-black text-gray-900">₹{Number(product.price || 0).toFixed(2)}</div>
             {!horizontal && (
               <button 
-                className="w-7 h-7 bg-white border border-brand-rose/20 hover:border-brand-burgundy text-gray-900 hover:text-brand-burgundy hover:bg-brand-burgundy/5 rounded-sm flex items-center justify-center transition-all active:scale-90 shadow-sm disabled:opacity-30 disabled:cursor-not-allowed group-hover:border-brand-burgundy group-hover:text-brand-burgundy" 
+                className={`w-7 h-7 rounded-sm flex items-center justify-center transition-all active:scale-90 shadow-sm disabled:opacity-30 disabled:cursor-not-allowed ${
+                  inCart 
+                    ? 'bg-brand-burgundy border border-brand-burgundy text-white hover:bg-brand-burgundy/90' 
+                    : 'bg-white border border-brand-rose/20 hover:border-brand-burgundy text-gray-900 hover:text-brand-burgundy hover:bg-brand-burgundy/5 group-hover:border-brand-burgundy group-hover:text-brand-burgundy'
+                }`} 
                 onClick={handleQuickAdd}
                 disabled={!inStock}
-                title="Add to Bag"
+                title={inCart ? "Go to Cart" : "Add to Bag"}
               >
-                <Plus className="w-4 h-4" />
+                {inCart ? <ShoppingBag className="w-3.5 h-3.5" /> : <Plus className="w-4 h-4" />}
               </button>
             )}
         </div>

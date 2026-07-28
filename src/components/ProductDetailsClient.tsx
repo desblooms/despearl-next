@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Minus, Plus, Heart, ShoppingBag, Check, MapPin, ChevronRight, ChevronDown, Tag, Star, ShieldCheck, Award } from 'lucide-react';
 import { useStore, Product } from '@/context/StoreContext';
@@ -13,7 +14,8 @@ interface Props {
 }
 
 export default function ProductDetailsClient({ product, relatedProducts = [] }: Props) {
-  const { toggleWishlist, isWished, addToCart } = useStore();
+  const { toggleWishlist, isWished, addToCart, isInCart } = useStore();
+  const router = useRouter();
   const [qty, setQty] = useState(1);
   
   const extendedData = product.extended_data || {};
@@ -26,6 +28,8 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
   const [deliveryStatus, setDeliveryStatus] = useState<{ message: string; error?: boolean } | null>(null);
 
   const inStock = Number(product.stock_quantity || 0) > 0;
+  const inCart = isInCart(product.id);
+
   const getImageUrl = (url: string | undefined) => {
     if (!url) return undefined;
     if (url.startsWith('http')) return url;
@@ -38,7 +42,6 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
   const images = [getImageUrl(product.image), ...(product.gallery || []).map((g: any) => getImageUrl(g.media_path))].filter(Boolean);
   const fallbackImg = `data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8f9fa%22/%3E%3Ctext x=%22200%22 y=%22200%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2248%22%3E📦%3C/text%3E%3C/svg%3E`;
   const [mainImg, setMainImg] = useState(images[0] || fallbackImg);
-  const [added, setAdded] = useState(false);
   const [imgLoaded, setImgLoaded] = useState<Record<string, boolean>>({});
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
@@ -68,10 +71,12 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
     setQty(prev => Math.max(1, prev + delta));
   };
 
-  const doAddToCart = () => {
+  const handleCartClick = () => {
+    if (inCart) {
+      router.push('/cart');
+      return;
+    }
     addToCart(product, qty);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
   };
 
   const handleWishlist = () => {
@@ -265,11 +270,11 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               {wished ? 'Wishlisted' : 'Wishlist'}
             </button>
             <button 
-              className={`flex-[2] h-12 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm ${added ? 'bg-gray-900' : 'bg-brand-burgundy hover:bg-brand-burgundy/90'}`}
-              onClick={doAddToCart} 
+              className={`flex-[2] h-12 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-burgundy/90')}`}
+              onClick={handleCartClick} 
               disabled={!inStock}
             >
-              {!inStock ? 'Out of Stock' : (added ? <><Check className="w-4 h-4" /> Added</> : <><ShoppingBag className="w-4 h-4" /> Add to Bag</>)}
+              {!inStock ? 'Out of Stock' : (inCart ? <><ShoppingBag className="w-4 h-4" /> Go to Cart</> : <><ShoppingBag className="w-4 h-4" /> Add to Cart</>)}
             </button>
           </div>
 
@@ -574,11 +579,11 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
           <Heart className={`w-5 h-5 ${wished ? 'fill-brand-burgundy' : ''}`} />
         </button>
         <button 
-          className={`flex-1 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${added ? 'bg-gray-900' : 'bg-brand-burgundy'}`} 
-          onClick={doAddToCart} 
+          className={`flex-1 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900' : 'bg-brand-burgundy')}`} 
+          onClick={handleCartClick} 
           disabled={!inStock}
         >
-          {!inStock ? 'Out of Stock' : (added ? <><Check className="w-5 h-5" /> Added to Bag</> : <><ShoppingBag className="w-5 h-5" /> Add to Bag</>)}
+          {!inStock ? 'Out of Stock' : (inCart ? <><ShoppingBag className="w-5 h-5" /> Go to Cart</> : <><ShoppingBag className="w-5 h-5" /> Add to Cart</>)}
         </button>
       </div>
     </div>
