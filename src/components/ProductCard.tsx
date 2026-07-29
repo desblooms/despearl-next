@@ -77,29 +77,29 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
         <Heart className={`w-3.5 h-3.5 ${wished ? 'fill-brand-burgundy' : ''}`} />
       </button>
 
-      <div className="p-2.5 flex flex-col flex-1">
+      <div className="p-3 flex flex-col flex-1">
         <Link href={`/product/${product.id}`} className="block flex-1">
-          <div className="text-[10px] font-bold text-gray-500 mb-1 truncate">
-            {product.brand ? product.brand : (product.category_name || 'Brand')}
+          <div className="text-[11px] font-bold text-gray-600 uppercase tracking-wide mb-1 truncate font-outfit">
+            {product.brand ? product.brand : (product.category_name || 'Premium Product')}
           </div>
-          <div className="text-[12px] font-medium leading-tight mb-2 line-clamp-2 text-gray-800 hover:text-brand-burgundy transition-colors min-h-[30px]">
+          <div className="text-[13px] font-semibold leading-snug mb-2 line-clamp-2 text-gray-900 hover:text-brand-burgundy transition-colors min-h-[36px]">
             {product.name}
           </div>
         </Link>
-        <div className="flex items-center justify-between mt-auto">
-            <div className="text-[14px] font-black text-gray-900">₹{Number(product.price || 0).toFixed(2)}</div>
+        <div className="flex items-center justify-between mt-auto pt-1">
+            <div className="text-[15px] font-black text-gray-950 tracking-tight font-mono">₹{Number(product.price || 0).toFixed(2)}</div>
             {!horizontal && (
               <button 
-                className={`w-7 h-7 rounded-sm flex items-center justify-center transition-all active:scale-90 shadow-sm disabled:opacity-30 disabled:cursor-not-allowed ${
+                className={`w-8 h-8 rounded-md flex items-center justify-center transition-all active:scale-90 shadow-xs disabled:opacity-30 disabled:cursor-not-allowed ${
                   inCart 
                     ? 'bg-brand-burgundy border border-brand-burgundy text-white hover:bg-brand-burgundy/90' 
-                    : 'bg-white border border-brand-rose/20 hover:border-brand-burgundy text-gray-900 hover:text-brand-burgundy hover:bg-brand-burgundy/5 group-hover:border-brand-burgundy group-hover:text-brand-burgundy'
+                    : 'bg-white border border-brand-rose/30 hover:border-brand-burgundy text-gray-900 hover:text-brand-burgundy hover:bg-brand-burgundy/5 group-hover:border-brand-burgundy group-hover:text-brand-burgundy'
                 }`} 
                 onClick={handleQuickAdd}
                 disabled={!inStock}
                 title={inCart ? "Go to Cart" : "Add to Bag"}
               >
-                {inCart ? <ShoppingBag className="w-3.5 h-3.5" /> : <Plus className="w-4 h-4" />}
+                {inCart ? <ShoppingBag className="w-4 h-4" /> : <Plus className="w-4.5 h-4.5" />}
               </button>
             )}
         </div>

@@ -2,7 +2,7 @@
 
 :root {
   --background: #F8F1E7;
-  --foreground: #1E1E1E;
+  --foreground: #111827;
   --brand-burgundy: #5B0F18;
   --brand-espresso: #1E1E1E;
   --brand-cream: #F8F1E7;
@@ -25,7 +25,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1E1E1E;
+    --background: #111827;
     --foreground: #F8F1E7;
   }
 }
@@ -37,7 +37,8 @@ body {
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: 0.015em;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.012em;
   line-height: 1.6;
   font-weight: 400;
 }
@@ -45,7 +46,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading), sans-serif;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.25;
   font-weight: 700;
 }
 
