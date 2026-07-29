@@ -460,12 +460,12 @@ export default function CheckoutPage() {
                       <div className="bg-[#FAF8F5] border border-gray-100 rounded-xl p-4">
                         <h3 className="text-xs font-black text-gray-800 uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">Enter Delivery Details</h3>
                         <div className="flex flex-col gap-3.5">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          <div className="flex flex-col gap-3.5">
                             <div>
                               <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">Full Name *</label>
                               <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-white border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" placeholder="Enter full name" required />
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                               <div>
                                 <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">Phone *</label>
                                 <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-white border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" placeholder="10-digit number" required />
