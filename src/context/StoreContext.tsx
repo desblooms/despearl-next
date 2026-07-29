@@ -60,11 +60,11 @@ type StoreContextType = {
 };
 
 const DEFAULT_PLACE: Place = {
-  id: 'nyc-1',
-  name: 'New York, NY 10001',
-  city: 'New York',
-  pincode: '10001',
-  address: '5th Ave & 34th St',
+  id: 'ekm-1',
+  name: 'Ernakulam (Kochi), Kerala 682001',
+  city: 'Ernakulam',
+  pincode: '682001',
+  address: 'MG Road, Kochi, Kerala',
   type: 'delivery'
 };
 

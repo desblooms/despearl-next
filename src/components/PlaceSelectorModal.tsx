@@ -4,21 +4,30 @@ import React, { useState } from 'react';
 import { MapPin, Navigation, Search, Store, X, Check, Building2, Sparkles, Compass } from 'lucide-react';
 import { useStore, Place } from '@/context/StoreContext';
 
-const POPULAR_CITIES: Place[] = [
-  { id: 'nyc-1', name: 'New York, NY 10001', city: 'New York', pincode: '10001', address: '5th Avenue & Manhattan Hub', type: 'delivery' },
-  { id: 'la-1', name: 'Los Angeles, CA 90001', city: 'Los Angeles', pincode: '90001', address: 'Beverly Hills & Westside', type: 'delivery' },
-  { id: 'chi-1', name: 'Chicago, IL 60601', city: 'Chicago', pincode: '60601', address: 'Magnificent Mile District', type: 'delivery' },
-  { id: 'lon-1', name: 'London, UK W1K 1AA', city: 'London', pincode: 'W1K 1AA', address: 'Mayfair & Bond Street', type: 'delivery' },
-  { id: 'par-1', name: 'Paris, France 75008', city: 'Paris', pincode: '75008', address: 'Champs-Élysées Boutique Zone', type: 'delivery' },
-  { id: 'tok-1', name: 'Tokyo, Japan 104-0061', city: 'Tokyo', pincode: '104-0061', address: 'Ginza Shopping District', type: 'delivery' },
-  { id: 'dxb-1', name: 'Dubai, UAE 00000', city: 'Dubai', pincode: '00000', address: 'Downtown & Fashion Avenue', type: 'delivery' },
+// All 14 Districts of Kerala, India
+const KERALA_DISTRICTS: Place[] = [
+  { id: 'kl-ekm', name: 'Ernakulam (Kochi)', city: 'Ernakulam', pincode: '682001', address: 'MG Road, Marine Drive & Kakkanad Hub', type: 'delivery' },
+  { id: 'kl-tvm', name: 'Thiruvananthapuram', city: 'Trivandrum', pincode: '695001', address: 'Kowdiar, East Fort & Technopark', type: 'delivery' },
+  { id: 'kl-clt', name: 'Kozhikode (Calicut)', city: 'Kozhikode', pincode: '673001', address: 'Mavoor Road, Beach & Hilite Zone', type: 'delivery' },
+  { id: 'kl-tsr', name: 'Thrissur', city: 'Thrissur', pincode: '680001', address: 'Swaraj Round, West Fort & East Fort', type: 'delivery' },
+  { id: 'kl-mlp', name: 'Malappuram', city: 'Malappuram', pincode: '676505', address: 'Manjeri, Perinthalmanna & Town Hub', type: 'delivery' },
+  { id: 'kl-knr', name: 'Kannur', city: 'Kannur', pincode: '670001', address: 'Thavakkara, Payyannur & Fort Road', type: 'delivery' },
+  { id: 'kl-klm', name: 'Kollam', city: 'Kollam', pincode: '691001', address: 'Chinnakada, Ashramam & Beach Road', type: 'delivery' },
+  { id: 'kl-pkd', name: 'Palakkad', city: 'Palakkad', pincode: '678001', address: 'GB Road, Stadium Bypass & Fort Area', type: 'delivery' },
+  { id: 'kl-alp', name: 'Alappuzha (Alleppey)', city: 'Alappuzha', pincode: '688001', address: 'Mullakkal, Boat Jetty & Beach Hub', type: 'delivery' },
+  { id: 'kl-ktm', name: 'Kottayam', city: 'Kottayam', pincode: '686001', address: 'KK Road, Nagampadam & Thirunakara', type: 'delivery' },
+  { id: 'kl-wyd', name: 'Wayanad', city: 'Wayanad', pincode: '673121', address: 'Kalpetta, Sulthan Bathery & Mananthavady', type: 'delivery' },
+  { id: 'kl-ksd', name: 'Kasaragod', city: 'Kasaragod', pincode: '671121', address: 'MG Road, Kanhangad & Central Hub', type: 'delivery' },
+  { id: 'kl-pta', name: 'Pathanamthitta', city: 'Pathanamthitta', pincode: '689645', address: 'Central Junction, Thiruvalla & Adoor', type: 'delivery' },
+  { id: 'kl-idk', name: 'Idukki', city: 'Idukki', pincode: '685603', address: 'Painavu, Thodupuzha & Munnar Valley', type: 'delivery' },
 ];
 
+// Stores in Kerala
 const STORE_BRANCHES: Place[] = [
-  { id: 'store-soho', name: 'SoHo Flagship Store', city: 'New York', pincode: '10012', address: '142 Spring Street, SoHo, NY', type: 'store' },
-  { id: 'store-beverly', name: 'Rodeo Drive Boutique', city: 'Los Angeles', pincode: '90210', address: '450 N Rodeo Dr, Beverly Hills, CA', type: 'store' },
-  { id: 'store-bond', name: 'Bond Street Gallery', city: 'London', pincode: 'W1S 2TE', address: '12 Old Bond St, London', type: 'store' },
-  { id: 'store-ginza', name: 'Ginza Atelier Flagship', city: 'Tokyo', pincode: '104-0061', address: '6-10-1 Ginza, Chuo-ku, Tokyo', type: 'store' },
+  { id: 'store-kochi', name: 'Kochi Flagship Store', city: 'Ernakulam', pincode: '682016', address: 'MG Road, Shenoys, Kochi, Kerala', type: 'store' },
+  { id: 'store-calicut', name: 'Calicut Gallery', city: 'Kozhikode', pincode: '673004', address: 'Mavoor Road Junction, Kozhikode, Kerala', type: 'store' },
+  { id: 'store-tvm', name: 'Trivandrum Atelier', city: 'Thiruvananthapuram', pincode: '695003', address: 'Kowdiar Avenue, Trivandrum, Kerala', type: 'store' },
+  { id: 'store-thrissur', name: 'Thrissur Boutique', city: 'Thrissur', pincode: '680001', address: 'Swaraj Round West, Thrissur, Kerala', type: 'store' },
 ];
 
 export default function PlaceSelectorModal() {
@@ -43,31 +52,24 @@ export default function PlaceSelectorModal() {
           setLocating(false);
           const detectedPlace: Place = {
             id: `geo-${Date.now()}`,
-            name: `Detected Area (${pos.coords.latitude.toFixed(2)}°, ${pos.coords.longitude.toFixed(2)}°)`,
-            city: 'Current Location',
-            pincode: 'GPS Auto',
-            address: 'Verified Geolocation Coordinates',
+            name: `Kerala Area (${pos.coords.latitude.toFixed(2)}°, ${pos.coords.longitude.toFixed(2)}°)`,
+            city: 'Kerala GPS',
+            pincode: 'Kerala',
+            address: 'Verified Geolocation in Kerala',
             type: 'delivery'
           };
           handleSelectPlace(detectedPlace);
         },
         () => {
           setLocating(false);
-          // Fallback to default location
-          handleSelectPlace({
-            id: 'geo-fallback',
-            name: 'Central Metropolitan District',
-            city: 'Metro Hub',
-            pincode: '10001',
-            address: 'GPS Precise Location',
-            type: 'delivery'
-          });
+          // Fallback to Kochi
+          handleSelectPlace(KERALA_DISTRICTS[0]);
         },
         { timeout: 5000 }
       );
     } else {
       setLocating(false);
-      handleSelectPlace(POPULAR_CITIES[0]);
+      handleSelectPlace(KERALA_DISTRICTS[0]);
     }
   };
 
@@ -76,17 +78,17 @@ export default function PlaceSelectorModal() {
     if (!customPincode.trim()) return;
     const customPlace: Place = {
       id: `custom-${Date.now()}`,
-      name: `Location (${customPincode.toUpperCase()})`,
-      city: 'Custom Zipcode',
+      name: `Kerala Location (${customPincode.toUpperCase()})`,
+      city: 'Kerala Zipcode',
       pincode: customPincode.toUpperCase(),
-      address: `Express Delivery Zone - ${customPincode.toUpperCase()}`,
+      address: `Kerala Delivery Zone - Pincode ${customPincode.toUpperCase()}`,
       type: 'delivery'
     };
     handleSelectPlace(customPlace);
     setCustomPincode('');
   };
 
-  const filteredPlaces = (activeTab === 'delivery' ? POPULAR_CITIES : STORE_BRANCHES).filter((p) => {
+  const filteredPlaces = (activeTab === 'delivery' ? KERALA_DISTRICTS : STORE_BRANCHES).filter((p) => {
     const q = searchQuery.toLowerCase();
     return p.name.toLowerCase().includes(q) || (p.city && p.city.toLowerCase().includes(q)) || (p.pincode && p.pincode.toLowerCase().includes(q));
   });
@@ -106,8 +108,8 @@ export default function PlaceSelectorModal() {
               <MapPin className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold tracking-tight text-white font-outfit">Select Place / Store Location</h2>
-              <p className="text-xs text-brand-cream/80 font-medium">Choose your delivery destination or store pickup point</p>
+              <h2 className="text-lg font-bold tracking-tight text-white font-outfit">Select Kerala District / Store</h2>
+              <p className="text-xs text-brand-cream/80 font-medium">Choose delivery district across 14 Kerala districts or store pickup</p>
             </div>
           </div>
           <button
@@ -129,7 +131,7 @@ export default function PlaceSelectorModal() {
             }`}
           >
             <Navigation className="w-3.5 h-3.5" />
-            <span>Delivery Location</span>
+            <span>Kerala Districts (14)</span>
           </button>
           <button
             onClick={() => setActiveTab('store')}
@@ -140,7 +142,7 @@ export default function PlaceSelectorModal() {
             }`}
           >
             <Store className="w-3.5 h-3.5" />
-            <span>Store Branch Pickup</span>
+            <span>Kerala Stores</span>
           </button>
         </div>
 
@@ -160,9 +162,9 @@ export default function PlaceSelectorModal() {
                 </div>
                 <div className="text-left">
                   <div className="text-xs font-bold font-outfit">
-                    {locating ? 'Detecting your coordinates...' : 'Use Current Location'}
+                    {locating ? 'Detecting Kerala location...' : 'Detect Current Location'}
                   </div>
-                  <div className="text-[11px] text-gray-500 font-medium">Automatic GPS detection</div>
+                  <div className="text-[11px] text-gray-500 font-medium">Auto-detect GPS location in Kerala</div>
                 </div>
               </div>
               <Sparkles className="w-4 h-4 text-brand-rose animate-pulse" />
@@ -174,7 +176,7 @@ export default function PlaceSelectorModal() {
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder={activeTab === 'delivery' ? "Search city, zip code, or address..." : "Search store branch or city..."}
+              placeholder={activeTab === 'delivery' ? "Search Kerala district or pincode..." : "Search Kerala store branch..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-burgundy focus:bg-white transition"
@@ -186,7 +188,7 @@ export default function PlaceSelectorModal() {
             <form onSubmit={handleCustomPincodeSubmit} className="flex gap-2">
               <input
                 type="text"
-                placeholder="Enter Zipcode / Postal Code"
+                placeholder="Enter Kerala 6-Digit Pincode (e.g. 682001)"
                 value={customPincode}
                 onChange={(e) => setCustomPincode(e.target.value)}
                 className="flex-1 px-3.5 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-burgundy focus:bg-white transition"
@@ -204,12 +206,12 @@ export default function PlaceSelectorModal() {
           {/* Location / Branch List */}
           <div className="space-y-2">
             <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-1 font-outfit">
-              {activeTab === 'delivery' ? 'Popular Destinations' : 'Available Flagship Stores'}
+              {activeTab === 'delivery' ? 'Kerala Districts' : 'Flagship Stores in Kerala'}
             </div>
 
             {filteredPlaces.length === 0 ? (
               <div className="p-6 text-center text-gray-400 text-xs font-medium">
-                No matching locations found. Try entering a postal code above.
+                No matching Kerala district found. Try entering your 6-digit pincode above.
               </div>
             ) : (
               filteredPlaces.map((place) => {
@@ -261,7 +263,7 @@ export default function PlaceSelectorModal() {
 
         {/* Footer info */}
         <div className="bg-gray-50 p-3 text-center text-[11px] text-gray-500 border-t border-gray-100">
-          📍 Prices & shipping timelines automatically update based on your selected place.
+          🌴 Delivery & Express Availability across all 14 Districts of Kerala.
         </div>
       </div>
     </div>

@@ -52,7 +52,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               <Sparkles className="w-3 h-3 animate-pulse" /> Express
             </span>
             <span className="truncate opacity-90 font-outfit">
-              Complimentary Global Express Shipping on orders over $150 & Free Store Returns
+              Fast Express Delivery across all 14 Districts of Kerala & Free Store Pickup
             </span>
           </div>
 
