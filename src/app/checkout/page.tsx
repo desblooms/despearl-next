@@ -371,7 +371,7 @@ export default function CheckoutPage() {
               {savedAddresses.length > 0 && (
                 <div className="mb-4 bg-brand-cream/5 border border-brand-rose/10 rounded-xl p-2.5">
                   <div className="flex justify-between items-center mb-2 px-0.5">
-                    <label className="block text-[9px] font-black text-gray-650 uppercase tracking-widest">Saved Addresses</label>
+                    <label className="block text-[9px] font-black text-gray-600 uppercase tracking-widest">Saved Addresses</label>
                     {selectedAddressId && (
                       <button type="button" onClick={useNewAddress} className="text-[9px] font-black text-brand-burgundy hover:underline">
                         + Use New Address
@@ -392,7 +392,7 @@ export default function CheckoutPage() {
                           {selectedAddressId === addr.id && <span className="w-1.5 h-1.5 rounded-full bg-brand-burgundy inline-block animate-ping" />}
                         </div>
                         <div className="text-[10px] font-extrabold text-gray-900 truncate">{addr.name}</div>
-                        <div className="text-[9px] text-gray-750 truncate">{addr.street}</div>
+                        <div className="text-[9px] text-gray-700 truncate">{addr.street}</div>
                         <div className="text-[9px] text-gray-755 font-bold truncate">{addr.city} - {addr.pin}</div>
                       </div>
                     ))}
@@ -404,38 +404,38 @@ export default function CheckoutPage() {
               <div className="flex flex-col gap-2.5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Full Name *</label>
+                    <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Full Name *</label>
                     <input 
                       type="text" 
                       name="name" 
                       value={formData.name} 
                       onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
                       placeholder="Enter full name" 
                       required 
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Phone *</label>
+                      <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Phone *</label>
                       <input 
                         type="tel" 
                         name="phone" 
                         value={formData.phone} 
                         onChange={handleChange} 
-                        className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                        className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
                         placeholder="+91..." 
                         required 
                       />
                     </div>
                     <div>
-                      <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Email</label>
+                      <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Email</label>
                       <input 
                         type="email" 
                         name="email" 
                         value={formData.email} 
                         onChange={handleChange} 
-                        className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                        className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
                         placeholder="you@email.com" 
                       />
                     </div>
@@ -443,46 +443,46 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex justify-center mb-2 mt-1">
-                  <button type="button" onClick={handleGetLocation} disabled={locLoading} className="w-full text-[10px] font-extrabold tracking-wide text-brand-burgundy bg-brand-burgundy/10 hover:bg-brand-burgundy/20 px-2.5 py-2 rounded-md flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
-                    {locLoading ? <div className="w-3 h-3 border-2 border-brand-burgundy/30 border-t-brand-burgundy rounded-full animate-spin" /> : <MapPin className="w-3 h-3" />}
+                  <button type="button" onClick={handleGetLocation} disabled={locLoading} className="w-full text-[10px] font-extrabold tracking-wide text-[#c78f4e] bg-[#c78f4e]/10 hover:bg-[#c78f4e]/20 px-2.5 py-2 rounded-md flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
+                    {locLoading ? <div className="w-3 h-3 border-2 border-[#c78f4e]/30 border-t-[#c78f4e] rounded-full animate-spin" /> : <MapPin className="w-3 h-3" />}
                     {locLoading ? 'LOCATING...' : '📍 USE MY LOCATION'}
                   </button>
                 </div>
 
                 <div>
-                  <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Street Address *</label>
+                  <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Street Address *</label>
                   <textarea 
                     name="street" 
                     value={formData.street} 
                     onChange={handleChange} 
-                    className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition resize-none" 
+                    className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition resize-none" 
                     placeholder="House No, Street name, Area" 
                     required 
                     rows={3}
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">City *</label>
+                    <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">City *</label>
                     <input 
                       type="text" 
                       name="city" 
                       value={formData.city} 
                       onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
                       placeholder="City" 
                       required 
                     />
                   </div>
                   <div>
-                    <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Pincode *</label>
+                    <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Pincode *</label>
                     <input 
                       type="text" 
                       name="pin" 
                       value={formData.pin} 
                       onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
                       placeholder="500001" 
                       maxLength={6} 
                       required
@@ -522,7 +522,7 @@ export default function CheckoutPage() {
 
                 {/* Order Notes At Last of delivery section */}
                 <div>
-                  <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Order Notes (optional)</label>
+                  <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Order Notes (optional)</label>
                   <textarea 
                     name="notes" 
                     value={formData.notes} 
@@ -595,7 +595,7 @@ export default function CheckoutPage() {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="text-[11px] font-black text-gray-900 truncate font-outfit leading-tight">{item.name}</div>
-                      <div className="text-[9.5px] font-bold text-gray-650 mt-0.5">Qty: {item.qty}</div>
+                      <div className="text-[9.5px] font-bold text-gray-600 mt-0.5">Qty: {item.qty}</div>
                     </div>
                     <div className="font-black text-xs text-gray-900 font-mono">₹{(Number(item.price) * item.qty).toFixed(2)}</div>
                   </div>
@@ -609,7 +609,7 @@ export default function CheckoutPage() {
                   <span className="text-gray-900 font-mono">₹{subtotal.toFixed(2)}</span>
                 </div>
                 {appliedCoupon && (
-                  <div className="flex justify-between items-center text-green-700 font-black">
+                  <div className="flex justify-between items-center text-[#c78f4e] font-black">
                     <span>Coupon Savings ({appliedCoupon.code})</span>
                     <span className="font-mono">-₹{discountAmount.toFixed(2)}</span>
                   </div>
@@ -630,17 +630,20 @@ export default function CheckoutPage() {
                 <span className="text-xl font-black text-brand-burgundy font-mono">₹{grandTotal.toFixed(2)}</span>
               </div>
               
-              <button 
-                onClick={placeOrder} 
-                disabled={loading}
-                className="w-full py-3 bg-brand-burgundy hover:bg-brand-burgundy/90 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm disabled:opacity-50"
-              >
-                {loading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Placing Order...</>
-                ) : (
-                  <><Lock className="w-4 h-4" /> Place Order — <span className="font-mono">₹{grandTotal.toFixed(2)}</span></>
-                )}
-              </button>
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 z-50 md:static md:p-0 md:bg-transparent md:border-t-0 md:z-auto mt-4">
+                <button 
+                  type="button"
+                  disabled={loading}
+                  onClick={placeOrder}
+                  className="w-full bg-brand-burgundy hover:bg-brand-burgundy/90 text-white font-extrabold uppercase tracking-wide py-3.5 px-4 rounded-xl shadow-lg shadow-brand-burgundy/20 flex justify-center items-center gap-2 group transition-all disabled:opacity-70"
+                >
+                  {loading ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Placing Order...</>
+                  ) : (
+                    <><Lock className="w-4 h-4" /> Place Order — <span className="font-mono">₹{grandTotal.toFixed(2)}</span></>
+                  )}
+                </button>
+              </div>
               
               {/* Trust assurances */}
               <div className="flex justify-center items-center gap-2.5 mt-4 text-[9px] font-black text-gray-600 tracking-wider uppercase">

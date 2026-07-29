@@ -90,11 +90,11 @@ export default function AddressesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <div className="bg-white px-4 md:px-8 py-5 border-b border-gray-100 flex items-center gap-4 sticky top-0 z-20 shadow-sm">
-        <Link href="/profile" className="w-10 h-10 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors">
-          <ArrowLeft className="w-5 h-5 text-gray-700" />
+      <div className="bg-white px-4 md:px-8 py-3 border-b border-gray-100 flex items-center justify-center relative sticky top-0 z-20">
+        <Link href="/profile" className="absolute left-4 md:left-8 w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors">
+          <ArrowLeft className="w-4 h-4 text-gray-700" />
         </Link>
-        <h1 className="text-xl font-black font-outfit text-brand-espresso">Saved Addresses</h1>
+        <h1 className="text-lg font-black font-outfit text-brand-espresso text-center">Saved Addresses</h1>
       </div>
 
       <div className="p-4 md:p-8 max-w-5xl mx-auto">

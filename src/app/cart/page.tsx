@@ -184,10 +184,10 @@ export default function CartPage() {
                 {cart.map((item) => (
                   <div key={item.id} className="p-3 md:p-4 flex gap-3 md:gap-4 items-center">
                     
-                    {/* Compact Image */}
-                    <div className="w-[64px] h-[80px] md:w-[72px] md:h-[96px] shrink-0 bg-gray-50 border border-brand-rose/10 rounded-lg overflow-hidden relative shadow-sm">
+                    {/* Prominent Image */}
+                    <div className="w-[96px] h-[120px] md:w-[130px] md:h-[160px] shrink-0 bg-gray-50 border border-brand-rose/10 rounded-lg overflow-hidden relative shadow-sm">
                       <img 
-                        src={item.image || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='80' viewBox='0 0 64 80'%3E%3Crect width='64' height='80' fill='%23f8f9fa'/%3E%3C/svg%3E`}
+                        src={item.image || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='160' viewBox='0 0 130 160'%3E%3Crect width='130' height='160' fill='%23f8f9fa'/%3E%3C/svg%3E`}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />
@@ -199,17 +199,23 @@ export default function CartPage() {
                         <h3 className="text-xs md:text-[13px] font-black text-gray-900 line-clamp-1 leading-snug hover:text-brand-burgundy cursor-pointer font-outfit">
                           {item.name}
                         </h3>
-                        <p className="text-[10px] text-gray-650 font-bold mb-1 hover:underline truncate">
+                        <p className="text-[10px] text-gray-600 font-bold mb-1 hover:underline truncate">
                           {item.brand || item.category_name || 'Premium Product'}
                         </p>
                         
-                        {/* Compact Badges */}
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[9px] font-black text-gray-700 bg-gray-100/60 px-1.5 py-0.5 border border-brand-rose/10 rounded-md">Size: M</span>
-                          <span className="text-[9px] font-black text-gray-700 bg-gray-100/60 px-1.5 py-0.5 border border-brand-rose/10 rounded-md flex items-center gap-1">
-                            Color: <span className="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block shadow-inner"></span>
-                          </span>
-                        </div>
+                        {/* Dynamic Badges */}
+                        {(item.size || item.color) && (
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {item.size && (
+                              <span className="text-[9px] font-black text-gray-700 bg-gray-100/60 px-1.5 py-0.5 border border-brand-rose/10 rounded-md">Size: {item.size}</span>
+                            )}
+                            {item.color && (
+                              <span className="text-[9px] font-black text-gray-700 bg-gray-100/60 px-1.5 py-0.5 border border-brand-rose/10 rounded-md flex items-center gap-1">
+                                Color: <span className="w-1.5 h-1.5 rounded-full inline-block shadow-inner" style={{ backgroundColor: item.color.toLowerCase() }}></span>
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                       
                       {/* Controls and Price unified row */}
@@ -217,7 +223,7 @@ export default function CartPage() {
                         {/* Quantity controls */}
                         <div className="flex items-center border border-brand-rose/20 rounded-lg bg-gray-100 overflow-hidden h-6.5">
                           <button 
-                            className="w-6 h-full flex items-center justify-center text-gray-750 hover:bg-gray-200 transition active:bg-gray-300" 
+                            className="w-6 h-full flex items-center justify-center text-gray-700 hover:bg-gray-200 transition active:bg-gray-300" 
                             onClick={() => updateQty(item.id, -1)}
                             aria-label="Decrease Qty"
                           >
@@ -227,7 +233,7 @@ export default function CartPage() {
                             {item.qty}
                           </span>
                           <button 
-                            className="w-6 h-full flex items-center justify-center text-gray-750 hover:bg-gray-200 transition active:bg-gray-300" 
+                            className="w-6 h-full flex items-center justify-center text-gray-700 hover:bg-gray-200 transition active:bg-gray-300" 
                             onClick={() => updateQty(item.id, 1)}
                             aria-label="Increase Qty"
                           >
@@ -307,7 +313,7 @@ export default function CartPage() {
                     />
                     <button 
                       onClick={() => { handleApplyCoupon(couponInput); setCouponInput(''); }}
-                      className="bg-brand-burgundy text-white font-extrabold text-xs px-3 py-1.5 rounded-lg active:scale-95 transition"
+                      className="bg-[#c78f4e] text-white font-extrabold text-xs px-3 py-1.5 rounded-lg active:scale-95 transition"
                     >
                       Apply
                     </button>
@@ -321,7 +327,7 @@ export default function CartPage() {
                       className="flex items-center justify-between p-2 border border-brand-rose/10 hover:border-brand-burgundy/30 bg-gray-50 hover:bg-gray-100 rounded-xl cursor-pointer transition active:scale-[0.99]"
                     >
                       <div>
-                        <span className="inline-block text-[8.5px] font-black bg-brand-burgundy text-white px-1.5 py-0.5 rounded-md mb-0.5">WELCOME50</span>
+                        <span className="inline-block text-[8.5px] font-black bg-[#c78f4e] text-white px-1.5 py-0.5 rounded-md mb-0.5">WELCOME50</span>
                         <div className="text-[10px] font-bold text-gray-700">Save ₹50 on orders above ₹500</div>
                       </div>
                       <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
@@ -331,7 +337,7 @@ export default function CartPage() {
                       className="flex items-center justify-between p-2 border border-brand-rose/10 hover:border-brand-burgundy/30 bg-gray-50 hover:bg-gray-100 rounded-xl cursor-pointer transition active:scale-[0.99]"
                     >
                       <div>
-                        <span className="inline-block text-[8.5px] font-black bg-brand-burgundy text-white px-1.5 py-0.5 rounded-md mb-0.5">DEAL10</span>
+                        <span className="inline-block text-[8.5px] font-black bg-[#c78f4e] text-white px-1.5 py-0.5 rounded-md mb-0.5">DEAL10</span>
                         <div className="text-[10px] font-bold text-gray-700">Save 10% on orders above ₹1000</div>
                       </div>
                       <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
@@ -345,13 +351,13 @@ export default function CartPage() {
             <div className="bg-white md:rounded-xl border border-brand-rose/10 p-4 shadow-sm">
               <h2 className="text-xs font-black text-gray-900 uppercase tracking-widest mb-3.5 font-outfit">Price Summary</h2>
               
-              <div className="flex flex-col gap-2.5 text-xs border-b border-gray-100 pb-3 mb-3.5 font-bold text-gray-750">
+              <div className="flex flex-col gap-2.5 text-xs border-b border-gray-100 pb-3 mb-3.5 font-bold text-gray-700">
                 <div className="flex justify-between items-center">
                   <span>Bag Price Total</span>
                   <span className="text-gray-900 font-mono">₹{cartTotal.toFixed(2)}</span>
                 </div>
                 {appliedCoupon && (
-                  <div className="flex justify-between items-center text-green-700 font-black">
+                  <div className="flex justify-between items-center text-[#c78f4e] font-black">
                     <span>Coupon Discount ({appliedCoupon.code})</span>
                     <span className="font-mono">-₹{discountAmount.toFixed(2)}</span>
                   </div>
@@ -371,12 +377,14 @@ export default function CartPage() {
                 <span className="text-lg font-black text-brand-burgundy font-mono">₹{grandTotal.toFixed(2)}</span>
               </div>
               
-              <button 
-                onClick={checkout}
-                className="flex w-full py-3 bg-brand-burgundy hover:bg-brand-burgundy/90 text-white rounded-xl text-xs font-black uppercase tracking-widest items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-[0.98]"
-              >
-                Proceed to Checkout <ChevronRight className="w-4 h-4" />
-              </button>
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 z-50 md:static md:p-0 md:bg-transparent md:border-t-0 md:z-auto">
+                <button
+                  className="w-full bg-brand-burgundy hover:bg-brand-burgundy/90 text-white font-extrabold uppercase tracking-wide py-3.5 px-4 rounded-xl shadow-lg shadow-brand-burgundy/20 flex justify-between items-center group transition-all"
+                  onClick={() => router.push('/checkout')}
+                >
+                  Proceed to Checkout <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
           </div>

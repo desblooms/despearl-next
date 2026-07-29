@@ -10,6 +10,8 @@ export type Product = {
   stock_quantity?: string | number;
   category_name?: string;
   brand?: string;
+  size?: string;
+  color?: string;
 };
 
 export type CartItem = Product & {

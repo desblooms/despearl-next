@@ -15,6 +15,9 @@
   /* Crimson Depth */
   --brand-sunshine: #B38F6F;
   /* Warm Sand */
+  --brand-gold: #D4AF37;
+  --brand-gold-light: #FDF9EE;
+  --brand-gold-dark: #AA8922;
 }
 
 @theme inline {
@@ -26,6 +29,9 @@
   --color-brand-rose: var(--brand-rose);
   --color-brand-wine: var(--brand-wine);
   --color-brand-sunshine: var(--brand-sunshine);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-gold-light: var(--brand-gold-light);
+  --color-brand-gold-dark: var(--brand-gold-dark);
   --font-sans: var(--font-lato);
   --font-outfit: var(--font-outfit);
   --font-heading: var(--font-outfit);
