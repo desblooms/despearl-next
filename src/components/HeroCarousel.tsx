@@ -6,6 +6,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 // Image import removed (using <img> for compatibility)
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
+import { getOptimizedImageUrl } from '@/utils/image';
 
 export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000, stopOnInteraction: false })]);
@@ -45,7 +46,8 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
               className="embla__slide flex-[0_0_100%] min-w-0 relative w-full h-full"
             >
               <img 
-                src={banner.image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1000'} 
+                src={getOptimizedImageUrl(banner.image, 1024, 85)} 
+                srcSet={`${getOptimizedImageUrl(banner.image, 640, 80)} 640w, ${getOptimizedImageUrl(banner.image, 1024, 80)} 1024w, ${getOptimizedImageUrl(banner.image, 1440, 85)} 1440w`}
                 alt={banner.title || 'Hero Banner'} 
                 className="absolute inset-0 w-full h-full object-cover" 
                 fetchPriority={index === 0 ? 'high' : 'auto'} 

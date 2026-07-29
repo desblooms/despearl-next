@@ -5,6 +5,7 @@ import { StoreProvider } from "@/context/StoreContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ClientProviders from "@/components/ClientProviders";
+import { getOptimizedImageUrl } from "@/utils/image";
 
 const lato = Lato({ 
   subsets: ["latin"], 
@@ -62,12 +63,15 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://admin.despearl.com" />
         <link rel="dns-prefetch" href="https://app.votee.in" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        {logoUrl && (
+          <link rel="preload" as="image" href={getOptimizedImageUrl(logoUrl, 160, 85)} fetchPriority="high" />
+        )}
       </head>
-      <body className={`${lato.className} ${lato.variable} ${outfit.variable} h-[100dvh] w-full overflow-hidden m-0 font-sans`}>
+      <body className={`${lato.className} ${lato.variable} ${outfit.variable} min-h-screen w-full m-0 font-sans`}>
         <StoreProvider>
-          <div id="app" className="flex flex-col h-full w-full mx-auto bg-white relative transition-all duration-300">
+          <div id="app" className="flex flex-col min-h-screen w-full mx-auto bg-white relative transition-all duration-300">
             <Header logoUrl={logoUrl} />
-            <main id="app-main" className="flex-1 overflow-y-auto overflow-x-hidden relative overscroll-y-contain">
+            <main id="app-main" className="flex-1 overflow-x-hidden relative">
               {children}
             </main>
             <Footer />

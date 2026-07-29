@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/context/StoreContext';
 import HeroCarousel from '@/components/HeroCarousel';
+import { getOptimizedImageUrl } from '@/utils/image';
 
 async function fetchCategories() {
   try {
@@ -104,7 +105,14 @@ export default async function HomePage() {
     <>
       {/* Preload Primary LCP Hero Image for HTML scanner */}
       {showHero && firstHeroBannerImage && (
-        <link rel="preload" as="image" href={firstHeroBannerImage} fetchPriority="high" />
+        <link 
+          rel="preload" 
+          as="image" 
+          href={getOptimizedImageUrl(firstHeroBannerImage, 1024, 85)} 
+          imageSrcSet={`${getOptimizedImageUrl(firstHeroBannerImage, 640, 80)} 640w, ${getOptimizedImageUrl(firstHeroBannerImage, 1024, 80)} 1024w, ${getOptimizedImageUrl(firstHeroBannerImage, 1440, 85)} 1440w`}
+          imageSizes="(max-width: 768px) 100vw, 1440px"
+          fetchPriority="high" 
+        />
       )}
 
       {/* Hero Slider */}
@@ -149,20 +157,20 @@ export default async function HomePage() {
         <div className="flex gap-4 md:gap-8 pt-6 pb-2 overflow-x-auto no-scrollbar snap-x snap-mandatory" id="home-cats">
           {categories.slice(0, 10).map((c: any) => (
             <Link key={c.id} href={`/shop/${c.id}`} className="flex flex-col items-center gap-2 md:gap-3 shrink-0 snap-start cursor-pointer group">
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden flex items-center justify-center transition-transform duration-500 group-hover:scale-105 group-active:scale-95 bg-[#f8f9fa] border-2 border-white shadow-sm">
-                 <img src={c.thumb || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=250"} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" alt={c.name} />
-              </div>
-              <div className="text-[11px] font-bold text-gray-800 text-center leading-tight max-w-[70px]">{c.name}</div>
-            </Link>
-          ))}
-        </div>
+                 <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden flex items-center justify-center transition-transform duration-500 group-hover:scale-105 group-active:scale-95 bg-[#f8f9fa] border-2 border-white shadow-sm">
+                  <img src={getOptimizedImageUrl(c.thumb, 200, 75)} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" alt={c.name} />
+               </div>
+               <div className="text-[11px] font-bold text-gray-800 text-center leading-tight max-w-[70px]">{c.name}</div>
+             </Link>
+           ))}
+         </div>
 
-        {/* Featured Banner */}
-        {categories.length >= 4 && (
-          <div className="flex gap-4 pt-8 pb-2 overflow-x-auto no-scrollbar snap-x snap-mandatory" id="featured-row">
-            {categories.slice(0, 4).map((c: any) => (
-              <Link key={c.id} href={`/shop/${c.id}`} className="w-[240px] md:w-[320px] h-[140px] md:h-[180px]  overflow-hidden relative shrink-0 snap-start cursor-pointer group shadow-md shadow-gray-200/50 border border-brand-cream/50">
-                <img src={c.banner || "https://images.unsplash.com/photo-1618220179428-22790b46a0eb?auto=format&fit=crop&q=80&w=500"} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Banner" />
+         {/* Featured Banner */}
+         {categories.length >= 4 && (
+           <div className="flex gap-4 pt-8 pb-2 overflow-x-auto no-scrollbar snap-x snap-mandatory" id="featured-row">
+             {categories.slice(0, 4).map((c: any) => (
+               <Link key={c.id} href={`/shop/${c.id}`} className="w-[240px] md:w-[320px] h-[140px] md:h-[180px]  overflow-hidden relative shrink-0 snap-start cursor-pointer group shadow-md shadow-gray-200/50 border border-brand-cream/50">
+                 <img src={getOptimizedImageUrl(c.banner, 400, 75)} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Banner" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute inset-0 p-4 md:p-5 flex flex-col justify-end">
                   <div className="text-white/80 font-bold text-[9px] mb-1 uppercase tracking-widest">Featured</div>

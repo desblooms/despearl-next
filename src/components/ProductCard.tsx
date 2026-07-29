@@ -5,6 +5,7 @@ import { Heart, Plus, ShoppingBag } from 'lucide-react';
 import { useStore, Product } from '@/context/StoreContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getOptimizedImageUrl } from '@/utils/image';
 
 interface ProductCardProps {
   product: Product;
@@ -29,7 +30,8 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
     return `https://app.votee.in/uploads/products/${url}`;
   };
 
-  const img = getImageUrl(product.image);
+  const img = getOptimizedImageUrl(product.image, 400, 75);
+  const imgSet = `${getOptimizedImageUrl(product.image, 200, 70)} 200w, ${getOptimizedImageUrl(product.image, 400, 70)} 400w`;
   
   const wrapperClass = horizontal ? "w-[150px] md:w-[200px] shrink-0 snap-start" : "";
 
@@ -57,6 +59,7 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
         <div className="aspect-[4/5] bg-[#f8f9fa] relative overflow-hidden">
           <img 
             src={img} 
+            srcSet={imgSet}
             alt={product.name} 
             loading="lazy" 
             decoding="async"

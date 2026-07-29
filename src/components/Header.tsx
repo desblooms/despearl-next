@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, ShoppingBag, ArrowLeft, MapPin, ChevronDown, Heart, User, Sparkles, Building2 } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
+import { getOptimizedImageUrl } from '@/utils/image';
 
 export default function Header({ logoUrl }: { logoUrl?: string }) {
   const pathname = usePathname();
@@ -102,9 +103,9 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               </button>
             )}
             
-            <Link href="/" className="font-black text-xl md:text-2xl tracking-tighter cursor-pointer text-gray-900 flex items-center font-outfit group">
+             <Link href="/" className="font-black text-xl md:text-2xl tracking-tighter cursor-pointer text-gray-900 flex items-center font-outfit group">
               {logoUrl ? (
-                <img src={logoUrl} alt="Store Logo" className="h-8 md:h-10 object-contain group-hover:opacity-90 transition" />
+                <img src={getOptimizedImageUrl(logoUrl, 160, 85)} alt="Store Logo" className="h-8 md:h-10 object-contain group-hover:opacity-90 transition" />
               ) : (
                 <>
                   <span className="text-gray-900 group-hover:text-brand-burgundy transition-colors">Despearl</span>
