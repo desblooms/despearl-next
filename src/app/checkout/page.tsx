@@ -208,7 +208,7 @@ export default function CheckoutPage() {
               <Check className="w-8 h-8" />
           </div>
           <h2 className="text-xl font-black text-gray-900 mb-1.5 font-outfit">Order Placed! 🎉</h2>
-          <p className="text-xs font-semibold text-gray-500 mb-6 leading-relaxed max-w-[280px]">Your order is received and is being prepared. We will call you shortly to confirm delivery details.</p>
+          <p className="text-xs font-bold text-gray-700 mb-6 leading-relaxed max-w-[280px]">Your order is received and is being prepared. We will call you shortly to confirm delivery details.</p>
           
           <div className="bg-brand-burgundy/5 border border-brand-burgundy/15 rounded-xl py-2 px-4 mb-6 inline-flex items-center gap-2 text-brand-burgundy font-black text-xs font-mono">
               <Receipt className="w-4 h-4" /> ORDER #{successOrderNum}
@@ -218,7 +218,7 @@ export default function CheckoutPage() {
             <Link href="/orders" className="w-full py-3 bg-brand-burgundy hover:bg-brand-burgundy/90 text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition active:scale-[0.98] shadow-sm">
               <List className="w-4 h-4" /> Track My Order
             </Link>
-            <Link href="/shop" className="w-full py-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition active:scale-[0.98]">
+            <Link href="/shop" className="w-full py-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-800 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition active:scale-[0.98]">
               <ShoppingBag className="w-4 h-4" /> Continue Shopping
             </Link>
           </div>
@@ -254,7 +254,7 @@ export default function CheckoutPage() {
               {savedAddresses.length > 0 && (
                 <div className="mb-4 bg-brand-cream/5 border border-brand-rose/10 rounded-xl p-2.5">
                   <div className="flex justify-between items-center mb-2 px-0.5">
-                    <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest">Saved Addresses</label>
+                    <label className="block text-[9px] font-black text-gray-650 uppercase tracking-widest">Saved Addresses</label>
                     {selectedAddressId && (
                       <button type="button" onClick={useNewAddress} className="text-[9px] font-black text-brand-burgundy hover:underline">
                         + Use New Address
@@ -269,14 +269,14 @@ export default function CheckoutPage() {
                         className={`flex-shrink-0 w-[160px] p-2 border rounded-xl cursor-pointer transition select-none ${selectedAddressId === addr.id ? 'border-brand-burgundy bg-brand-burgundy/5' : 'border-gray-200 bg-white hover:border-gray-300'}`}
                       >
                         <div className="flex justify-between items-center mb-1">
-                          <span className={`text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded ${selectedAddressId === addr.id ? 'bg-brand-burgundy text-white' : 'bg-gray-100 text-gray-500'}`}>
+                          <span className={`text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded ${selectedAddressId === addr.id ? 'bg-brand-burgundy text-white' : 'bg-gray-100 text-gray-700'}`}>
                             {addr.label}
                           </span>
                           {selectedAddressId === addr.id && <span className="w-1.5 h-1.5 rounded-full bg-brand-burgundy inline-block animate-ping" />}
                         </div>
                         <div className="text-[10px] font-extrabold text-gray-900 truncate">{addr.name}</div>
-                        <div className="text-[9px] text-gray-500 truncate">{addr.street}</div>
-                        <div className="text-[9px] text-gray-500 font-bold truncate">{addr.city} - {addr.pin}</div>
+                        <div className="text-[9px] text-gray-750 truncate">{addr.street}</div>
+                        <div className="text-[9px] text-gray-755 font-bold truncate">{addr.city} - {addr.pin}</div>
                       </div>
                     ))}
                   </div>
@@ -287,38 +287,38 @@ export default function CheckoutPage() {
               <div className="flex flex-col gap-2.5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[9.5px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Full Name *</label>
+                    <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Full Name *</label>
                     <input 
                       type="text" 
                       name="name" 
                       value={formData.name} 
                       onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-150 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
                       placeholder="Enter full name" 
                       required 
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[9.5px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Phone *</label>
+                      <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Phone *</label>
                       <input 
                         type="tel" 
                         name="phone" 
                         value={formData.phone} 
                         onChange={handleChange} 
-                        className="w-full bg-[#FAF8F5] border border-gray-150 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                        className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
                         placeholder="+91..." 
                         required 
                       />
                     </div>
                     <div>
-                      <label className="block text-[9.5px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Email</label>
+                      <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Email</label>
                       <input 
                         type="email" 
                         name="email" 
                         value={formData.email} 
                         onChange={handleChange} 
-                        className="w-full bg-[#FAF8F5] border border-gray-150 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                        className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
                         placeholder="you@email.com" 
                       />
                     </div>
@@ -326,13 +326,13 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[9.5px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Street Address *</label>
+                  <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Street Address *</label>
                   <input 
                     type="text" 
                     name="street" 
                     value={formData.street} 
                     onChange={handleChange} 
-                    className="w-full bg-[#FAF8F5] border border-gray-150 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                    className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
                     placeholder="House No, Street name, Area" 
                     required 
                   />
@@ -340,25 +340,25 @@ export default function CheckoutPage() {
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[9.5px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">City *</label>
+                    <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">City *</label>
                     <input 
                       type="text" 
                       name="city" 
                       value={formData.city} 
                       onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-150 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
                       placeholder="City" 
                       required 
                     />
                   </div>
                   <div>
-                    <label className="block text-[9.5px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Pincode *</label>
+                    <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Pincode *</label>
                     <input 
                       type="text" 
                       name="pin" 
                       value={formData.pin} 
                       onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-150 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
                       placeholder="500001" 
                       maxLength={6} 
                       required
@@ -368,7 +368,7 @@ export default function CheckoutPage() {
 
                 {/* Save Address Toggle */}
                 <div className="flex items-center justify-between border border-dashed border-brand-rose/20 bg-[#FAF8F5] rounded-xl p-2.5 flex-wrap gap-2 text-xs">
-                  <label className="flex items-center gap-2 font-semibold text-gray-700 cursor-pointer select-none">
+                  <label className="flex items-center gap-2 font-bold text-gray-800 cursor-pointer select-none">
                     <input 
                       type="checkbox" 
                       checked={saveAddressEnabled} 
@@ -379,14 +379,14 @@ export default function CheckoutPage() {
                   </label>
                   {saveAddressEnabled && (
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[9.5px] text-gray-400 font-black">SAVE AS:</span>
+                      <span className="text-[9.5px] text-gray-600 font-black">SAVE AS:</span>
                       <div className="flex gap-1">
                         {['Home', 'Work', 'Other'].map(lbl => (
                           <button 
                             key={lbl} 
                             type="button" 
                             onClick={() => setNewAddressLabel(lbl)} 
-                            className={`text-[9px] font-black px-2 py-0.5 rounded transition ${newAddressLabel === lbl ? 'bg-brand-burgundy text-white' : 'bg-white border border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+                            className={`text-[9px] font-black px-2 py-0.5 rounded transition ${newAddressLabel === lbl ? 'bg-brand-burgundy text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
                           >
                             {lbl}
                           </button>
@@ -398,12 +398,12 @@ export default function CheckoutPage() {
 
                 {/* Order Notes At Last of delivery section */}
                 <div>
-                  <label className="block text-[9.5px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Order Notes (optional)</label>
+                  <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Order Notes (optional)</label>
                   <textarea 
                     name="notes" 
                     value={formData.notes} 
                     onChange={handleChange} 
-                    className="w-full bg-[#FAF8F5] border border-gray-150 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                    className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
                     rows={1.5} 
                     placeholder="E.g. Delivery timings, landmark, gate code..."
                   />
@@ -423,11 +423,11 @@ export default function CheckoutPage() {
                   onClick={() => setPaymentMode('Cash On Delivery')}
                 >
                   <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                    <Banknote className={`w-4.5 h-4.5 ${paymentMode === 'Cash On Delivery' ? 'text-brand-burgundy' : 'text-gray-500'}`} />
+                    <Banknote className={`w-4.5 h-4.5 ${paymentMode === 'Cash On Delivery' ? 'text-brand-burgundy' : 'text-gray-600'}`} />
                   </div>
                   <div className="flex-1">
-                    <div className="font-extrabold text-[12px] text-gray-900">Cash on Delivery</div>
-                    <div className="text-[10px] text-gray-400 font-semibold">Pay cash when order gets delivered</div>
+                    <div className="font-extrabold text-[12px] text-black">Cash on Delivery</div>
+                    <div className="text-[10px] text-gray-700 font-semibold">Pay cash when order gets delivered</div>
                   </div>
                   <input type="radio" className="w-3.5 h-3.5 accent-brand-burgundy" name="payment" value="Cash On Delivery" checked={paymentMode === 'Cash On Delivery'} readOnly />
                 </div>
@@ -437,11 +437,11 @@ export default function CheckoutPage() {
                   onClick={() => setPaymentMode('Card On Delivery')}
                 >
                   <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                    <CreditCard className={`w-4.5 h-4.5 ${paymentMode === 'Card On Delivery' ? 'text-brand-burgundy' : 'text-gray-500'}`} />
+                    <CreditCard className={`w-4.5 h-4.5 ${paymentMode === 'Card On Delivery' ? 'text-brand-burgundy' : 'text-gray-600'}`} />
                   </div>
                   <div className="flex-1">
-                    <div className="font-extrabold text-[12px] text-gray-900">Card on Delivery</div>
-                    <div className="text-[10px] text-gray-400 font-semibold">Swipe card/scan UPI at delivery time</div>
+                    <div className="font-extrabold text-[12px] text-black">Card on Delivery</div>
+                    <div className="text-[10px] text-gray-700 font-semibold">Swipe card/scan UPI at delivery time</div>
                   </div>
                   <input type="radio" className="w-3.5 h-3.5 accent-brand-burgundy" name="payment" value="Card On Delivery" checked={paymentMode === 'Card On Delivery'} readOnly />
                 </div>
@@ -471,7 +471,7 @@ export default function CheckoutPage() {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="text-[11px] font-black text-gray-900 truncate font-outfit leading-tight">{item.name}</div>
-                      <div className="text-[9.5px] font-bold text-gray-400 mt-0.5">Qty: {item.qty}</div>
+                      <div className="text-[9.5px] font-bold text-gray-650 mt-0.5">Qty: {item.qty}</div>
                     </div>
                     <div className="font-black text-xs text-gray-900 font-mono">₹{(Number(item.price) * item.qty).toFixed(2)}</div>
                   </div>
@@ -479,13 +479,13 @@ export default function CheckoutPage() {
               </div>
               
               {/* Billing Breakdowns */}
-              <div className="space-y-2.5 pt-3.5 border-t border-gray-100 text-xs font-semibold text-gray-500">
+              <div className="space-y-2.5 pt-3.5 border-t border-gray-100 text-xs font-bold text-gray-700">
                 <div className="flex justify-between items-center">
                   <span>Items Subtotal ({count} items)</span>
                   <span className="text-gray-900 font-mono">₹{subtotal.toFixed(2)}</span>
                 </div>
                 {appliedCoupon && (
-                  <div className="flex justify-between items-center text-green-600 font-bold">
+                  <div className="flex justify-between items-center text-green-700 font-black">
                     <span>Coupon Savings ({appliedCoupon.code})</span>
                     <span className="font-mono">-₹{discountAmount.toFixed(2)}</span>
                   </div>
@@ -493,7 +493,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between items-center">
                   <span className="flex items-center gap-1"><Truck className="w-3.5 h-3.5" /> Shipping Charges</span>
                   {shippingFee === 0 ? (
-                    <span className="text-green-600 font-black uppercase text-[10px] bg-green-50 px-1.5 py-0.5 rounded-sm">Free</span>
+                    <span className="text-green-700 font-black uppercase text-[10px] bg-green-50 px-1.5 py-0.5 rounded-sm">Free</span>
                   ) : (
                     <span className="text-gray-900 font-mono">₹{shippingFee.toFixed(2)}</span>
                   )}
@@ -519,7 +519,7 @@ export default function CheckoutPage() {
               </button>
               
               {/* Trust assurances */}
-              <div className="flex justify-center items-center gap-2.5 mt-4 text-[9px] font-black text-gray-400 tracking-wider uppercase">
+              <div className="flex justify-center items-center gap-2.5 mt-4 text-[9px] font-black text-gray-600 tracking-wider uppercase">
                 <span className="flex items-center gap-0.5"><ShieldCheck className="w-3 h-3" /> Secure Pay</span>
                 <span>&bull;</span>
                 <span className="flex items-center gap-0.5"><Truck className="w-3 h-3" /> Fast Delivery</span>
@@ -535,7 +535,7 @@ export default function CheckoutPage() {
       {/* Mobile Sticky CTA bar for Checkout */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-150 px-4 py-2.5 pb-[calc(0.6rem+env(safe-area-inset-bottom))] flex items-center justify-between z-40 md:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
         <div>
-          <div className="text-[9px] font-black text-gray-400 uppercase tracking-wider">Order Total</div>
+          <div className="text-[9px] font-black text-gray-600 uppercase tracking-wider">Order Total</div>
           <div className="text-lg font-black text-brand-burgundy leading-none font-mono">₹{grandTotal.toFixed(2)}</div>
         </div>
         <button 
