@@ -48,7 +48,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
               <img 
                 src={getOptimizedImageUrl(banner.image, 1024, 85)} 
                 srcSet={`${getOptimizedImageUrl(banner.image, 640, 80)} 640w, ${getOptimizedImageUrl(banner.image, 1024, 80)} 1024w, ${getOptimizedImageUrl(banner.image, 1440, 85)} 1440w`}
-                alt={banner.title || 'Hero Banner'} 
+                alt={banner.title || 'Featured collection preview'} 
                 className="absolute inset-0 w-full h-full object-cover" 
                 fetchPriority={index === 0 ? 'high' : 'auto'} 
                 loading={index === 0 ? 'eager' : 'lazy'} 
@@ -85,12 +85,14 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
         <>
           <button 
             onClick={scrollPrev} 
+            aria-label="Previous slide"
             className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center bg-black/20 hover:bg-black/50 text-white rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button 
             onClick={scrollNext} 
+            aria-label="Next slide"
             className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center bg-black/20 hover:bg-black/50 text-white rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
           >
             <ChevronRight className="w-6 h-6" />
@@ -102,6 +104,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
               <button
                 key={i}
                 onClick={() => emblaApi && emblaApi.scrollTo(i)}
+                aria-label={`Go to slide ${i + 1}`}
                 className={`transition-all rounded-full ${
                   i === currentIndex ? 'w-8 h-1.5 bg-white' : 'w-2 h-1.5 bg-white/50 hover:bg-white/80'
                 }`}

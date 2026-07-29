@@ -64,6 +64,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               onClick={() => setPlaceModalOpen(true)}
               className="hidden sm:flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/10 px-2.5 py-1 rounded-full text-white transition cursor-pointer group"
               title="Change Delivery Location or Store Branch"
+              aria-label="Change delivery location or store branch"
             >
               {selectedPlace?.type === 'store' ? (
                 <Building2 className="w-3.5 h-3.5 text-brand-rose group-hover:scale-110 transition" />
@@ -73,7 +74,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               <span className="text-[11px] font-bold max-w-[140px] truncate">
                 {selectedPlace?.name || 'Select Location'}
               </span>
-              <ChevronDown className="w-3 h-3 text-white/70 group-hover:translate-y-0.5 transition" />
+              <ChevronDown className="w-3 h-3 text-white/90 group-hover:translate-y-0.5 transition" />
             </button>
 
             <span className="hidden md:inline-block text-white/30">|</span>
@@ -221,6 +222,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               }}
               className="w-9 h-9 rounded-full bg-gray-100 hover:bg-brand-cream/60 border border-gray-200 flex items-center justify-center text-gray-800 transition cursor-pointer shrink-0 ml-0.5"
               title={user ? `Signed in as ${user.name}` : "Sign In / Register"}
+              aria-label={user ? `Signed in as ${user.name}` : "Sign in or register"}
             >
               {user ? (
                 <span className="text-xs font-black text-brand-burgundy uppercase font-outfit">
@@ -240,13 +242,14 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
         <button
           onClick={() => setPlaceModalOpen(true)}
           className="flex items-center gap-1.5 text-[11px] font-bold text-gray-800 truncate cursor-pointer hover:text-brand-burgundy transition"
+          aria-label="Change delivery location"
         >
           <MapPin className="w-3.5 h-3.5 text-brand-burgundy shrink-0" />
-          <span className="text-gray-500 font-normal">Deliver to:</span>
+          <span className="text-gray-700 font-normal">Deliver to:</span>
           <span className="truncate max-w-[180px] font-outfit text-brand-burgundy">
             {selectedPlace?.name || 'Select Location'}
           </span>
-          <ChevronDown className="w-3 h-3 text-gray-400 shrink-0" />
+          <ChevronDown className="w-3 h-3 text-gray-600 shrink-0" />
         </button>
         <span className="text-[10px] text-brand-rose font-bold uppercase tracking-wider">
           {selectedPlace?.type === 'store' ? 'Store Pickup' : 'Express Delivery'}

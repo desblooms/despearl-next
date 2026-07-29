@@ -78,13 +78,14 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
       <button 
         className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all bg-white/90 backdrop-blur-sm border border-brand-cream/50 shadow-sm z-10 ${wished ? 'text-brand-burgundy' : 'text-gray-400'} hover:scale-110 active:scale-95`} 
         onClick={handleWishlist}
+        aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
       >
         <Heart className={`w-3.5 h-3.5 ${wished ? 'fill-brand-burgundy' : ''}`} />
       </button>
 
       <div className="p-3 flex flex-col flex-1">
         <Link href={`/product/${product.id}`} className="block flex-1">
-          <div className="text-[11px] font-bold text-gray-600 uppercase tracking-wide mb-1 truncate font-outfit">
+          <div className="text-[11px] font-bold text-gray-700 uppercase tracking-wide mb-1 truncate font-outfit">
             {product.brand ? product.brand : (product.category_name || 'Premium Product')}
           </div>
           <div className="text-[13px] font-semibold leading-snug mb-2 line-clamp-2 text-gray-900 hover:text-brand-burgundy transition-colors min-h-[36px]">
@@ -103,6 +104,7 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
                 onClick={handleQuickAdd}
                 disabled={!inStock}
                 title={inCart ? "Go to Cart" : "Add to Bag"}
+                aria-label={inCart ? "View shopping cart" : `Add ${product.name} to cart`}
               >
                 {inCart ? <ShoppingBag className="w-4 h-4" /> : <Plus className="w-4.5 h-4.5" />}
               </button>
