@@ -25,6 +25,10 @@ export default function CheckoutPage() {
   
   const [mounted, setMounted] = useState(false);
   
+  // Checkout Steps
+  const [checkoutStep, setCheckoutStep] = useState<1 | 2>(1);
+  const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
+
   // Saved Address States
   const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
@@ -32,7 +36,6 @@ export default function CheckoutPage() {
   const [newAddressLabel, setNewAddressLabel] = useState('Home');
   const [loading, setLoading] = useState(false);
   const [locLoading, setLocLoading] = useState(false);
-  const [showAddressList, setShowAddressList] = useState(false);
 
   // Coupon State
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
@@ -88,7 +91,6 @@ export default function CheckoutPage() {
               label: a.is_default == 1 ? 'Default' : 'Saved'
             }));
             setSavedAddresses(mapped);
-            // Auto-select default or first address
             const defaultAddr = mapped.find((a: SavedAddress) => a.label === 'Default') || mapped[0];
             if (defaultAddr) {
               setSelectedAddressId(defaultAddr.id);
@@ -103,6 +105,7 @@ export default function CheckoutPage() {
                 lat: defaultAddr.lat || '',
                 lng: defaultAddr.lng || '',
               }));
+              setCheckoutStep(2);
             }
             return;
           }
@@ -129,6 +132,7 @@ export default function CheckoutPage() {
               lng: addr.lng || '',
               notes: ''
             });
+            setCheckoutStep(2);
           }
         } catch (e) {}
       }
@@ -160,20 +164,31 @@ export default function CheckoutPage() {
     toast(`Delivery address set to: ${addr.label}`, 'map-pin');
   };
 
-  const useNewAddress = () => {
-    setSelectedAddressId('');
-    setFormData({
-      name: user?.name || '',
-      phone: user?.phone || '',
-      email: user?.email || '',
-      street: '',
-      city: '',
-      pin: '',
-      lat: '',
-      lng: '',
-      notes: ''
-    });
-    toast('Switched to new address form', 'info');
+  const handleSaveAndContinue = () => {
+    if (!formData.name.trim()) return toast('Please enter your name', 'alert-circle');
+    if (!formData.phone.trim()) return toast('Please enter your phone number', 'alert-circle');
+    if (!formData.street.trim()) return toast('Please enter your street address', 'alert-circle');
+    if (!formData.city.trim()) return toast('Please enter your city', 'alert-circle');
+    if (!formData.pin.trim() || formData.pin.trim().length < 6) return toast('Please enter valid 6-digit Pincode', 'alert-circle');
+
+    const newId = `new-${Date.now()}`;
+    const newAddr: SavedAddress = {
+      id: newId,
+      name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim(),
+      street: formData.street.trim(),
+      city: formData.city.trim(),
+      pin: formData.pin.trim(),
+      lat: formData.lat,
+      lng: formData.lng,
+      label: newAddressLabel
+    };
+
+    setSavedAddresses(prev => [newAddr, ...prev]);
+    setSelectedAddressId(newId);
+    setIsAddingNewAddress(false);
+    setCheckoutStep(2);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -361,273 +376,238 @@ export default function CheckoutPage() {
         <div className="md:grid md:grid-cols-12 md:gap-6 md:items-start">
           
           {/* Left Column: Delivery & Payment (7 cols) */}
-          <div className="md:col-span-7 flex flex-col gap-3">
+          {/* Left Column: Delivery & Payment (7 cols) */}
+          <div className="md:col-span-7 flex flex-col gap-4">
             
-            {/* Delivery Details Container */}
-            <div className="bg-white border border-brand-rose/10 md:rounded-xl p-4 shadow-sm">
-              <h2 className="text-[14px] font-black font-outfit text-gray-900 mb-3.5 flex items-center gap-1.5 border-b border-gray-50 pb-2">
-                <MapPin className="w-4.5 h-4.5 text-brand-burgundy" /> DELIVERY DETAILS
-              </h2>
+            {/* STEP 1: DELIVERY ADDRESS */}
+            <div className={`bg-white border ${checkoutStep === 1 ? 'border-brand-burgundy/40 shadow-sm ring-1 ring-brand-burgundy/10' : 'border-gray-200'} md:rounded-xl overflow-hidden transition-all`}>
+              <div className={`px-4 py-3.5 flex items-center justify-between ${checkoutStep === 1 ? 'bg-brand-burgundy/5' : 'bg-gray-50'}`}>
+                <div className="flex items-center gap-3">
+                  <div className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-black ${checkoutStep === 1 ? 'bg-brand-burgundy text-white' : 'bg-gray-300 text-gray-600'}`}>1</div>
+                  <h2 className="text-[13px] font-black font-outfit text-gray-900 tracking-wide uppercase">Delivery Address</h2>
+                </div>
+                {checkoutStep === 2 && (
+                  <button onClick={() => setCheckoutStep(1)} className="text-brand-burgundy text-[11px] font-bold uppercase hover:underline tracking-wider px-2 py-1">Change</button>
+                )}
+              </div>
               
-              {/* ── Saved Addresses UX ── */}
-              {savedAddresses.length > 0 ? (
-                <div className="mb-4">
-
-                  {/* Selected Address Full-Width Card */}
-                  {selectedAddressId && (() => {
-                    const sel = savedAddresses.find(a => a.id === selectedAddressId);
-                    if (!sel) return null;
-                    return (
-                      <div className="w-full bg-brand-burgundy/5 border-2 border-brand-burgundy rounded-xl p-3.5 mb-3 relative">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                            <div className="w-8 h-8 rounded-full bg-brand-burgundy/10 flex items-center justify-center shrink-0 mt-0.5">
-                              <MapPin className="w-4 h-4 text-brand-burgundy" />
+              {checkoutStep === 1 && (
+                <div className="p-4 bg-white border-t border-brand-burgundy/10">
+                  {savedAddresses.length > 0 && !isAddingNewAddress ? (
+                    <div className="flex flex-col gap-3">
+                      {savedAddresses.map((addr) => (
+                        <div 
+                          key={addr.id} 
+                          onClick={() => selectAddress(addr)}
+                          className={`border-2 rounded-xl p-3.5 cursor-pointer transition-all flex flex-col ${selectedAddressId === addr.id ? 'border-brand-burgundy bg-brand-burgundy/5' : 'border-gray-100 hover:border-brand-burgundy/30 bg-white'}`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${selectedAddressId === addr.id ? 'border-brand-burgundy' : 'border-gray-300'}`}>
+                              {selectedAddressId === addr.id && <div className="w-2 h-2 rounded-full bg-brand-burgundy" />}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                                <span className="text-sm font-black text-gray-900">{sel.name}</span>
-                                {sel.label === 'Default' && (
-                                  <span className="text-[9px] font-black bg-brand-burgundy text-white px-1.5 py-0.5 rounded-md">DEFAULT</span>
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-sm font-black text-gray-900">{addr.name}</span>
+                                {addr.label && (
+                                  <span className="text-[9px] font-black bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded-sm uppercase tracking-wider">{addr.label}</span>
                                 )}
                               </div>
-                              {sel.phone && <p className="text-xs text-gray-500 font-medium mb-0.5">{sel.phone}</p>}
-                              <p className="text-xs text-gray-700 leading-relaxed">{sel.street}</p>
-                              <p className="text-xs font-bold text-gray-900 mt-0.5">{sel.city} — <span className="font-mono">{sel.pin}</span></p>
+                              <p className="text-xs text-gray-700 leading-snug mb-0.5">{addr.street}</p>
+                              <p className="text-xs font-bold text-gray-800">{addr.city} - <span className="font-mono">{addr.pin}</span></p>
+                              {addr.phone && <p className="text-xs text-gray-500 mt-1 font-medium">{addr.phone}</p>}
                             </div>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => setShowAddressList(v => !v)}
-                            className="shrink-0 text-[10px] font-black text-brand-burgundy bg-white border border-brand-burgundy/20 hover:bg-brand-burgundy hover:text-white px-2.5 py-1 rounded-lg transition-all"
-                          >
-                            {showAddressList ? 'Cancel' : 'Change'}
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                  {/* Address List (shown when Change is tapped OR no address selected) */}
-                  {(showAddressList || !selectedAddressId) && (
-                    <div className="flex flex-col gap-2 mb-3">
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Select a delivery address</p>
-                      {savedAddresses.map((addr) => (
-                        <div
-                          key={addr.id}
-                          onClick={() => { selectAddress(addr); setShowAddressList(false); }}
-                          className={`flex items-start gap-3 p-3 border-2 rounded-xl cursor-pointer transition-all ${
-                            selectedAddressId === addr.id
-                              ? 'border-brand-burgundy bg-brand-burgundy/5'
-                              : 'border-gray-100 bg-white hover:border-brand-burgundy/40'
-                          }`}
-                        >
-                          <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                            selectedAddressId === addr.id ? 'border-brand-burgundy' : 'border-gray-300'
-                          }`}>
-                            {selectedAddressId === addr.id && <div className="w-2 h-2 rounded-full bg-brand-burgundy" />}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1.5 mb-0.5">
-                              <span className="text-xs font-black text-gray-900">{addr.name}</span>
-                              {addr.label === 'Default' && (
-                                <span className="text-[9px] font-black bg-brand-burgundy text-white px-1.5 py-0.5 rounded-md">DEFAULT</span>
-                              )}
+                          
+                          {selectedAddressId === addr.id && (
+                            <div className="mt-4 ml-7">
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); setCheckoutStep(2); }}
+                                className="bg-brand-burgundy text-white px-8 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm hover:bg-brand-burgundy/90 transition-colors w-full sm:w-auto"
+                              >
+                                Deliver Here
+                              </button>
                             </div>
-                            {addr.phone && <p className="text-[11px] text-gray-500">{addr.phone}</p>}
-                            <p className="text-[11px] text-gray-700 leading-snug">{addr.street}</p>
-                            <p className="text-[11px] font-bold text-gray-800">{addr.city} — <span className="font-mono">{addr.pin}</span></p>
-                          </div>
+                          )}
                         </div>
                       ))}
+                      
+                      <div className="mt-2 border-t border-gray-100 pt-4">
+                        <button 
+                          onClick={() => {
+                            setIsAddingNewAddress(true);
+                            setFormData(prev => ({
+                              ...prev,
+                              name: user?.name || '',
+                              phone: user?.phone || '',
+                              email: user?.email || '',
+                              street: '',
+                              city: '',
+                              pin: '',
+                              lat: '',
+                              lng: '',
+                              notes: prev.notes || ''
+                            }));
+                          }} 
+                          className="flex items-center gap-2 text-brand-burgundy font-black text-[13px] hover:underline"
+                        >
+                          <span className="text-lg leading-none">+</span> ADD A NEW ADDRESS
+                        </button>
+                      </div>
                     </div>
-                  )}
+                  ) : (
+                    <div className="flex flex-col gap-4">
+                      {/* Form Container */}
+                      <div className="bg-[#FAF8F5] border border-gray-100 rounded-xl p-4">
+                        <h3 className="text-xs font-black text-gray-800 uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">Enter Delivery Details</h3>
+                        <div className="flex flex-col gap-3.5">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <div>
+                              <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">Full Name *</label>
+                              <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-white border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" placeholder="Enter full name" required />
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">Phone *</label>
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-white border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" placeholder="10-digit number" required />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">Email</label>
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-white border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" placeholder="Optional" />
+                              </div>
+                            </div>
+                          </div>
 
-                  {/* Add New Address Button */}
-                  <Link
-                    href="/profile/addresses/add"
-                    className="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-[#c78f4e]/50 hover:border-[#c78f4e] bg-[#c78f4e]/5 hover:bg-[#c78f4e]/10 text-[#c78f4e] font-black text-xs rounded-xl transition-all"
-                  >
-                    <span className="text-base leading-none">+</span> Add New Address
-                  </Link>
+                          <div className="flex justify-center my-1">
+                            <button type="button" onClick={handleGetLocation} disabled={locLoading} className="w-full sm:w-auto text-[10px] font-extrabold tracking-wide text-[#c78f4e] bg-[#c78f4e]/10 hover:bg-[#c78f4e]/20 px-4 py-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50">
+                              {locLoading ? <div className="w-3.5 h-3.5 border-2 border-[#c78f4e]/30 border-t-[#c78f4e] rounded-full animate-spin" /> : <MapPin className="w-3.5 h-3.5" />}
+                              {locLoading ? 'LOCATING...' : '📍 USE MY CURRENT LOCATION'}
+                            </button>
+                          </div>
 
-                  <hr className="my-4 border-gray-100" />
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Or fill manually</p>
-                </div>
-              ) : null}
+                          <div>
+                            <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">Street Address *</label>
+                            <textarea name="street" value={formData.street} onChange={handleChange} className="w-full bg-white border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition resize-none" placeholder="House No, Building Name, Street, Area" required rows={2} />
+                          </div>
 
-              {/* Delivery Details Form Grid with Less Margins/Spacing */}
-              <div className="flex flex-col gap-2.5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <div>
-                    <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Full Name *</label>
-                    <input 
-                      type="text" 
-                      name="name" 
-                      value={formData.name} 
-                      onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
-                      placeholder="Enter full name" 
-                      required 
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Phone *</label>
-                      <input 
-                        type="tel" 
-                        name="phone" 
-                        value={formData.phone} 
-                        onChange={handleChange} 
-                        className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
-                        placeholder="+91..." 
-                        required 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Email</label>
-                      <input 
-                        type="email" 
-                        name="email" 
-                        value={formData.email} 
-                        onChange={handleChange} 
-                        className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
-                        placeholder="you@email.com" 
-                      />
-                    </div>
-                  </div>
-                </div>
+                          <div className="grid grid-cols-2 gap-3.5">
+                            <div>
+                              <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">City *</label>
+                              <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full bg-white border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" placeholder="City / Town" required />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">Pincode *</label>
+                              <input type="text" name="pin" value={formData.pin} onChange={handleChange} className="w-full bg-white border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" placeholder="6-digit PIN" maxLength={6} required />
+                            </div>
+                          </div>
+                          
+                          {/* Address Type/Label */}
+                          <div className="mt-2">
+                            <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-2">Save Address As</label>
+                            <div className="flex gap-2.5">
+                              {['Home', 'Work', 'Other'].map(lbl => (
+                                <button 
+                                  key={lbl} 
+                                  type="button" 
+                                  onClick={() => setNewAddressLabel(lbl)} 
+                                  className={`text-[11px] font-black px-4 py-1.5 rounded-full border transition-all ${newAddressLabel === lbl ? 'bg-brand-burgundy border-brand-burgundy text-white' : 'bg-white border-gray-300 text-gray-600 hover:border-gray-400'}`}
+                                >
+                                  {lbl}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
 
-                <div className="flex justify-center mb-2 mt-1">
-                  <button type="button" onClick={handleGetLocation} disabled={locLoading} className="w-full text-[10px] font-extrabold tracking-wide text-[#c78f4e] bg-[#c78f4e]/10 hover:bg-[#c78f4e]/20 px-2.5 py-2 rounded-md flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
-                    {locLoading ? <div className="w-3 h-3 border-2 border-[#c78f4e]/30 border-t-[#c78f4e] rounded-full animate-spin" /> : <MapPin className="w-3 h-3" />}
-                    {locLoading ? 'LOCATING...' : '📍 USE MY LOCATION'}
-                  </button>
-                </div>
-
-                <div>
-                  <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Street Address *</label>
-                  <textarea 
-                    name="street" 
-                    value={formData.street} 
-                    onChange={handleChange} 
-                    className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition resize-none" 
-                    placeholder="House No, Street name, Area" 
-                    required 
-                    rows={3}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <div>
-                    <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">City *</label>
-                    <input 
-                      type="text" 
-                      name="city" 
-                      value={formData.city} 
-                      onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
-                      placeholder="City" 
-                      required 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Pincode *</label>
-                    <input 
-                      type="text" 
-                      name="pin" 
-                      value={formData.pin} 
-                      onChange={handleChange} 
-                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-2.5 px-3 text-sm font-bold text-gray-900 outline-none transition" 
-                      placeholder="500001" 
-                      maxLength={6} 
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Save Address Toggle */}
-                <div className="flex items-center justify-between border border-dashed border-brand-rose/20 bg-[#FAF8F5] rounded-xl p-2.5 flex-wrap gap-2 text-xs">
-                  <label className="flex items-center gap-2 font-bold text-gray-800 cursor-pointer select-none">
-                    <input 
-                      type="checkbox" 
-                      checked={saveAddressEnabled} 
-                      onChange={(e) => setSaveAddressEnabled(e.target.checked)} 
-                      className="rounded border-gray-300 text-brand-burgundy focus:ring-brand-burgundy w-3.5 h-3.5" 
-                    />
-                    Save address for future purchases
-                  </label>
-                  {saveAddressEnabled && (
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[9.5px] text-gray-600 font-black">SAVE AS:</span>
-                      <div className="flex gap-1">
-                        {['Home', 'Work', 'Other'].map(lbl => (
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-col sm:flex-row items-center gap-3">
+                        <button 
+                          onClick={handleSaveAndContinue} 
+                          className="bg-brand-burgundy text-white px-8 py-3.5 rounded-xl text-[13px] font-black uppercase tracking-wider shadow-md hover:bg-brand-burgundy/90 transition-all w-full sm:w-auto"
+                        >
+                          Save & Deliver Here
+                        </button>
+                        {savedAddresses.length > 0 && (
                           <button 
-                            key={lbl} 
-                            type="button" 
-                            onClick={() => setNewAddressLabel(lbl)} 
-                            className={`text-[9px] font-black px-2 py-0.5 rounded transition ${newAddressLabel === lbl ? 'bg-brand-burgundy text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+                            onClick={() => setIsAddingNewAddress(false)} 
+                            className="text-gray-500 hover:text-gray-900 text-xs font-bold uppercase tracking-wide px-4 py-3 w-full sm:w-auto"
                           >
-                            {lbl}
+                            Cancel
                           </button>
-                        ))}
+                        )}
                       </div>
                     </div>
                   )}
                 </div>
+              )}
 
-                {/* Order Notes At Last of delivery section */}
-                <div>
-                  <label className="block text-[9.5px] font-extrabold text-gray-600 uppercase tracking-widest mb-0.5">Order Notes (optional)</label>
-                  <textarea 
-                    name="notes" 
-                    value={formData.notes} 
-                    onChange={handleChange} 
-                    className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
-                    rows={1.5} 
-                    placeholder="E.g. Delivery timings, landmark, gate code..."
-                  />
+              {checkoutStep === 2 && (
+                <div className="px-4 py-3 bg-white border-t border-gray-100 flex items-start gap-3">
+                   {/* Summary of selected address */}
+                   <div className="text-gray-800 w-full">
+                     <p className="text-[13px] font-black text-black">{formData.name} <span className="font-bold text-gray-600 text-xs ml-2">{formData.phone}</span></p>
+                     <p className="text-xs text-gray-700 mt-1 leading-snug">{formData.street}, {formData.city} - {formData.pin}</p>
+                   </div>
                 </div>
-              </div>
+              )}
             </div>
             
-            {/* Payment Method Selector */}
-            <div className="bg-white border border-brand-rose/10 md:rounded-xl p-4 shadow-sm">
-              <h2 className="text-[14px] font-black font-outfit text-gray-900 mb-3 flex items-center gap-1.5 border-b border-gray-50 pb-2">
-                <CreditCard className="w-4.5 h-4.5 text-brand-burgundy" /> PAYMENT METHOD
-              </h2>
+            {/* STEP 2: PAYMENT OPTIONS */}
+            <div className={`bg-white border ${checkoutStep === 2 ? 'border-brand-burgundy/40 shadow-sm ring-1 ring-brand-burgundy/10' : 'border-gray-200'} md:rounded-xl overflow-hidden transition-all`}>
+              <div className={`px-4 py-3.5 flex items-center justify-between ${checkoutStep === 2 ? 'bg-brand-burgundy/5' : 'bg-gray-50'}`}>
+                <div className="flex items-center gap-3">
+                  <div className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-black ${checkoutStep === 2 ? 'bg-brand-burgundy text-white' : 'bg-gray-300 text-gray-600'}`}>2</div>
+                  <h2 className="text-[13px] font-black font-outfit text-gray-900 tracking-wide uppercase">Payment Options</h2>
+                </div>
+              </div>
               
-              <div className="flex flex-col gap-2">
-                <div 
-                  className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition ${paymentMode === 'Cash On Delivery' ? 'border-brand-burgundy bg-brand-burgundy/5' : 'border-gray-200 bg-white hover:border-gray-300'}`} 
-                  onClick={() => setPaymentMode('Cash On Delivery')}
-                >
-                  <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                    <Banknote className={`w-4.5 h-4.5 ${paymentMode === 'Cash On Delivery' ? 'text-brand-burgundy' : 'text-gray-600'}`} />
+              {checkoutStep === 2 && (
+                <div className="p-4 bg-white border-t border-brand-burgundy/10">
+                  <div className="flex flex-col gap-3">
+                    <div 
+                      className={`flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMode === 'Cash On Delivery' ? 'border-brand-burgundy bg-brand-burgundy/5' : 'border-gray-100 bg-white hover:border-gray-300'}`} 
+                      onClick={() => setPaymentMode('Cash On Delivery')}
+                    >
+                      <input type="radio" className="w-4 h-4 accent-brand-burgundy shrink-0" name="payment" value="Cash On Delivery" checked={paymentMode === 'Cash On Delivery'} readOnly />
+                      <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm">
+                        <Banknote className={`w-5 h-5 ${paymentMode === 'Cash On Delivery' ? 'text-brand-burgundy' : 'text-gray-500'}`} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-black text-sm text-gray-900">Cash on Delivery (COD)</div>
+                        <div className="text-xs text-gray-500 mt-0.5">Pay in cash or UPI when order gets delivered</div>
+                      </div>
+                    </div>
+                    
+                    <div 
+                      className={`flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMode === 'Card On Delivery' ? 'border-brand-burgundy bg-brand-burgundy/5' : 'border-gray-100 bg-white hover:border-gray-300'}`} 
+                      onClick={() => setPaymentMode('Card On Delivery')}
+                    >
+                      <input type="radio" className="w-4 h-4 accent-brand-burgundy shrink-0" name="payment" value="Card On Delivery" checked={paymentMode === 'Card On Delivery'} readOnly />
+                      <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm">
+                        <CreditCard className={`w-5 h-5 ${paymentMode === 'Card On Delivery' ? 'text-brand-burgundy' : 'text-gray-500'}`} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-black text-sm text-gray-900">Card on Delivery</div>
+                        <div className="text-xs text-gray-500 mt-0.5">Swipe your card at the time of delivery</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <div className="font-extrabold text-[12px] text-black">Cash on Delivery</div>
-                    <div className="text-[10px] text-gray-700 font-semibold">Pay cash when order gets delivered</div>
+                  
+                  {/* Order Notes */}
+                  <div className="mt-5 border-t border-gray-100 pt-5">
+                    <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1.5">Order Notes (optional)</label>
+                    <textarea 
+                      name="notes" 
+                      value={formData.notes} 
+                      onChange={handleChange} 
+                      className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 rounded-lg py-2.5 px-3 text-sm font-medium text-gray-900 outline-none transition resize-none" 
+                      rows={2} 
+                      placeholder="E.g. Delivery timings, landmark, leave at gate..."
+                    />
                   </div>
-                  <input type="radio" className="w-3.5 h-3.5 accent-brand-burgundy" name="payment" value="Cash On Delivery" checked={paymentMode === 'Cash On Delivery'} readOnly />
                 </div>
-                
-                <div 
-                  className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition ${paymentMode === 'Card On Delivery' ? 'border-brand-burgundy bg-brand-burgundy/5' : 'border-gray-200 bg-white hover:border-gray-300'}`} 
-                  onClick={() => setPaymentMode('Card On Delivery')}
-                >
-                  <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                    <CreditCard className={`w-4.5 h-4.5 ${paymentMode === 'Card On Delivery' ? 'text-brand-burgundy' : 'text-gray-600'}`} />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-extrabold text-[12px] text-black">Card on Delivery</div>
-                    <div className="text-[10px] text-gray-700 font-semibold">Swipe card/scan UPI at delivery time</div>
-                  </div>
-                  <input type="radio" className="w-3.5 h-3.5 accent-brand-burgundy" name="payment" value="Card On Delivery" checked={paymentMode === 'Card On Delivery'} readOnly />
-                </div>
-              </div>
+              )}
             </div>
-            
           </div>
           
           {/* Right Column: Order Summary (5 cols) */}
