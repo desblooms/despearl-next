@@ -16,6 +16,15 @@ export type CartItem = Product & {
   qty: number;
 };
 
+export type Place = {
+  id: string;
+  name: string;
+  city?: string;
+  pincode?: string;
+  address?: string;
+  type?: 'delivery' | 'store';
+};
+
 export type User = {
   name: string;
   email: string;
@@ -27,6 +36,10 @@ type StoreContextType = {
   cart: CartItem[];
   wishlist: Product[];
   user: User;
+  selectedPlace: Place;
+  setSelectedPlace: (place: Place) => void;
+  placeModalOpen: boolean;
+  setPlaceModalOpen: (open: boolean) => void;
   addToCart: (product: Product, qty?: number) => void;
   removeFromCart: (id: number) => void;
   updateQty: (id: number, delta: number) => void;
@@ -46,12 +59,23 @@ type StoreContextType = {
   setAuthOpen: (open: boolean) => void;
 };
 
+const DEFAULT_PLACE: Place = {
+  id: 'nyc-1',
+  name: 'New York, NY 10001',
+  city: 'New York',
+  pincode: '10001',
+  address: '5th Ave & 34th St',
+  type: 'delivery'
+};
+
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [user, setUser] = useState<User>(null);
+  const [selectedPlace, setSelectedPlaceState] = useState<Place>(DEFAULT_PLACE);
+  const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ msg: string; icon: string } | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -61,11 +85,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const storedCart = localStorage.getItem('foxa_cart');
       const storedWish = localStorage.getItem('foxa_wish');
       const storedUser = localStorage.getItem('foxa_user');
+      const storedPlace = localStorage.getItem('foxa_place');
       if (storedCart) setCart(JSON.parse(storedCart));
       if (storedWish) setWishlist(JSON.parse(storedWish));
       if (storedUser) setUser(JSON.parse(storedUser));
+      if (storedPlace) setSelectedPlaceState(JSON.parse(storedPlace));
     }
   }, []);
+
+  const setSelectedPlace = (place: Place) => {
+    setSelectedPlaceState(place);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('foxa_place', JSON.stringify(place));
+    }
+    toast(`Location set to ${place.name}`, 'map-pin');
+  };
 
   const saveCart = (newCart: CartItem[]) => {
     setCart(newCart);
@@ -154,6 +188,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         cart,
         wishlist,
         user,
+        selectedPlace,
+        setSelectedPlace,
+        placeModalOpen,
+        setPlaceModalOpen,
         addToCart,
         removeFromCart,
         updateQty,

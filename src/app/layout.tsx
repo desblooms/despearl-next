@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AuthSheet from "@/components/AuthSheet";
 import ToastProvider from "@/components/ToastProvider";
+import PlaceSelectorModal from "@/components/PlaceSelectorModal";
 
 const lato = Lato({ subsets: ["latin"], weight: ["100", "300", "400", "700", "900"], variable: "--font-lato" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -56,6 +57,7 @@ export default async function RootLayout({
           </div>
           <AuthSheet />
           <ToastProvider />
+          <PlaceSelectorModal />
         </StoreProvider>
       </body>
     </html>
