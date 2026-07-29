@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { useStore } from '@/context/StoreContext';
 
 export default function AuthSheet() {
-  const { authOpen, setAuthOpen, loginUser, toast } = useStore();
-  const [isLogin, setIsLogin] = useState(true);
+  const { authOpen, setAuthOpen, authMode, setAuthMode, loginUser, toast } = useStore();
+  const isLogin = authMode === 'login';
+  const setIsLogin = (val: boolean) => setAuthMode(val ? 'login' : 'register');
   const [isLoading, setIsLoading] = useState(false);
 
   // Login fields — phone or email

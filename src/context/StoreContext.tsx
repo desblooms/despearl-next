@@ -59,6 +59,8 @@ type StoreContextType = {
   setDrawerOpen: (open: boolean) => void;
   authOpen: boolean;
   setAuthOpen: (open: boolean) => void;
+  authMode: 'login' | 'register';
+  setAuthMode: (mode: 'login' | 'register') => void;
 };
 
 const DEFAULT_PLACE: Place = {
@@ -81,6 +83,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [toastMessage, setToastMessage] = useState<{ msg: string; icon: string } | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -290,6 +293,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setDrawerOpen,
         authOpen,
         setAuthOpen,
+        authMode,
+        setAuthMode
       }}
     >
       {children}

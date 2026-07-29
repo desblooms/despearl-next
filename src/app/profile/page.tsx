@@ -6,7 +6,7 @@ import { User, LogOut, Heart, List, MapPin, Tag, Headphones, UserPlus, ChevronRi
 import Link from 'next/link';
 
 export default function ProfilePage() {
-  const { user, wishlist, logoutUser, setAuthOpen } = useStore();
+  const { user, wishlist, logoutUser, setAuthOpen, setAuthMode } = useStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -27,13 +27,13 @@ export default function ProfilePage() {
             <p className="text-sm text-gray-500 font-medium mb-8">Sign in for a premium experience</p>
             <div className="flex gap-4 justify-center w-full max-w-sm">
               <button 
-                onClick={() => setAuthOpen(true)} 
+                onClick={() => { setAuthMode('login'); setAuthOpen(true); }} 
                 className="flex-1 py-3.5 bg-brand-espresso hover:bg-black text-white rounded-xl text-sm font-bold transition active:scale-95 shadow-md"
               >
                 Sign In
               </button>
               <button 
-                onClick={() => setAuthOpen(true)} 
+                onClick={() => { setAuthMode('register'); setAuthOpen(true); }} 
                 className="flex-1 py-3.5 bg-white text-brand-espresso border border-gray-200 hover:border-gray-300 rounded-xl text-sm font-bold transition active:scale-95 shadow-sm"
               >
                 Register
@@ -65,7 +65,7 @@ export default function ProfilePage() {
             <div className="w-14 h-14 rounded-full bg-background text-brand-burgundy flex items-center justify-center mx-auto mb-4"><UserPlus className="w-6 h-6" /></div>
             <h3 className="font-black font-outfit text-brand-espresso mb-2 text-lg">Join the Club</h3>
             <p className="text-xs text-gray-500 font-medium mb-5 max-w-xs mx-auto leading-relaxed">Create an account to track orders, save your wishlist, and unlock exclusive rewards.</p>
-            <button onClick={() => setAuthOpen(true)} className="w-full max-w-[200px] py-3 bg-brand-espresso hover:bg-black text-white rounded-xl text-sm font-bold transition active:scale-95 shadow-md">Create Account</button>
+            <button onClick={() => { setAuthMode('register'); setAuthOpen(true); }} className="w-full max-w-[200px] py-3 bg-brand-espresso hover:bg-black text-white rounded-xl text-sm font-bold transition active:scale-95 shadow-md">Create Account</button>
           </div>
         </div>
       </div>
