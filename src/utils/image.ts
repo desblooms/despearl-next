@@ -20,6 +20,11 @@ export function getOptimizedImageUrl(url: string | undefined, width: number = 64
     return targetUrl;
   }
 
-  // Generate Next.js optimized image url using the built-in image optimizer route
-  return `/_next/image?url=${encodeURIComponent(targetUrl)}&w=${width}&q=${quality}`;
+  // Optimize Unsplash images directly at source via Unsplash CDN parameters
+  if (targetUrl.includes('images.unsplash.com')) {
+    targetUrl = targetUrl.replace(/w=\d+/, `w=${width}`).replace(/q=\d+/, `q=${quality}`);
+  }
+
+  // Return the direct URL to guarantee images are visible on all deployment environments
+  return targetUrl;
 }
