@@ -16,6 +16,7 @@ export type Product = {
 
 export type CartItem = Product & {
   qty: number;
+  cartItemId: string;
 };
 
 export type Place = {
@@ -43,8 +44,8 @@ type StoreContextType = {
   placeModalOpen: boolean;
   setPlaceModalOpen: (open: boolean) => void;
   addToCart: (product: Product, qty?: number) => void;
-  removeFromCart: (id: number) => void;
-  updateQty: (id: number, delta: number) => void;
+  removeFromCart: (cartItemId: string) => void;
+  updateQty: (cartItemId: string, delta: number) => void;
   clearCart: () => void;
   cartTotal: number;
   cartCount: number;
@@ -204,24 +205,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addToCart = (product: Product, qty: number = 1) => {
     const newCart = [...cart];
-    const existing = newCart.find((i) => i.id === product.id);
+    const cartItemId = `${product.id}-${product.size || ''}-${product.color || ''}`;
+    const existing = newCart.find((i) => i.cartItemId === cartItemId || (i.id === product.id && i.size === product.size && i.color === product.color));
+    
     if (existing) {
       existing.qty = Math.min(existing.qty + qty, 99);
     } else {
-      newCart.push({ ...product, qty });
+      newCart.push({ ...product, qty, cartItemId });
     }
     saveCart(newCart);
     toast(`${product.name.substring(0, 20)}... added!`);
   };
 
-  const removeFromCart = (id: number) => {
-    const newCart = cart.filter((i) => i.id !== id);
+  const removeFromCart = (cartItemId: string) => {
+    const newCart = cart.filter((i) => i.cartItemId !== cartItemId && i.id.toString() !== cartItemId.toString());
     saveCart(newCart);
   };
 
-  const updateQty = (id: number, delta: number) => {
+  const updateQty = (cartItemId: string, delta: number) => {
     const newCart = [...cart];
-    const item = newCart.find((i) => i.id === id);
+    const item = newCart.find((i) => i.cartItemId === cartItemId || i.id.toString() === cartItemId.toString());
     if (!item) return;
     item.qty = Math.max(1, item.qty + delta);
     saveCart(newCart);

@@ -56,7 +56,7 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
   return (
     <div className={`bg-white border border-brand-cream/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-md hover:border-brand-rose/20 group relative flex flex-col ${wrapperClass}`}>
       <Link href={`/product/${product.id}`} className="block relative">
-        <div className="aspect-[4/5] bg-[#f8f9fa] relative overflow-hidden">
+        <div className="aspect-square bg-[#f8f9fa] relative overflow-hidden">
           <img 
             src={img} 
             srcSet={imgSet}

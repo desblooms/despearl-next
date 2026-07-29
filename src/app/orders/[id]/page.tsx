@@ -115,6 +115,23 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
   const items = order.items || [];
   const history = order.status_history || [];
 
+  // Resolve phone — API returns customer_mobile from DB
+  const customerPhone = order.customer_mobile || order.customer_phone || '—';
+
+  // Resolve address — may be JSON string {name, phone, address} or plain text
+  let deliveryAddressText = '—';
+  try {
+    const da = order.delivery_address;
+    if (da && typeof da === 'string') {
+      const parsed = JSON.parse(da);
+      deliveryAddressText = parsed.address || da;
+    } else if (da && typeof da === 'object') {
+      deliveryAddressText = da.address || '—';
+    }
+  } catch {
+    deliveryAddressText = order.delivery_address || '—';
+  }
+
   return (
     <div className="bg-[#f8f9fa] min-h-screen pb-20">
       <div className="md:max-w-4xl md:mx-auto md:p-6 pb-24">
@@ -178,11 +195,11 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-brand-cream/20 flex items-center justify-center shrink-0"><Phone className="w-4 h-4 text-gray-900" /></div>
-                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Phone</div><div className="text-sm font-semibold text-gray-800">{order.customer_phone||'—'}</div></div>
+                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Phone</div><div className="text-sm font-semibold text-gray-800">{customerPhone}</div></div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-brand-cream/20 flex items-center justify-center shrink-0"><Map className="w-4 h-4 text-gray-900" /></div>
-                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Address</div><div className="text-sm font-semibold text-gray-800 leading-tight">{order.delivery_address||'—'}</div></div>
+                  <div><div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Address</div><div className="text-sm font-semibold text-gray-800 leading-tight">{deliveryAddressText}</div></div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-brand-cream/20 flex items-center justify-center shrink-0"><CreditCard className="w-4 h-4 text-gray-900" /></div>

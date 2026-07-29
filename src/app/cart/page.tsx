@@ -224,7 +224,7 @@ export default function CartPage() {
                         <div className="flex items-center border border-brand-rose/20 rounded-lg bg-gray-100 overflow-hidden h-6.5">
                           <button 
                             className="w-6 h-full flex items-center justify-center text-gray-700 hover:bg-gray-200 transition active:bg-gray-300" 
-                            onClick={() => updateQty(item.id, -1)}
+                            onClick={() => updateQty(item.cartItemId || item.id.toString(), -1)}
                             aria-label="Decrease Qty"
                           >
                             <Minus className="w-3 h-3" />
@@ -234,7 +234,7 @@ export default function CartPage() {
                           </span>
                           <button 
                             className="w-6 h-full flex items-center justify-center text-gray-700 hover:bg-gray-200 transition active:bg-gray-300" 
-                            onClick={() => updateQty(item.id, 1)}
+                            onClick={() => updateQty(item.cartItemId || item.id.toString(), 1)}
                             aria-label="Increase Qty"
                           >
                             <Plus className="w-3 h-3" />
@@ -250,7 +250,7 @@ export default function CartPage() {
                           </div>
                           
                           <button 
-                            onClick={() => removeFromCart(item.id)}
+                            onClick={() => removeFromCart(item.cartItemId || item.id.toString())}
                             className="text-gray-450 hover:text-red-700 transition-colors p-1.5 hover:bg-red-50 rounded-full"
                             aria-label="Remove item"
                           >
