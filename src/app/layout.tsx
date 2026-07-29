@@ -10,14 +10,14 @@ import PlaceSelectorModal from "@/components/PlaceSelectorModal";
 
 const lato = Lato({ 
   subsets: ["latin"], 
-  weight: ["300", "400", "700", "900"], 
+  weight: ["400", "700"], 
   variable: "--font-lato",
   display: "swap"
 });
 
 const outfit = Outfit({ 
   subsets: ["latin"], 
-  weight: ["400", "500", "600", "700", "800", "900"], 
+  weight: ["400", "600", "700", "800"], 
   variable: "--font-outfit",
   display: "swap"
 });
@@ -57,6 +57,14 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://admin.despearl.com" />
+        <link rel="preconnect" href="https://app.votee.in" />
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://admin.despearl.com" />
+        <link rel="dns-prefetch" href="https://app.votee.in" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+      </head>
       <body className={`${lato.className} ${lato.variable} ${outfit.variable} h-[100dvh] w-full overflow-hidden m-0 font-sans`}>
         <StoreProvider>
           <div id="app" className="flex flex-col h-full w-full mx-auto bg-white relative transition-all duration-300">

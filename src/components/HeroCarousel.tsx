@@ -47,6 +47,10 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
                 src={banner.image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1000'} 
                 className="absolute inset-0 w-full h-full object-cover" 
                 alt={banner.title || "Hero Banner"} 
+                fetchPriority={index === 0 ? "high" : "auto"}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                sizes="(max-width: 768px) 100vw, 1440px"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
               
