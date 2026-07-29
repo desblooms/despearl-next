@@ -21,7 +21,7 @@ export default function Footer() {
   }
 
   return (
-    <nav id="app-nav" className="h-[60px] bg-white border-t border-brand-cream/50 flex items-stretch shrink-0 pb-[env(safe-area-inset-bottom)] z-40 relative md:hidden shadow-lg">
+    <nav id="app-nav" className="h-[60px] bg-white border-t border-brand-cream/50 flex items-stretch shrink-0 pb-[env(safe-area-inset-bottom)] z-50 fixed bottom-0 left-0 right-0 md:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
       <Link href="/" className={`flex-1 flex flex-col items-center justify-center gap-1 transition text-[11px] font-bold ${isHome ? 'text-brand-burgundy' : 'text-gray-600 hover:text-gray-900'}`}>
           <Home className={`w-5 h-5 ${isHome ? 'stroke-brand-burgundy' : 'stroke-gray-600'}`} />
           <span>Home</span>

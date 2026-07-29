@@ -71,7 +71,7 @@ export default async function RootLayout({
         <StoreProvider>
           <div id="app" className="flex flex-col min-h-screen w-full mx-auto bg-white relative transition-all duration-300">
             <Header logoUrl={logoUrl} />
-            <main id="app-main" className="flex-1 overflow-x-hidden relative">
+            <main id="app-main" className="flex-1 overflow-x-hidden relative pb-[60px] md:pb-0">
               {children}
             </main>
             <Footer />
