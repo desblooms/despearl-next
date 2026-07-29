@@ -3,6 +3,7 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+// Image import removed (using <img> for compatibility)
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
