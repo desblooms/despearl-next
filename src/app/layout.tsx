@@ -4,9 +4,7 @@ import "./globals.css";
 import { StoreProvider } from "@/context/StoreContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import AuthSheet from "@/components/AuthSheet";
-import ToastProvider from "@/components/ToastProvider";
-import PlaceSelectorModal from "@/components/PlaceSelectorModal";
+import ClientProviders from "@/components/ClientProviders";
 
 const lato = Lato({ 
   subsets: ["latin"], 
@@ -37,7 +35,7 @@ export const metadata: Metadata = {
 async function fetchGlobalSettings() {
   try {
     const res = await fetch(`https://admin.despearl.com/api/settings`, { 
-      next: { revalidate: 60 },
+      next: { revalidate: 3600 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -74,9 +72,7 @@ export default async function RootLayout({
             </main>
             <Footer />
           </div>
-          <AuthSheet />
-          <ToastProvider />
-          <PlaceSelectorModal />
+          <ClientProviders />
         </StoreProvider>
       </body>
     </html>

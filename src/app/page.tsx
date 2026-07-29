@@ -8,7 +8,7 @@ import HeroCarousel from '@/components/HeroCarousel';
 async function fetchCategories() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/categories.php`, { 
-      next: { revalidate: 300 },
+      next: { revalidate: 3600 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -21,7 +21,7 @@ async function fetchCategories() {
 async function fetchOffers() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/offers.php`, { 
-      next: { revalidate: 300 },
+      next: { revalidate: 1800 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -34,7 +34,7 @@ async function fetchOffers() {
 async function fetchProducts(limit = 24, offset = 0) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/products.php?limit=${limit}&offset=${offset}`, { 
-      next: { revalidate: 60 },
+      next: { revalidate: 300 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -58,7 +58,7 @@ async function fetchProducts(limit = 24, offset = 0) {
 async function fetchSettings() {
   try {
     const res = await fetch(`https://admin.despearl.com/api/settings`, { 
-      next: { revalidate: 60 },
+      next: { revalidate: 3600 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -71,7 +71,7 @@ async function fetchSettings() {
 async function fetchHeroBanners() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/hero_banners.php`, { 
-      next: { revalidate: 60 },
+      next: { revalidate: 1800 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -98,13 +98,15 @@ export default async function HomePage() {
   const showCategories = homeConfig.show_categories !== false;
   const showNewArrivals = homeConfig.show_new_arrivals !== false;
 
-  const heroImage = homeConfig.hero_image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1000';
-  const heroTitle = homeConfig.hero_title || 'Elevate Your\nLiving Space';
-  const heroSubtitle = homeConfig.hero_subtitle || 'Discover premium furniture pieces designed to bring comfort, elegance, and modern aesthetics to your home.';
-  const heroButton = homeConfig.hero_button || 'Shop Collection';
+  const firstHeroBannerImage = (heroBanners && heroBanners.length > 0 && heroBanners[0].image) ? heroBanners[0].image : (homeConfig.hero_image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1000');
 
   return (
     <>
+      {/* Preload Primary LCP Hero Image for HTML scanner */}
+      {showHero && firstHeroBannerImage && (
+        <link rel="preload" as="image" href={firstHeroBannerImage} fetchPriority="high" />
+      )}
+
       {/* Hero Slider */}
       {showHero && (
         <HeroCarousel banners={heroBanners} />
