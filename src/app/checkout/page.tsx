@@ -32,6 +32,7 @@ export default function CheckoutPage() {
   const [newAddressLabel, setNewAddressLabel] = useState('Home');
   const [loading, setLoading] = useState(false);
   const [locLoading, setLocLoading] = useState(false);
+  const [showAddressList, setShowAddressList] = useState(false);
 
   // Coupon State
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
@@ -66,7 +67,7 @@ export default function CheckoutPage() {
 
     // Load saved addresses
     const fetchAddresses = async () => {
-      const token = localStorage.getItem('token');
+      const token = user?.token || (() => { try { const r = localStorage.getItem('foxa_user'); return r ? JSON.parse(r)?.token : null; } catch { return null; } })();
       if (token && user) {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/addresses.php`, {
@@ -84,23 +85,24 @@ export default function CheckoutPage() {
               pin: a.pin,
               lat: a.latitude || '',
               lng: a.longitude || '',
-              label: a.is_default == 1 ? 'Default Address' : 'Saved Address'
+              label: a.is_default == 1 ? 'Default' : 'Saved'
             }));
             setSavedAddresses(mapped);
-            if (mapped.length > 0) {
-              const addr = mapped[0];
-              setSelectedAddressId(addr.id);
-              setFormData({
-                name: addr.name,
-                phone: addr.phone,
-                email: addr.email,
-                street: addr.street,
-                city: addr.city,
-                pin: addr.pin,
-                lat: addr.lat || '',
-                lng: addr.lng || '',
-                notes: ''
-              });
+            // Auto-select default or first address
+            const defaultAddr = mapped.find((a: SavedAddress) => a.label === 'Default') || mapped[0];
+            if (defaultAddr) {
+              setSelectedAddressId(defaultAddr.id);
+              setFormData(prev => ({
+                ...prev,
+                name: defaultAddr.name,
+                phone: defaultAddr.phone,
+                email: defaultAddr.email,
+                street: defaultAddr.street,
+                city: defaultAddr.city,
+                pin: defaultAddr.pin,
+                lat: defaultAddr.lat || '',
+                lng: defaultAddr.lng || '',
+              }));
             }
             return;
           }
@@ -367,38 +369,92 @@ export default function CheckoutPage() {
                 <MapPin className="w-4.5 h-4.5 text-brand-burgundy" /> DELIVERY DETAILS
               </h2>
               
-              {/* Saved Addresses list */}
-              {savedAddresses.length > 0 && (
-                <div className="mb-4 bg-brand-cream/5 border border-brand-rose/10 rounded-xl p-2.5">
-                  <div className="flex justify-between items-center mb-2 px-0.5">
-                    <label className="block text-[9px] font-black text-gray-600 uppercase tracking-widest">Saved Addresses</label>
-                    {selectedAddressId && (
-                      <button type="button" onClick={useNewAddress} className="text-[9px] font-black text-brand-burgundy hover:underline">
-                        + Use New Address
-                      </button>
-                    )}
-                  </div>
-                  <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                    {savedAddresses.map((addr) => (
-                      <div 
-                        key={addr.id}
-                        onClick={() => selectAddress(addr)}
-                        className={`flex-shrink-0 w-[160px] p-2 border rounded-xl cursor-pointer transition select-none ${selectedAddressId === addr.id ? 'border-brand-burgundy bg-brand-burgundy/5' : 'border-gray-200 bg-white hover:border-gray-300'}`}
-                      >
-                        <div className="flex justify-between items-center mb-1">
-                          <span className={`text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded ${selectedAddressId === addr.id ? 'bg-brand-burgundy text-white' : 'bg-gray-100 text-gray-700'}`}>
-                            {addr.label}
-                          </span>
-                          {selectedAddressId === addr.id && <span className="w-1.5 h-1.5 rounded-full bg-brand-burgundy inline-block animate-ping" />}
+              {/* ── Saved Addresses UX ── */}
+              {savedAddresses.length > 0 ? (
+                <div className="mb-4">
+
+                  {/* Selected Address Full-Width Card */}
+                  {selectedAddressId && (() => {
+                    const sel = savedAddresses.find(a => a.id === selectedAddressId);
+                    if (!sel) return null;
+                    return (
+                      <div className="w-full bg-brand-burgundy/5 border-2 border-brand-burgundy rounded-xl p-3.5 mb-3 relative">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                            <div className="w-8 h-8 rounded-full bg-brand-burgundy/10 flex items-center justify-center shrink-0 mt-0.5">
+                              <MapPin className="w-4 h-4 text-brand-burgundy" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                                <span className="text-sm font-black text-gray-900">{sel.name}</span>
+                                {sel.label === 'Default' && (
+                                  <span className="text-[9px] font-black bg-brand-burgundy text-white px-1.5 py-0.5 rounded-md">DEFAULT</span>
+                                )}
+                              </div>
+                              {sel.phone && <p className="text-xs text-gray-500 font-medium mb-0.5">{sel.phone}</p>}
+                              <p className="text-xs text-gray-700 leading-relaxed">{sel.street}</p>
+                              <p className="text-xs font-bold text-gray-900 mt-0.5">{sel.city} — <span className="font-mono">{sel.pin}</span></p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddressList(v => !v)}
+                            className="shrink-0 text-[10px] font-black text-brand-burgundy bg-white border border-brand-burgundy/20 hover:bg-brand-burgundy hover:text-white px-2.5 py-1 rounded-lg transition-all"
+                          >
+                            {showAddressList ? 'Cancel' : 'Change'}
+                          </button>
                         </div>
-                        <div className="text-[10px] font-extrabold text-gray-900 truncate">{addr.name}</div>
-                        <div className="text-[9px] text-gray-700 truncate">{addr.street}</div>
-                        <div className="text-[9px] text-gray-755 font-bold truncate">{addr.city} - {addr.pin}</div>
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })()}
+
+                  {/* Address List (shown when Change is tapped OR no address selected) */}
+                  {(showAddressList || !selectedAddressId) && (
+                    <div className="flex flex-col gap-2 mb-3">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Select a delivery address</p>
+                      {savedAddresses.map((addr) => (
+                        <div
+                          key={addr.id}
+                          onClick={() => { selectAddress(addr); setShowAddressList(false); }}
+                          className={`flex items-start gap-3 p-3 border-2 rounded-xl cursor-pointer transition-all ${
+                            selectedAddressId === addr.id
+                              ? 'border-brand-burgundy bg-brand-burgundy/5'
+                              : 'border-gray-100 bg-white hover:border-brand-burgundy/40'
+                          }`}
+                        >
+                          <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                            selectedAddressId === addr.id ? 'border-brand-burgundy' : 'border-gray-300'
+                          }`}>
+                            {selectedAddressId === addr.id && <div className="w-2 h-2 rounded-full bg-brand-burgundy" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 mb-0.5">
+                              <span className="text-xs font-black text-gray-900">{addr.name}</span>
+                              {addr.label === 'Default' && (
+                                <span className="text-[9px] font-black bg-brand-burgundy text-white px-1.5 py-0.5 rounded-md">DEFAULT</span>
+                              )}
+                            </div>
+                            {addr.phone && <p className="text-[11px] text-gray-500">{addr.phone}</p>}
+                            <p className="text-[11px] text-gray-700 leading-snug">{addr.street}</p>
+                            <p className="text-[11px] font-bold text-gray-800">{addr.city} — <span className="font-mono">{sel.pin}</span></p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add New Address Button */}
+                  <Link
+                    href="/profile/addresses/add"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-[#c78f4e]/50 hover:border-[#c78f4e] bg-[#c78f4e]/5 hover:bg-[#c78f4e]/10 text-[#c78f4e] font-black text-xs rounded-xl transition-all"
+                  >
+                    <span className="text-base leading-none">+</span> Add New Address
+                  </Link>
+
+                  <hr className="my-4 border-gray-100" />
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Or fill manually</p>
                 </div>
-              )}
+              ) : null}
 
               {/* Delivery Details Form Grid with Less Margins/Spacing */}
               <div className="flex flex-col gap-2.5">

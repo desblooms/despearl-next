@@ -20,6 +20,8 @@ export default function Footer() {
     pathname.startsWith('/product') || 
     pathname.startsWith('/cart') || 
     pathname.startsWith('/checkout') || 
+    pathname.startsWith('/profile/addresses/add') || 
+    pathname.startsWith('/profile/addresses/edit') || 
     pathname.match(/\/orders\/\d+/)
   ) {
     return null;

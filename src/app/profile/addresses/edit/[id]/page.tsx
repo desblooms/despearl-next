@@ -28,6 +28,14 @@ export default function EditAddressPage() {
     is_default: false
   });
 
+  const getToken = () => {
+    if (user?.token) return user.token;
+    try {
+      const raw = localStorage.getItem('foxa_user');
+      return raw ? JSON.parse(raw)?.token : null;
+    } catch { return null; }
+  };
+
   useEffect(() => {
     if (!user) {
       router.push('/profile');
@@ -35,7 +43,7 @@ export default function EditAddressPage() {
     }
 
     const fetchAddress = async () => {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       if (token && params.id) {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/addresses.php`, {

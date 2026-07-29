@@ -23,9 +23,17 @@ export default function AddressesPage() {
   const [addresses, setAddresses] = useState<SavedAddress[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const getToken = () => {
+    if (user?.token) return user.token;
+    try {
+      const raw = localStorage.getItem('foxa_user');
+      return raw ? JSON.parse(raw)?.token : null;
+    } catch { return null; }
+  };
+
   const fetchAddresses = async () => {
     setLoading(true);
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/addresses.php`, {
@@ -50,7 +58,7 @@ export default function AddressesPage() {
 
   const deleteAddress = async (id: number) => {
     if (!confirm('Are you sure you want to delete this address?')) return;
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/addresses.php?id=${id}`, {
@@ -66,17 +74,16 @@ export default function AddressesPage() {
   };
 
   const setAsDefault = async (addr: SavedAddress) => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       try {
-        const payload = { ...addr, is_default: 1 };
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/addresses.php`, {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` 
+            'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ ...addr, is_default: 1 })
         });
         const data = await res.json();
         if (data.status === 'success') {
@@ -104,8 +111,8 @@ export default function AddressesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            
-            <Link href="/profile/addresses/add" className="border-2 border-dashed border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-brand-burgundy hover:bg-brand-burgundy/5 transition-colors min-h-[200px] group">
+
+            <Link href="/profile/addresses/add" className="border-2 border-dashed border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-brand-burgundy hover:bg-brand-burgundy/5 transition-colors min-h-[160px] group">
               <div className="w-12 h-12 rounded-full bg-gray-100 group-hover:bg-brand-burgundy/10 flex items-center justify-center mb-3 transition-colors">
                 <Plus className="w-6 h-6 text-gray-400 group-hover:text-brand-burgundy transition-colors" />
               </div>
@@ -120,17 +127,17 @@ export default function AddressesPage() {
                     <CheckCircle2 className="w-3 h-3" /> Default
                   </div>
                 )}
-                
+
                 <div className="flex items-start gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full bg-brand-cream/50 flex items-center justify-center shrink-0">
                     <MapPin className="w-5 h-5 text-brand-burgundy" />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 text-base leading-tight">{addr.name}</h3>
-                    <p className="text-xs text-gray-500 mt-0.5 font-medium">{addr.phone}</p>
+                    {addr.phone && <p className="text-xs text-gray-500 mt-0.5 font-medium">{addr.phone}</p>}
                   </div>
                 </div>
-                
+
                 <div className="text-sm text-gray-600 leading-relaxed mb-6 flex-1">
                   <p>{addr.street}</p>
                   <p className="mt-0.5">{addr.city} - <span className="font-mono font-semibold text-gray-800">{addr.pin}</span></p>
