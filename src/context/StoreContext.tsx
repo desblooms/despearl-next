@@ -86,12 +86,91 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const storedWish = localStorage.getItem('foxa_wish');
       const storedUser = localStorage.getItem('foxa_user');
       const storedPlace = localStorage.getItem('foxa_place');
+      
       if (storedCart) setCart(JSON.parse(storedCart));
       if (storedWish) setWishlist(JSON.parse(storedWish));
       if (storedUser) setUser(JSON.parse(storedUser));
-      if (storedPlace) setSelectedPlaceState(JSON.parse(storedPlace));
+
+      if (storedPlace) {
+        setSelectedPlaceState(JSON.parse(storedPlace));
+      } else {
+        // Automatically fetch live user location if no saved place exists
+        fetchUserLocation();
+      }
     }
   }, []);
+
+  const fetchUserLocation = async () => {
+    if (typeof window === 'undefined') return;
+
+    const detectFromCoords = async (lat: number, lon: number) => {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
+        if (res.ok) {
+          const data = await res.json();
+          const addr = data.address || {};
+          const districtName = addr.state_district || addr.county || addr.city || addr.town || addr.village || 'Kerala';
+          const postcode = addr.postcode || '';
+          const detectedPlace: Place = {
+            id: `auto-${Date.now()}`,
+            name: `${districtName}${postcode ? `, ${postcode}` : ''}`,
+            city: districtName,
+            pincode: postcode,
+            address: data.display_name?.substring(0, 50) || 'Live Detected Location',
+            type: 'delivery'
+          };
+          setSelectedPlaceState(detectedPlace);
+          localStorage.setItem('foxa_place', JSON.stringify(detectedPlace));
+          return;
+        }
+      } catch (e) {
+        // ignore reverse geocoding failure
+      }
+
+      const detectedPlace: Place = {
+        id: `auto-geo-${Date.now()}`,
+        name: `Detected Area (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)`,
+        city: 'Detected Location',
+        pincode: 'GPS',
+        address: 'Live Geolocation',
+        type: 'delivery'
+      };
+      setSelectedPlaceState(detectedPlace);
+      localStorage.setItem('foxa_place', JSON.stringify(detectedPlace));
+    };
+
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          detectFromCoords(pos.coords.latitude, pos.coords.longitude);
+        },
+        async () => {
+          // Fallback to IP geolocation if GPS permission is denied or pending
+          try {
+            const ipRes = await fetch('https://ipapi.co/json/');
+            if (ipRes.ok) {
+              const ipData = await ipRes.json();
+              if (ipData.city || ipData.region) {
+                const ipPlace: Place = {
+                  id: `ip-${Date.now()}`,
+                  name: `${ipData.city || ipData.region}${ipData.postal ? `, ${ipData.postal}` : ''}`,
+                  city: ipData.city || ipData.region,
+                  pincode: ipData.postal || '',
+                  address: `${ipData.city || ''}, ${ipData.region || ''}`,
+                  type: 'delivery'
+                };
+                setSelectedPlaceState(ipPlace);
+                localStorage.setItem('foxa_place', JSON.stringify(ipPlace));
+              }
+            }
+          } catch (e) {
+            // Keep default DEFAULT_PLACE
+          }
+        },
+        { timeout: 5000, maximumAge: 60000 }
+      );
+    }
+  };
 
   const setSelectedPlace = (place: Place) => {
     setSelectedPlaceState(place);
