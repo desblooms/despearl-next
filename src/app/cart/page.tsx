@@ -119,7 +119,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-[#FAF8F5] min-h-[calc(100vh-64px)] pb-24 md:pb-12">
+    <div className="bg-[#FAF8F5] min-h-[calc(100vh-64px)] pb-12">
       
       {/* Mobile Top Navigation Header */}
       <div className="md:hidden bg-white border-b border-gray-150 sticky top-0 z-30 px-3 py-2.5 flex items-center gap-3">
@@ -373,7 +373,7 @@ export default function CartPage() {
               
               <button 
                 onClick={checkout}
-                className="hidden md:flex w-full py-3 bg-brand-burgundy hover:bg-brand-burgundy/90 text-white rounded-xl text-xs font-black uppercase tracking-widest items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-[0.98]"
+                className="flex w-full py-3 bg-brand-burgundy hover:bg-brand-burgundy/90 text-white rounded-xl text-xs font-black uppercase tracking-widest items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-[0.98]"
               >
                 Proceed to Checkout <ChevronRight className="w-4 h-4" />
               </button>
@@ -381,20 +381,6 @@ export default function CartPage() {
 
           </div>
         </div>
-      </div>
-
-      {/* Mobile Sticky Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-150 px-4 py-2.5 pb-[calc(0.6rem+env(safe-area-inset-bottom))] flex items-center justify-between z-40 md:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
-        <div>
-          <div className="text-[9px] font-black text-gray-600 uppercase tracking-wider">Grand Total</div>
-          <div className="text-lg font-black text-brand-burgundy leading-none font-mono">₹{grandTotal.toFixed(2)}</div>
-        </div>
-        <button 
-          onClick={checkout}
-          className="bg-brand-burgundy text-white font-black py-2.5 px-7 rounded-xl text-xs uppercase tracking-widest active:scale-95 transition-transform flex items-center gap-1 shadow-sm"
-        >
-          Checkout <ChevronRight className="w-3.5 h-3.5" />
-        </button>
       </div>
     </div>
   );

@@ -228,7 +228,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="bg-[#FAF8F5] min-h-[calc(100vh-64px)] pb-24 md:pb-12">
+    <div className="bg-[#FAF8F5] min-h-[calc(100vh-64px)] pb-12">
       
       {/* Mobile Top Navigation Header */}
       <div className="md:hidden bg-white border-b border-gray-150 sticky top-0 z-30 px-3 py-2.5 flex items-center gap-3">
@@ -530,21 +530,6 @@ export default function CheckoutPage() {
           </div>
           
         </div>
-      </div>
-
-      {/* Mobile Sticky CTA bar for Checkout */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-150 px-4 py-2.5 pb-[calc(0.6rem+env(safe-area-inset-bottom))] flex items-center justify-between z-40 md:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
-        <div>
-          <div className="text-[9px] font-black text-gray-600 uppercase tracking-wider">Order Total</div>
-          <div className="text-lg font-black text-brand-burgundy leading-none font-mono">₹{grandTotal.toFixed(2)}</div>
-        </div>
-        <button 
-          onClick={placeOrder}
-          disabled={loading}
-          className="bg-brand-burgundy text-white font-black py-2.5 px-6 rounded-xl text-xs uppercase tracking-widest active:scale-95 transition-transform flex items-center gap-1.5 shadow-sm disabled:opacity-50"
-        >
-          {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Lock className="w-3.5 h-3.5" /> Order Now</>}
-        </button>
       </div>
     </div>
   );
