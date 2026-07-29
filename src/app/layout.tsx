@@ -8,8 +8,19 @@ import AuthSheet from "@/components/AuthSheet";
 import ToastProvider from "@/components/ToastProvider";
 import PlaceSelectorModal from "@/components/PlaceSelectorModal";
 
-const lato = Lato({ subsets: ["latin"], weight: ["100", "300", "400", "700", "900"], variable: "--font-lato" });
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
+const lato = Lato({ 
+  subsets: ["latin"], 
+  weight: ["300", "400", "700", "900"], 
+  variable: "--font-lato",
+  display: "swap"
+});
+
+const outfit = Outfit({ 
+  subsets: ["latin"], 
+  weight: ["400", "500", "600", "700", "800", "900"], 
+  variable: "--font-outfit",
+  display: "swap"
+});
 
 export const viewport: Viewport = {
   width: "device-width",
