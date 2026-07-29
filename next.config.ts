@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', 'embla-carousel-react'],
   },
   images: {
-    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 1024, 1440],
+    imageSizes: [400, 800, 1200],
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
