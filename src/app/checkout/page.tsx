@@ -237,7 +237,7 @@ export default function CheckoutPage() {
     const payload = {
       customer_name: formData.name.trim(),
       customer_phone: formData.phone.trim(),
-      customer_email: formData.email.trim(),
+      customer_email: formData.email.trim() || user?.email || '',
       shipping_address: `${formData.street.trim()}, ${formData.city.trim()} - ${formData.pin.trim()}`,
       payment_method: paymentMode,
       notes: formData.notes.trim(),
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
       if (data.status === 'success') {
         // Save address for future if checked
         if (saveAddressEnabled) {
-          const token = localStorage.getItem('token');
+          const token = user?.token || (() => { try { const r = localStorage.getItem('foxa_user'); return r ? JSON.parse(r)?.token : null; } catch { return null; } })();
           if (token && user) {
             try {
               await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/addresses.php`, {

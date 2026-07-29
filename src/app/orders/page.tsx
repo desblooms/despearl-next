@@ -61,13 +61,22 @@ export default function OrdersPage() {
 
       const fetchOrders = async () => {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/orders.php?email=${encodeURIComponent(user.email)}`);
+          const params = new URLSearchParams();
+          if (user.email) params.set('email', user.email);
+          if (user.phone) params.set('phone', user.phone);
+          const url = `${process.env.NEXT_PUBLIC_API_BASE}/orders.php?${params.toString()}`;
+          console.log('[Orders] user:', { name: user.name, email: user.email, phone: user.phone });
+          console.log('[Orders] fetching:', url);
+          const res = await fetch(url);
           const data = await res.json();
+          console.log('[Orders] response:', data);
           if (data.status === 'success') {
             setOrders(data.data || []);
+          } else {
+            console.warn('[Orders] non-success response:', data);
           }
         } catch (e) {
-          console.error(e);
+          console.error('[Orders] fetch error:', e);
         } finally {
           setLoading(false);
         }

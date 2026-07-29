@@ -29,8 +29,8 @@ export type Place = {
 
 export type User = {
   name: string;
-  email: string;
-  phone?: string;
+  email?: string;
+  phone: string;
   token: string;
 } | null;
 
