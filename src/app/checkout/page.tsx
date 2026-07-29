@@ -436,7 +436,7 @@ export default function CheckoutPage() {
                             </div>
                             {addr.phone && <p className="text-[11px] text-gray-500">{addr.phone}</p>}
                             <p className="text-[11px] text-gray-700 leading-snug">{addr.street}</p>
-                            <p className="text-[11px] font-bold text-gray-800">{addr.city} — <span className="font-mono">{sel.pin}</span></p>
+                            <p className="text-[11px] font-bold text-gray-800">{addr.city} — <span className="font-mono">{addr.pin}</span></p>
                           </div>
                         </div>
                       ))}
