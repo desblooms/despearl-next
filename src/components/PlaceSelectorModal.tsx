@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Navigation, Search, Store, X, Check, Building2, Sparkles, Compass } from 'lucide-react';
 import { useStore, Place } from '@/context/StoreContext';
 
@@ -22,20 +22,73 @@ const KERALA_DISTRICTS: Place[] = [
   { id: 'kl-idk', name: 'Idukki', city: 'Idukki', pincode: '685603', address: 'Painavu, Thodupuzha & Munnar Valley', type: 'delivery' },
 ];
 
-// Stores in Kerala
-const STORE_BRANCHES: Place[] = [
-  { id: 'store-kochi', name: 'Kochi Flagship Store', city: 'Ernakulam', pincode: '682016', address: 'MG Road, Shenoys, Kochi, Kerala', type: 'store' },
-  { id: 'store-calicut', name: 'Calicut Gallery', city: 'Kozhikode', pincode: '673004', address: 'Mavoor Road Junction, Kozhikode, Kerala', type: 'store' },
-  { id: 'store-tvm', name: 'Trivandrum Atelier', city: 'Thiruvananthapuram', pincode: '695003', address: 'Kowdiar Avenue, Trivandrum, Kerala', type: 'store' },
-  { id: 'store-thrissur', name: 'Thrissur Boutique', city: 'Thrissur', pincode: '680001', address: 'Swaraj Round West, Thrissur, Kerala', type: 'store' },
-];
+
 
 export default function PlaceSelectorModal() {
   const { selectedPlace, setSelectedPlace, placeModalOpen, setPlaceModalOpen } = useStore();
   const [activeTab, setActiveTab] = useState<'delivery' | 'store'>('delivery');
   const [searchQuery, setSearchQuery] = useState('');
-  const [customPincode, setCustomPincode] = useState('');
   const [locating, setLocating] = useState(false);
+  const [livePincodeResult, setLivePincodeResult] = useState<Place | null>(null);
+  const [isSearchingPincode, setIsSearchingPincode] = useState(false);
+  const [storeBranches, setStoreBranches] = useState<Place[]>([]);
+
+  useEffect(() => {
+    const fetchStores = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/stores.php`);
+        const data = await res.json();
+        if (data.status === 'success' && data.data) {
+          const mappedStores = data.data.map((s: any) => ({
+            id: `store-${s.id}`,
+            name: s.name,
+            city: s.city,
+            pincode: s.pincode,
+            address: s.address,
+            type: 'store'
+          }));
+          setStoreBranches(mappedStores);
+        }
+      } catch (e) {
+        console.error('Failed to fetch stores', e);
+      }
+    };
+    fetchStores();
+  }, []);
+
+  useEffect(() => {
+    const query = searchQuery.trim();
+    if (activeTab === 'delivery' && /^\d{6}$/.test(query)) {
+      const fetchPincode = async () => {
+        setIsSearchingPincode(true);
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${query}`);
+          const data = await res.json();
+          if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
+            const po = data[0].PostOffice[0];
+            const isKerala = po.State === 'Kerala';
+            setLivePincodeResult({
+              id: `live-${query}`,
+              name: `${po.Name}, ${po.District}`,
+              city: po.District,
+              pincode: po.Pincode,
+              address: isKerala ? 'Verified Kerala Delivery Zone' : `Outside Kerala (${po.State}). May incur extra shipping.`,
+              type: 'delivery'
+            });
+          } else {
+            setLivePincodeResult(null);
+          }
+        } catch (e) {
+          setLivePincodeResult(null);
+        } finally {
+          setIsSearchingPincode(false);
+        }
+      };
+      fetchPincode();
+    } else {
+      setLivePincodeResult(null);
+    }
+  }, [searchQuery, activeTab]);
 
   if (!placeModalOpen) return null;
 
@@ -73,25 +126,28 @@ export default function PlaceSelectorModal() {
     }
   };
 
-  const handleCustomPincodeSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customPincode.trim()) return;
-    const customPlace: Place = {
-      id: `custom-${Date.now()}`,
-      name: `Kerala Location (${customPincode.toUpperCase()})`,
-      city: 'Kerala Zipcode',
-      pincode: customPincode.toUpperCase(),
-      address: `Kerala Delivery Zone - Pincode ${customPincode.toUpperCase()}`,
-      type: 'delivery'
-    };
-    handleSelectPlace(customPlace);
-    setCustomPincode('');
-  };
-
-  const filteredPlaces = (activeTab === 'delivery' ? KERALA_DISTRICTS : STORE_BRANCHES).filter((p) => {
+  let filteredPlaces = (activeTab === 'delivery' ? KERALA_DISTRICTS : storeBranches).filter((p) => {
     const q = searchQuery.toLowerCase();
     return p.name.toLowerCase().includes(q) || (p.city && p.city.toLowerCase().includes(q)) || (p.pincode && p.pincode.toLowerCase().includes(q));
   });
+
+  if (activeTab === 'delivery' && /^\d{4,6}$/.test(searchQuery.trim())) {
+    if (livePincodeResult) {
+      filteredPlaces = [livePincodeResult, ...filteredPlaces.filter(p => p.pincode !== livePincodeResult.pincode)];
+    } else {
+      filteredPlaces = [
+        {
+          id: `custom-${searchQuery.trim()}`,
+          name: isSearchingPincode ? `Verifying Pincode ${searchQuery.trim()}...` : `Deliver to Pincode: ${searchQuery.trim()}`,
+          city: 'Kerala',
+          pincode: searchQuery.trim(),
+          address: isSearchingPincode ? 'Connecting to India Post...' : `Custom Pincode Delivery Zone`,
+          type: 'delivery'
+        },
+        ...filteredPlaces
+      ];
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/60 backdrop-blur-md transition-all animate-fadeIn">
@@ -99,10 +155,10 @@ export default function PlaceSelectorModal() {
       <div className="absolute inset-0" onClick={() => setPlaceModalOpen(false)} />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-brand-rose/20 z-10 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-brand-rose/20 z-10 flex flex-col max-h-[85vh] sm:max-h-[90vh]">
         
         {/* Header */}
-        <div className="bg-gradient-to-r from-gray-900 via-brand-espresso to-brand-burgundy text-white p-5 flex items-center justify-between border-b border-white/10">
+        <div className="bg-brand-burgundy text-white p-3.5 sm:p-5 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-brand-rose border border-white/10">
               <MapPin className="w-5 h-5" />
@@ -121,10 +177,10 @@ export default function PlaceSelectorModal() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex border-b border-gray-100 bg-gray-50/50 p-1.5 gap-2">
+        <div className="flex border-b border-gray-100 bg-gray-50/50 p-1 sm:p-1.5 gap-1.5 sm:gap-2">
           <button
             onClick={() => setActiveTab('delivery')}
-            className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+            className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
               activeTab === 'delivery'
                 ? 'bg-white text-brand-burgundy shadow-sm border border-brand-rose/20'
                 : 'text-gray-500 hover:text-gray-900'
@@ -135,26 +191,26 @@ export default function PlaceSelectorModal() {
           </button>
           <button
             onClick={() => setActiveTab('store')}
-            className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+            className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
               activeTab === 'store'
                 ? 'bg-white text-brand-burgundy shadow-sm border border-brand-rose/20'
                 : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             <Store className="w-3.5 h-3.5" />
-            <span>Kerala Stores</span>
+            <span>Store location</span>
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 flex-1 overflow-y-auto space-y-4">
+        <div className="p-3 flex-1 overflow-y-auto space-y-3 sm:space-y-4">
           
           {/* Quick Geolocation Trigger */}
           {activeTab === 'delivery' && (
             <button
               onClick={handleDetectLocation}
               disabled={locating}
-              className="w-full py-3 px-4 rounded-xl border border-brand-burgundy/20 bg-gradient-to-r from-brand-cream/40 via-white to-brand-cream/20 hover:border-brand-burgundy flex items-center justify-between text-brand-burgundy transition shadow-sm group cursor-pointer"
+              className="w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl border border-brand-burgundy/20 bg-brand-cream/30 hover:border-brand-burgundy flex items-center justify-between text-brand-burgundy transition shadow-sm group cursor-pointer"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-brand-burgundy text-white flex items-center justify-center group-hover:scale-110 transition">
@@ -176,42 +232,22 @@ export default function PlaceSelectorModal() {
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder={activeTab === 'delivery' ? "Search Kerala district or pincode..." : "Search Kerala store branch..."}
+              placeholder={activeTab === 'delivery' ? "Search district or enter pincode..." : "Search Store location..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-burgundy focus:bg-white transition"
+              className="w-full pl-9 pr-3 py-2 sm:py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-burgundy focus:bg-white transition"
             />
           </div>
-
-          {/* Custom Pincode Input */}
-          {activeTab === 'delivery' && (
-            <form onSubmit={handleCustomPincodeSubmit} className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Enter Kerala 6-Digit Pincode (e.g. 682001)"
-                value={customPincode}
-                onChange={(e) => setCustomPincode(e.target.value)}
-                className="flex-1 px-3.5 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-burgundy focus:bg-white transition"
-              />
-              <button
-                type="submit"
-                disabled={!customPincode.trim()}
-                className="px-4 py-2 bg-brand-burgundy text-white rounded-xl text-xs font-bold hover:bg-brand-wine disabled:opacity-40 transition cursor-pointer"
-              >
-                Apply
-              </button>
-            </form>
-          )}
 
           {/* Location / Branch List */}
           <div className="space-y-2">
             <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-1 font-outfit">
-              {activeTab === 'delivery' ? 'Kerala Districts' : 'Flagship Stores in Kerala'}
+              {activeTab === 'delivery' ? 'Kerala Districts' : 'Store locations'}
             </div>
 
             {filteredPlaces.length === 0 ? (
               <div className="p-6 text-center text-gray-400 text-xs font-medium">
-                No matching Kerala district found. Try entering your 6-digit pincode above.
+                No matching location found.
               </div>
             ) : (
               filteredPlaces.map((place) => {
@@ -220,14 +256,14 @@ export default function PlaceSelectorModal() {
                   <div
                     key={place.id}
                     onClick={() => handleSelectPlace(place)}
-                    className={`p-3.5 rounded-xl border transition-all flex items-center justify-between cursor-pointer ${
+                    className={`p-2.5 sm:p-3.5 rounded-xl border transition-all flex items-center justify-between cursor-pointer ${
                       isSelected
                         ? 'border-brand-burgundy bg-brand-cream/30 shadow-sm'
                         : 'border-gray-100 hover:border-brand-rose/40 hover:bg-gray-50'
                     }`}
                   >
-                    <div className="flex items-start gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs shrink-0 mt-0.5 ${
+                    <div className="flex items-start gap-2.5 sm:gap-3">
+                      <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-[10px] sm:text-xs shrink-0 mt-0.5 ${
                         isSelected ? 'bg-brand-burgundy text-white' : 'bg-gray-100 text-gray-600'
                       }`}>
                         {place.type === 'store' ? <Building2 className="w-4 h-4" /> : <MapPin className="w-4 h-4" />}

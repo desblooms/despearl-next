@@ -119,7 +119,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-[#FAF8F5] min-h-[calc(100vh-64px)] pb-12">
+    <div className="bg-background min-h-[calc(100vh-64px)] pb-12">
       
       {/* Mobile Top Navigation Header */}
       <div className="md:hidden bg-white border-b border-gray-150 sticky top-0 z-30 px-3 py-2.5 flex items-center gap-3">
@@ -165,7 +165,7 @@ export default function CartPage() {
                 </div>
                 <div className="w-full bg-gray-150 h-1.5 rounded-full overflow-hidden shadow-inner">
                   <div 
-                    className="bg-brand-burgundy h-full rounded-full transition-all duration-500 ease-out" 
+                    className={`h-full rounded-full transition-all duration-500 ease-out ${progressPercent >= 100 ? 'bg-gradient-to-r from-emerald-500 to-green-400 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.4)]' : 'bg-brand-burgundy'}`}
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>

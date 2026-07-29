@@ -14,6 +14,8 @@ type SavedAddress = {
   street: string;
   city: string;
   pin: string;
+  lat?: string;
+  lng?: string;
   label: string;
 };
 
@@ -28,6 +30,8 @@ export default function CheckoutPage() {
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [saveAddressEnabled, setSaveAddressEnabled] = useState(true);
   const [newAddressLabel, setNewAddressLabel] = useState('Home');
+  const [loading, setLoading] = useState(false);
+  const [locLoading, setLocLoading] = useState(false);
 
   // Coupon State
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
@@ -39,10 +43,11 @@ export default function CheckoutPage() {
     street: '',
     city: '',
     pin: '',
+    lat: '',
+    lng: '',
     notes: ''
   });
   const [paymentMode, setPaymentMode] = useState('Cash On Delivery');
-  const [loading, setLoading] = useState(false);
   const [successOrderNum, setSuccessOrderNum] = useState('');
 
   // Initial load
@@ -60,27 +65,73 @@ export default function CheckoutPage() {
     }
 
     // Load saved addresses
-    const storedAddrs = localStorage.getItem('foxa_saved_addresses');
-    if (storedAddrs) {
-      try {
-        const parsed = JSON.parse(storedAddrs);
-        setSavedAddresses(parsed);
-        if (parsed.length > 0) {
-          // Pre-populate with first saved address by default
-          const addr = parsed[0];
-          setSelectedAddressId(addr.id);
-          setFormData({
-            name: addr.name,
-            phone: addr.phone,
-            email: addr.email,
-            street: addr.street,
-            city: addr.city,
-            pin: addr.pin,
-            notes: ''
+    const fetchAddresses = async () => {
+      const token = localStorage.getItem('token');
+      if (token && user) {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/addresses.php`, {
+            headers: { 'Authorization': `Bearer ${token}` }
           });
-        }
-      } catch (e) {}
-    }
+          const data = await res.json();
+          if (data.status === 'success' && data.data) {
+            const mapped = data.data.map((a: any) => ({
+              id: a.id.toString(),
+              name: a.name,
+              phone: a.phone || '',
+              email: a.email || '',
+              street: a.street,
+              city: a.city,
+              pin: a.pin,
+              lat: a.latitude || '',
+              lng: a.longitude || '',
+              label: a.is_default == 1 ? 'Default Address' : 'Saved Address'
+            }));
+            setSavedAddresses(mapped);
+            if (mapped.length > 0) {
+              const addr = mapped[0];
+              setSelectedAddressId(addr.id);
+              setFormData({
+                name: addr.name,
+                phone: addr.phone,
+                email: addr.email,
+                street: addr.street,
+                city: addr.city,
+                pin: addr.pin,
+                lat: addr.lat || '',
+                lng: addr.lng || '',
+                notes: ''
+              });
+            }
+            return;
+          }
+        } catch (e) {}
+      }
+      
+      // Fallback for guests
+      const storedAddrs = localStorage.getItem('foxa_saved_addresses');
+      if (storedAddrs) {
+        try {
+          const parsed = JSON.parse(storedAddrs);
+          setSavedAddresses(parsed);
+          if (parsed.length > 0) {
+            const addr = parsed[0];
+            setSelectedAddressId(addr.id);
+            setFormData({
+              name: addr.name,
+              phone: addr.phone,
+              email: addr.email,
+              street: addr.street,
+              city: addr.city,
+              pin: addr.pin,
+              lat: addr.lat || '',
+              lng: addr.lng || '',
+              notes: ''
+            });
+          }
+        } catch (e) {}
+      }
+    };
+    fetchAddresses();
 
     // Load applied coupon
     const storedCoupon = localStorage.getItem('foxa_applied_coupon');
@@ -100,7 +151,9 @@ export default function CheckoutPage() {
       email: addr.email,
       street: addr.street,
       city: addr.city,
-      pin: addr.pin
+      pin: addr.pin,
+      lat: addr.lat || '',
+      lng: addr.lng || ''
     }));
     toast(`Delivery address set to: ${addr.label}`, 'map-pin');
   };
@@ -114,6 +167,8 @@ export default function CheckoutPage() {
       street: '',
       city: '',
       pin: '',
+      lat: '',
+      lng: '',
       notes: ''
     });
     toast('Switched to new address form', 'info');
@@ -121,6 +176,43 @@ export default function CheckoutPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      toast("Geolocation is not supported by your browser", 'alert-circle');
+      return;
+    }
+    setLocLoading(true);
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      try {
+        const { latitude, longitude } = position.coords;
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+        const data = await res.json();
+        if (data && data.address) {
+          const newCity = data.address.city || data.address.town || data.address.village || data.address.county || '';
+          const newPin = data.address.postcode || '';
+          const newStreet = data.display_name || data.address.road || data.address.suburb || '';
+          
+          setFormData(prev => ({
+            ...prev,
+            city: newCity || prev.city,
+            pin: newPin || prev.pin,
+            street: newStreet ? (prev.street ? `${prev.street}, ${newStreet}` : newStreet) : prev.street,
+            lat: latitude.toString(),
+            lng: longitude.toString()
+          }));
+          toast("Location fetched successfully!", 'map-pin');
+        }
+      } catch (e) {
+        console.error("Location fetch failed", e);
+        toast("Failed to get address from location.", 'alert-circle');
+      }
+      setLocLoading(false);
+    }, (error) => {
+      setLocLoading(false);
+      toast("Location access denied or unavailable.", 'alert-circle');
+    });
   };
 
   // Pricing calculations
@@ -160,26 +252,51 @@ export default function CheckoutPage() {
       const data = await res.json();
       
       if (data.status === 'success') {
-        // Save address in localStorage for future if checked
+        // Save address for future if checked
         if (saveAddressEnabled) {
-          const isAlreadySaved = savedAddresses.some(a => 
-            a.street.toLowerCase().trim() === formData.street.toLowerCase().trim() &&
-            a.city.toLowerCase().trim() === formData.city.toLowerCase().trim()
-          );
-          if (!isAlreadySaved) {
-            const newAddr: SavedAddress = {
-              id: `addr-${Date.now()}`,
-              name: formData.name.trim(),
-              phone: formData.phone.trim(),
-              email: formData.email.trim(),
-              street: formData.street.trim(),
-              city: formData.city.trim(),
-              pin: formData.pin.trim(),
-              label: newAddressLabel
-            };
-            const updated = [newAddr, ...savedAddresses];
-            localStorage.setItem('foxa_saved_addresses', JSON.stringify(updated));
-            setSavedAddresses(updated);
+          const token = localStorage.getItem('token');
+          if (token && user) {
+            try {
+              await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/addresses.php`, {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify({
+                  name: formData.name.trim(),
+                  phone: formData.phone.trim(),
+                  email: formData.email.trim(),
+                  street: formData.street.trim(),
+                  city: formData.city.trim(),
+                  pin: formData.pin.trim(),
+                  is_default: savedAddresses.length === 0 ? 1 : 0
+                })
+              });
+            } catch (e) {}
+          } else {
+            // Guest fallback
+            const isAlreadySaved = savedAddresses.some(a => 
+              a.street.toLowerCase().trim() === formData.street.toLowerCase().trim() &&
+              a.city.toLowerCase().trim() === formData.city.toLowerCase().trim()
+            );
+            if (!isAlreadySaved) {
+              const newAddr: SavedAddress = {
+                id: `addr-${Date.now()}`,
+                name: formData.name.trim(),
+                phone: formData.phone.trim(),
+                email: formData.email.trim(),
+                street: formData.street.trim(),
+                city: formData.city.trim(),
+                pin: formData.pin.trim(),
+                lat: formData.lat,
+                lng: formData.lng,
+                label: newAddressLabel
+              };
+              const updated = [newAddr, ...savedAddresses];
+              setSavedAddresses(updated);
+              localStorage.setItem('foxa_saved_addresses', JSON.stringify(updated));
+            }
           }
         }
 
@@ -202,7 +319,7 @@ export default function CheckoutPage() {
   // Order success screen
   if (successOrderNum) {
     return (
-      <div className="fixed inset-0 bg-[#FAF8F5] z-[300] flex flex-col overflow-y-auto">
+      <div className="fixed inset-0 bg-background z-[300] flex flex-col overflow-y-auto">
         <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center max-w-sm mx-auto">
           <div className="w-16 h-16 bg-white border border-brand-rose/10 rounded-full flex items-center justify-center mb-5 shadow-sm text-brand-burgundy">
               <Check className="w-8 h-8" />
@@ -228,7 +345,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="bg-[#FAF8F5] min-h-[calc(100vh-64px)] pb-12">
+    <div className="bg-background min-h-[calc(100vh-64px)] pb-12">
       
       {/* Mobile Top Navigation Header */}
       <div className="md:hidden bg-white border-b border-gray-150 sticky top-0 z-30 px-3 py-2.5 flex items-center gap-3">
@@ -325,16 +442,23 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
+                <div className="flex justify-center mb-2 mt-1">
+                  <button type="button" onClick={handleGetLocation} disabled={locLoading} className="w-full text-[10px] font-extrabold tracking-wide text-brand-burgundy bg-brand-burgundy/10 hover:bg-brand-burgundy/20 px-2.5 py-2 rounded-md flex items-center justify-center gap-1 transition-colors disabled:opacity-50">
+                    {locLoading ? <div className="w-3 h-3 border-2 border-brand-burgundy/30 border-t-brand-burgundy rounded-full animate-spin" /> : <MapPin className="w-3 h-3" />}
+                    {locLoading ? 'LOCATING...' : '📍 USE MY LOCATION'}
+                  </button>
+                </div>
+
                 <div>
                   <label className="block text-[9.5px] font-extrabold text-gray-650 uppercase tracking-widest mb-0.5">Street Address *</label>
-                  <input 
-                    type="text" 
+                  <textarea 
                     name="street" 
                     value={formData.street} 
                     onChange={handleChange} 
-                    className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition" 
+                    className="w-full bg-[#FAF8F5] border border-gray-200 focus:border-brand-burgundy focus:ring-2 focus:ring-brand-burgundy/10 focus:bg-white rounded-lg py-1.5 px-2.5 text-xs font-bold text-gray-900 outline-none transition resize-none" 
                     placeholder="House No, Street name, Area" 
                     required 
+                    rows={3}
                   />
                 </div>
 

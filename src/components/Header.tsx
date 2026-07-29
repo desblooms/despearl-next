@@ -40,10 +40,11 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
   }, [router]);
 
   return (
-    <header id="app-header" className="w-full shrink-0 sticky top-0 z-50 transition-all duration-300">
+    <>
+    <header id="app-header" className="w-full shrink-0 sticky top-0 z-50 transition-all duration-300 shadow-xs">
       
       {/* 1. Top Utility & Location Ticker Bar */}
-      <div className="bg-gradient-to-r from-gray-900 via-brand-espresso to-brand-burgundy text-white text-[11px] font-medium py-1.5 px-4 md:px-6">
+      <div className="bg-brand-burgundy text-white text-[11px] font-medium py-1.5 px-4 md:px-6">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
           
           {/* Announcement Ticker */}
@@ -52,7 +53,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               <Sparkles className="w-3 h-3 animate-pulse" /> Express
             </span>
             <span className="truncate opacity-90 font-outfit">
-              Fast Express Delivery across all 14 Districts of Kerala & Free Store Pickup
+              Fast Free Delivery in Kerala
             </span>
           </div>
 
@@ -88,7 +89,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
       </div>
 
       {/* 2. Main Luxury Header Navigation */}
-      <div className="bg-white/95 backdrop-blur-md border-b border-brand-cream/80 px-4 md:px-6 h-[62px] md:h-[68px] flex items-center shadow-xs">
+      <div className="bg-white border-b border-brand-cream/80 px-4 md:px-6 h-[62px] md:h-[68px] flex items-center shadow-xs">
         <div className="flex items-center justify-between w-full max-w-[1440px] mx-auto gap-4">
           
           {/* Left side (Mobile Back or Desktop Logo) */}
@@ -168,15 +169,6 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               </kbd>
             </Link>
 
-            {/* Mobile Search Icon */}
-            <Link 
-              href="/search" 
-              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full text-gray-700 hover:bg-gray-100 transition cursor-pointer"
-              aria-label="Search"
-            >
-              <Search className="w-4 h-4" />
-            </Link>
-
             {/* Wishlist Quick Action */}
             <Link 
               href="/profile" 
@@ -189,6 +181,15 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
                   {wishlist.length}
                 </span>
               )}
+            </Link>
+
+            {/* Mobile Search Icon (Placed just left of Cart) */}
+            <Link 
+              href="/search" 
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-gray-700 hover:bg-gray-100 transition cursor-pointer animate-in fade-in duration-200"
+              aria-label="Search"
+            >
+              <Search className="w-4.5 h-4.5 text-gray-600" />
             </Link>
 
             {/* Shopping Bag / Cart */}
@@ -224,9 +225,10 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
           </div>
         </div>
       </div>
+    </header>
 
-      {/* 3. Mobile Location Bar (Visible on mobile under header) */}
-      <div className="sm:hidden bg-brand-cream/40 border-b border-brand-rose/20 px-4 py-1.5 flex items-center justify-between text-xs text-gray-700">
+      {/* 3. Mobile Location Bar (Visible on mobile under header - non-sticky) */}
+      <div className="sm:hidden bg-gray-50 border-b border-gray-200 px-4 py-2 flex items-center justify-between text-xs text-gray-700 relative z-40">
         <button
           onClick={() => setPlaceModalOpen(true)}
           className="flex items-center gap-1.5 text-[11px] font-bold text-gray-800 truncate cursor-pointer hover:text-brand-burgundy transition"
@@ -237,13 +239,13 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
           <span className="truncate max-w-[180px] font-outfit text-brand-burgundy">
             {selectedPlace?.name || 'Select Location'}
           </span>
-          <ChevronDown className="w-3 h-3 text-gray-600 shrink-0" />
+          <ChevronDown className="w-3 h-3 text-gray-500 shrink-0" />
         </button>
-        <span className="text-[10px] text-brand-rose font-bold uppercase tracking-wider">
-          {selectedPlace?.type === 'store' ? 'Store Pickup' : 'Express Delivery'}
+        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+          {selectedPlace?.type === 'store' ? 'Store Pickup' : 'Express'}
         </span>
       </div>
 
-    </header>
+    </>
   );
 }

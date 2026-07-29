@@ -37,7 +37,7 @@ export default async function CategoriesBannersPage() {
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             {/* Gradient overlay similar to the reference image */}
-            <div className="absolute inset-0 bg-gradient-to-t from-purple-900/90 via-purple-900/20 to-transparent mix-blend-multiply opacity-80 group-hover:opacity-90 transition-opacity"></div>
+            <div className="absolute inset-0 bg-black/60 mix-blend-multiply opacity-80 group-hover:opacity-90 transition-opacity"></div>
             
             <div className="relative z-10 w-full p-3 md:p-4 flex flex-col items-center text-center">
               <h3 className="text-white font-black font-outfit text-lg md:text-xl leading-tight mb-2 tracking-wide uppercase drop-shadow-sm">

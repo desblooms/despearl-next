@@ -121,33 +121,50 @@ export default async function HomePage() {
       )}
 
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 w-full">
-        {/* Offers Banner */}
-        {showOffers && offers && offers.length > 0 && (
-          <div id="offers-row" className="mt-8 md:mt-12">
-            {offers.slice(0, 1).map((o: any) => (
-              <div key={o.id} className="-2xl overflow-hidden relative h-[140px] md:h-[160px] bg-brand-espresso flex items-center px-6 md:px-8 shadow-lg shadow-gray-900/10 group cursor-pointer hover:shadow-gray-900/20 transition-shadow">
-                <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-40 mix-blend-overlay" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=800')", backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
-                <div className="flex-1 relative z-10">
-                  <strong className="block text-xl md:text-3xl font-black text-white leading-tight mb-1">{o.title}</strong>
-                  <p className="text-xs md:text-sm text-white/70 font-medium max-w-sm line-clamp-2">{o.description || ''}</p>
-                </div>
-                {o.discount_percentage && (
-                  <div className="relative z-10 bg-white text-gray-900  px-4 py-3 md:px-6 md:py-4 text-center font-black leading-none shadow-md">
-                    <span className="text-2xl md:text-3xl block mb-1">{Number(o.discount_percentage)}%</span>
-                    <span className="text-[10px] md:text-xs uppercase tracking-widest font-bold text-gray-500">OFF</span>
-                  </div>
+      {/* Offers Banner Grid */}
+      {showOffers && offers && offers.length > 0 && (
+        <div id="offers-row" className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {offers.slice(0, 3).map((o: any) => {
+            const hasText = !!o.display_title;
+            const imageUrl = o.banner || o.banner_image || o.image_url || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=800';
+            
+            return (
+              <div key={o.id} className="w-full relative rounded-2xl bg-brand-cream flex items-center shadow-lg shadow-gray-900/10 cursor-pointer overflow-hidden group">
+                <img 
+                  src={getOptimizedImageUrl(imageUrl)} 
+                  alt={o.title || 'Special Offer'} 
+                  className="w-full h-auto block group-hover:scale-105 transition-transform duration-700" 
+                />
+                
+                {hasText && (
+                  <>
+                    <div className="absolute inset-0 bg-black/40 mix-blend-overlay"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                    <div className="relative z-10 w-full px-5 md:px-6 flex flex-col justify-center h-full">
+                        {o.display_title && <strong className="block text-xl lg:text-2xl font-black text-white leading-tight mb-1.5 tracking-tight drop-shadow-md">{o.display_title}</strong>}
+                        {o.description && <p className="text-xs lg:text-sm text-white/90 font-medium max-w-[85%] line-clamp-2 drop-shadow-md mb-3">{o.description}</p>}
+                        
+                      {o.discount_percentage && (
+                        <div className="bg-white text-gray-900 rounded-xl px-4 py-2 w-max text-center font-black leading-none shadow-md">
+                          <span className="text-xl lg:text-2xl block mb-0.5">{Number(o.discount_percentage)}%</span>
+                          <span className="text-[9px] uppercase tracking-widest font-bold text-gray-500">OFF</span>
+                        </div>
+                      )}
+                    </div>
+                  </>
                 )}
               </div>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
+      )}
 
         {/* Category Circles */}
         {showCategories && (
           <>
             <div className="flex items-end justify-between pt-10 pb-4 border-b border-brand-cream/50">
           <div>
-            <h2 className="text-lg md:text-xl font-black font-outfit text-gray-900 tracking-tight mb-0.5">Shop by Room</h2>
+            <h2 className="text-lg md:text-xl font-black font-outfit text-gray-900 tracking-tight mb-0.5">Shop By Categories</h2>
             <p className="text-[11px] text-gray-700 font-medium">Explore furniture tailored for every space</p>
           </div>
           <Link href="/categories" className="text-[12px] font-bold text-brand-burgundy hover:text-brand-burgundy/90 flex items-center gap-1 transition">
@@ -156,11 +173,13 @@ export default async function HomePage() {
         </div>
         <div className="flex gap-4 md:gap-8 pt-6 pb-2 overflow-x-auto no-scrollbar snap-x snap-mandatory" id="home-cats">
           {categories.slice(0, 10).map((c: any) => (
-            <Link key={c.id} href={`/shop/${c.id}`} className="flex flex-col items-center gap-2 md:gap-3 shrink-0 snap-start cursor-pointer group">
-                 <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden flex items-center justify-center transition-transform duration-500 group-hover:scale-105 group-active:scale-95 bg-[#f8f9fa] border-2 border-white shadow-sm">
-                  <img src={getOptimizedImageUrl(c.thumb, 200, 75)} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" alt={c.name} />
-               </div>
-               <div className="text-[11px] font-bold text-gray-800 text-center leading-tight max-w-[70px]">{c.name}</div>
+            <Link key={c.id} href={`/shop/${c.id}`} className="flex flex-col items-center gap-2.5 shrink-0 snap-start cursor-pointer group">
+                 <div className="p-[3px] bg-brand-burgundy rounded-full transition-all duration-500 group-hover:rotate-6 group-hover:scale-105 group-active:scale-95 shadow-sm">
+                   <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden flex items-center justify-center bg-white border border-white">
+                     <img src={getOptimizedImageUrl(c.thumb, 200, 75)} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" alt={c.name} />
+                   </div>
+                 </div>
+               <div className="text-[11px] font-bold text-gray-800 text-center leading-tight max-w-[70px] truncate">{c.name}</div>
              </Link>
            ))}
          </div>
@@ -169,9 +188,9 @@ export default async function HomePage() {
          {categories.length >= 4 && (
            <div className="flex gap-4 pt-8 pb-2 overflow-x-auto no-scrollbar snap-x snap-mandatory" id="featured-row">
              {categories.slice(0, 4).map((c: any) => (
-               <Link key={c.id} href={`/shop/${c.id}`} className="w-[240px] md:w-[320px] h-[140px] md:h-[180px]  overflow-hidden relative shrink-0 snap-start cursor-pointer group shadow-md shadow-gray-200/50 border border-brand-cream/50">
+               <Link key={c.id} href={`/shop/${c.id}`} className="w-[240px] md:w-[320px] h-[140px] md:h-[180px] rounded-2xl overflow-hidden relative shrink-0 snap-start cursor-pointer group shadow-md shadow-gray-200/50 border border-brand-cream/50">
                  <img src={getOptimizedImageUrl(c.banner, 400, 75)} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={`Featured category ${c.name}`} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-black/50 opacity-90 group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute inset-0 p-4 md:p-5 flex flex-col justify-end">
                   <div className="text-white/80 font-bold text-[9px] mb-1 uppercase tracking-widest">Featured</div>
                   <div className="text-white font-black font-outfit text-lg md:text-xl leading-tight">{c.name}</div>
@@ -220,7 +239,7 @@ export default async function HomePage() {
         
         {total > 24 && (
           <div id="load-more-wrap" className="p-6 text-center mt-4">
-            <Link href="/search" className="px-8 py-3 bg-brand-burgundy hover:bg-brand-burgundy/90 text-white text-[13px] font-bold rounded-sm transition-colors mx-auto active:scale-95 shadow-sm inline-flex">
+            <Link href="/search" className="px-8 py-3 bg-brand-burgundy hover:bg-brand-burgundy/90 text-white text-[13px] font-bold rounded-xl transition-colors mx-auto active:scale-95 shadow-sm inline-flex">
               View All Products
             </Link>
           </div>
