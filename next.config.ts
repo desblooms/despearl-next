@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.18.180'],
   compress: true,
   reactStrictMode: true,
-  swcMinify: true,
+  // swcMinify removed (unsupported in Next.js 16)
   experimental: {
     optimizePackageImports: ['lucide-react', 'embla-carousel-react'],
   },
