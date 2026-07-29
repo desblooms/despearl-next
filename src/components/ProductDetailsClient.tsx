@@ -21,20 +21,23 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
   const extendedData = product.extended_data || {};
   
   // State for dynamic interactions
-  const variants = Array.isArray(extendedData.variants) ? extendedData.variants : [];
-  const hasVariants = variants.length > 0;
+  const colors = Array.isArray(extendedData.colors) ? extendedData.colors : [];
+  const hasColors = colors.length > 0;
   const legacySizes = typeof extendedData.sizes === 'string' && extendedData.sizes.trim() !== '' 
       ? extendedData.sizes.split(',').map((s:string) => s.trim()).filter(Boolean) 
       : [];
       
-  const [selectedVariant, setSelectedVariant] = useState<any>(hasVariants ? variants[0] : null);
-  const [selectedSize, setSelectedSize] = useState(hasVariants ? (variants[0].size || '') : (legacySizes[0] || ''));
+  const [selectedColor, setSelectedColor] = useState<any>(hasColors ? colors[0] : null);
+  const [selectedSize, setSelectedSize] = useState(legacySizes[0] || '');
   const [pincode, setPincode] = useState('');
   const [openAccordion, setOpenAccordion] = useState<string | null>('details');
   const [deliveryStatus, setDeliveryStatus] = useState<{ message: string; error?: boolean } | null>(null);
 
   const inStock = Number(product.stock_quantity || 0) > 0;
-  const inCart = isInCart(product.id);
+  
+  const cartProductSize = selectedSize || undefined;
+  const cartProductColor = hasColors && selectedColor ? selectedColor.name : undefined;
+  const inCart = isInCart(product.id, cartProductSize, cartProductColor);
 
   const getImageUrl = (url: string | undefined) => {
     if (!url) return undefined;
@@ -85,7 +88,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
     const cartProduct = {
       ...product,
       size: selectedSize || undefined,
-      color: hasVariants && selectedVariant ? selectedVariant.color : undefined
+      color: hasColors && selectedColor ? selectedColor.name : undefined
     };
     addToCart(cartProduct, qty);
   };
@@ -239,39 +242,49 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
 
           <hr className="border-brand-cream/50 mb-5" />
 
-          {/* Sizes / Variants */}
-          {(hasVariants || legacySizes.length > 0) && (
+          {/* Colors */}
+          {hasColors && (
             <div className="mb-6">
               <div className="flex justify-between items-center mb-3">
                 <span className="text-[15px] font-bold text-gray-900">
-                  {hasVariants ? 'Select Variant' : 'Select Size'}
-                  {hasVariants && selectedVariant?.color && <span className="ml-2 text-sm text-gray-500 font-normal">| {selectedVariant.color}</span>}
+                  Select Color
+                  {selectedColor?.name && <span className="ml-2 text-sm text-gray-500 font-normal">| {selectedColor.name}</span>}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {colors.map((c: any, i: number) => (
+                  <button 
+                    key={i}
+                    onClick={() => setSelectedColor(c)}
+                    className={`w-9 h-9 rounded-full border-2 flex items-center justify-center transition-all ${selectedColor === c ? 'border-gray-900 shadow-md scale-110' : 'border-gray-200 hover:border-gray-400'}`}
+                    style={{ backgroundColor: c.hex || '#ffffff' }}
+                    title={c.name}
+                  >
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Sizes */}
+          {legacySizes.length > 0 && (
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[15px] font-bold text-gray-900">
+                  Select Size
                 </span>
                 <span className="text-xs font-bold text-pink-600 cursor-pointer hover:underline">Size Guide</span>
               </div>
               <div className="flex flex-wrap gap-3">
-                {hasVariants ? (
-                  variants.map((v: any, i: number) => (
-                    <button 
-                      key={i}
-                      onClick={() => { setSelectedVariant(v); setSelectedSize(v.size); }}
-                      className={`min-w-[42px] h-[42px] px-3 rounded-full border text-[13px] font-bold flex items-center justify-center transition-all ${selectedVariant === v ? 'border-gray-900 bg-gray-900 text-white shadow-md' : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white'}`}
-                      style={v.color_hex && v.color_hex !== '#000000' && v.color_hex !== '#ffffff' && selectedVariant !== v ? { borderColor: v.color_hex, color: v.color_hex } : {}}
-                    >
-                      {v.size || v.color || 'Variant'}
-                    </button>
-                  ))
-                ) : (
-                  legacySizes.map((size: string) => (
-                    <button 
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`min-w-[42px] h-[42px] px-3 rounded-full border text-[13px] font-bold flex items-center justify-center transition-all ${selectedSize === size ? 'border-gray-900 bg-gray-900 text-white shadow-md' : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white'}`}
-                    >
-                      {size}
-                    </button>
-                  ))
-                )}
+                {legacySizes.map((size: string) => (
+                  <button 
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`min-w-[42px] h-[42px] px-3 rounded-full border text-[13px] font-bold flex items-center justify-center transition-all ${selectedSize === size ? 'border-gray-900 bg-gray-900 text-white shadow-md' : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white'}`}
+                  >
+                    {size}
+                  </button>
+                ))}
               </div>
             </div>
           )}

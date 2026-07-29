@@ -51,7 +51,7 @@ type StoreContextType = {
   cartCount: number;
   toggleWishlist: (product: Product) => void;
   isWished: (id: number) => boolean;
-  isInCart: (id: number) => boolean;
+  isInCart: (id: number, size?: string, color?: string) => boolean;
   loginUser: (user: User) => void;
   logoutUser: () => void;
   toast: (msg: string, icon?: string) => void;
@@ -223,10 +223,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   };
 
   const updateQty = (cartItemId: string, delta: number) => {
-    const newCart = [...cart];
+    let newCart = [...cart];
     const item = newCart.find((i) => i.cartItemId === cartItemId || i.id.toString() === cartItemId.toString());
     if (!item) return;
-    item.qty = Math.max(1, item.qty + delta);
+    item.qty = item.qty + delta;
+    
+    if (item.qty <= 0) {
+      newCart = newCart.filter((i) => i.cartItemId !== cartItemId && i.id.toString() !== cartItemId.toString());
+    }
+    
     saveCart(newCart);
   };
 
@@ -254,7 +259,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return wishlist.some((i) => i.id === id);
   };
 
-  const isInCart = (id: number) => {
+  const isInCart = (id: number, size?: string, color?: string) => {
+    if (size !== undefined || color !== undefined) {
+      return cart.some((i) => i.id === id && i.size === size && i.color === color);
+    }
     return cart.some((i) => i.id === id);
   };
 

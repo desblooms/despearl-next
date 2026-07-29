@@ -241,21 +241,13 @@ export default function CartPage() {
                           </button>
                         </div>
 
-                        {/* Price & Delete Column */}
+                        {/* Price Column */}
                         <div className="flex items-center gap-3">
                           <div className="text-right">
                             <div className="text-[14px] md:text-[15px] font-black text-gray-900 font-mono">
                               ₹{(item.price * item.qty).toFixed(2)}
                             </div>
                           </div>
-                          
-                          <button 
-                            onClick={() => removeFromCart(item.cartItemId || item.id.toString())}
-                            className="text-gray-450 hover:text-red-700 transition-colors p-1.5 hover:bg-red-50 rounded-full"
-                            aria-label="Remove item"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
                         </div>
                       </div>
 
