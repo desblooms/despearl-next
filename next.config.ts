@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.18.180'],
   compress: true,
+  reactStrictMode: true,
+  swcMinify: true,
   experimental: {
     optimizePackageImports: ['lucide-react', 'embla-carousel-react'],
   },
