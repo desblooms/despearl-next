@@ -263,14 +263,14 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
           {/* Action Buttons */}
           <div className="flex gap-4 mb-8">
             <button 
-              className={`flex-1 md:flex-none md:w-[180px] h-12 rounded-sm flex items-center justify-center gap-2 border-[1.5px] font-bold text-sm transition-all ${wished ? 'border-brand-burgundy text-brand-burgundy bg-brand-cream' : 'border-brand-rose/30 text-gray-700 hover:border-brand-espresso'}`}
+              className={`flex-1 md:flex-none md:w-[180px] h-12 rounded-sm flex items-center justify-center gap-2 border-[1.5px] font-bold text-sm transition-all duration-300 cursor-pointer hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 ${wished ? 'border-brand-burgundy text-brand-burgundy bg-brand-cream' : 'border-brand-rose/30 text-gray-700 hover:border-brand-espresso'}`}
               onClick={handleWishlist}
             >
               <Heart className={`w-4 h-4 ${wished ? 'fill-brand-burgundy' : ''}`} />
               {wished ? 'Wishlisted' : 'Wishlist'}
             </button>
             <button 
-              className={`flex-[2] h-12 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-burgundy/90')}`}
+              className={`flex-[2] h-12 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`}
               onClick={handleCartClick} 
               disabled={!inStock}
             >
@@ -573,13 +573,13 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
       {/* Mobile Sticky Add to Bag */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-brand-rose/20 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex gap-3 z-40 md:hidden shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
         <button 
-          className={`w-12 h-12 rounded-sm flex items-center justify-center border transition-all ${wished ? 'border-brand-burgundy bg-brand-cream text-brand-burgundy' : 'border-brand-rose/30 bg-white text-gray-600'}`} 
+          className={`w-12 h-12 rounded-sm flex items-center justify-center border transition-all duration-300 cursor-pointer active:scale-95 ${wished ? 'border-brand-burgundy bg-brand-cream text-brand-burgundy' : 'border-brand-rose/30 bg-white text-gray-600'}`} 
           onClick={handleWishlist}
         >
           <Heart className={`w-5 h-5 ${wished ? 'fill-brand-burgundy' : ''}`} />
         </button>
         <button 
-          className={`flex-1 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900' : 'bg-brand-burgundy')}`} 
+          className={`flex-1 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.98] ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`} 
           onClick={handleCartClick} 
           disabled={!inStock}
         >

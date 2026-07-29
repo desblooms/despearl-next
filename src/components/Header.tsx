@@ -12,7 +12,6 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
   const router = useRouter();
   const { 
     cartCount, 
-    cartTotal,
     wishlist, 
     user, 
     selectedPlace, 
@@ -79,9 +78,9 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
 
             <span className="hidden md:inline-block text-white/30">|</span>
 
-            {/* Currency / Language indicator */}
+            {/* Free Delivery indicator */}
             <div className="hidden md:flex items-center gap-1 text-white/80 text-[11px] font-semibold">
-              <span>USD ($)</span>
+              <span>Free Delivery</span>
             </div>
           </div>
 
@@ -158,13 +157,13 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             {/* Search Box Trigger (Desktop & Tablet) */}
             <Link 
               href="/search" 
-              className="hidden lg:flex items-center justify-between gap-3 bg-gray-50 hover:bg-brand-cream/40 border border-gray-200 hover:border-brand-rose/40 rounded-full px-3.5 py-1.5 cursor-pointer text-gray-500 text-xs font-medium transition w-[210px] shadow-xs group"
+              className="hidden lg:flex items-center justify-between gap-3 bg-gray-50/70 hover:bg-white border border-gray-200 hover:border-brand-burgundy/30 rounded-full px-4 py-2 cursor-pointer text-gray-500 text-[13px] font-medium transition-all duration-300 w-[260px] xl:w-[300px] shadow-2xs hover:shadow-xs group"
             >
-              <div className="flex items-center gap-2">
-                <Search className="w-3.5 h-3.5 text-gray-400 group-hover:text-brand-burgundy transition-colors" />
-                <span className="truncate">Search products...</span>
+              <div className="flex items-center gap-2.5">
+                <Search className="w-4 h-4 text-gray-400 group-hover:text-brand-burgundy transition-colors duration-300" />
+                <span className="truncate text-gray-400 group-hover:text-gray-600 transition-colors font-outfit">Search the collection...</span>
               </div>
-              <kbd className="hidden sm:inline-block bg-white text-[10px] font-mono text-gray-400 px-1.5 py-0.5 rounded border border-gray-200 shadow-2xs">
+              <kbd className="hidden sm:inline-block bg-white text-[10px] font-mono text-gray-400 px-1.5 py-0.5 rounded border border-gray-200/80 shadow-3xs group-hover:border-brand-burgundy/20 transition-colors">
                 ⌘K
               </kbd>
             </Link>
@@ -181,12 +180,12 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             {/* Wishlist Quick Action */}
             <Link 
               href="/profile" 
-              className="w-9 h-9 flex items-center justify-center rounded-full text-gray-700 hover:bg-brand-cream/50 transition relative group cursor-pointer"
+              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-full text-gray-700 hover:bg-brand-cream/50 transition relative group cursor-pointer"
               title="Wishlist"
             >
               <Heart className="w-4.5 h-4.5 group-hover:text-brand-burgundy transition-colors" />
               {wishlist.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-brand-rose text-gray-900 rounded-full text-[9px] font-bold flex items-center justify-center border border-white shadow-xs">
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-brand-burgundy text-white rounded-full text-[9px] font-bold flex items-center justify-center border border-white shadow-xs">
                   {wishlist.length}
                 </span>
               )}
@@ -195,20 +194,15 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             {/* Shopping Bag / Cart */}
             <Link 
               href="/cart" 
-              className="flex items-center gap-2 bg-brand-burgundy text-white hover:bg-brand-wine px-3 py-1.5 rounded-full transition shadow-sm group cursor-pointer relative"
-              title="Shopping Cart"
+              className="w-9 h-9 flex items-center justify-center rounded-full text-gray-700 hover:bg-brand-cream/50 transition relative group cursor-pointer"
+              title="Shopping Bag"
             >
-              <div className="relative flex items-center justify-center">
-                <ShoppingBag className="w-4 h-4 text-white group-hover:scale-105 transition" />
-                {cartCount > 0 && (
-                  <span id="cart-badge" className="absolute -top-2 -right-2.5 w-4.5 h-4.5 bg-brand-rose text-gray-900 rounded-full text-[9px] font-black flex items-center justify-center border border-white shadow-xs">
-                    {cartCount > 99 ? '99+' : cartCount}
-                  </span>
-                )}
-              </div>
-              <span className="hidden sm:inline-block text-xs font-bold font-mono tracking-tight ml-0.5">
-                ${cartTotal > 0 ? cartTotal.toFixed(2) : '0.00'}
-              </span>
+              <ShoppingBag className="w-4.5 h-4.5 group-hover:text-brand-burgundy transition-colors duration-300" />
+              {cartCount > 0 && (
+                <span id="cart-badge" className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 bg-brand-burgundy text-white rounded-full text-[9px] font-black flex items-center justify-center border border-white shadow-xs animate-in zoom-in duration-200">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
             </Link>
 
             {/* User Account Sheet Trigger */}
@@ -220,17 +214,11 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
                   setAuthOpen(true);
                 }
               }}
-              className="w-9 h-9 rounded-full bg-gray-100 hover:bg-brand-cream/60 border border-gray-200 flex items-center justify-center text-gray-800 transition cursor-pointer shrink-0 ml-0.5"
+              className="hidden sm:flex w-9 h-9 rounded-full bg-gray-100 hover:bg-brand-cream/60 border border-gray-200 items-center justify-center text-gray-800 transition cursor-pointer shrink-0 ml-0.5"
               title={user ? `Signed in as ${user.name}` : "Sign In / Register"}
               aria-label={user ? `Signed in as ${user.name}` : "Sign in or register"}
             >
-              {user ? (
-                <span className="text-xs font-black text-brand-burgundy uppercase font-outfit">
-                  {user.name.charAt(0)}
-                </span>
-              ) : (
-                <User className="w-4 h-4 text-gray-600" />
-              )}
+              <User className="w-4.5 h-4.5 text-gray-600" />
             </button>
 
           </div>

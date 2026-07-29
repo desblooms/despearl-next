@@ -96,9 +96,9 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
             <div className="text-[15px] font-black text-gray-950 tracking-tight font-mono">₹{Number(product.price || 0).toFixed(2)}</div>
             {!horizontal && (
               <button 
-                className={`w-8 h-8 rounded-md flex items-center justify-center transition-all active:scale-90 shadow-xs disabled:opacity-30 disabled:cursor-not-allowed ${
+                className={`w-8 h-8 rounded-md flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-105 active:scale-90 shadow-xs disabled:opacity-30 disabled:cursor-not-allowed ${
                   inCart 
-                    ? 'bg-brand-burgundy border border-brand-burgundy text-white hover:bg-brand-burgundy/90' 
+                    ? 'bg-brand-burgundy border border-brand-burgundy text-white hover:bg-brand-wine hover:shadow-sm' 
                     : 'bg-white border border-brand-rose/30 hover:border-brand-burgundy text-gray-900 hover:text-brand-burgundy hover:bg-brand-burgundy/5 group-hover:border-brand-burgundy group-hover:text-brand-burgundy'
                 }`} 
                 onClick={handleQuickAdd}
