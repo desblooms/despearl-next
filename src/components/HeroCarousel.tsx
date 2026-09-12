@@ -7,6 +7,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { getOptimizedImageUrl } from '@/utils/image';
+import SmoothImage from '@/components/SmoothImage';
 
 export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 5000, stopOnInteraction: false }), []);
@@ -47,15 +48,11 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
               className="embla__slide relative aspect-[4/3] md:aspect-[1920/900] flex-[0_0_100%] min-w-0 skel"
               style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
             >
-              <img
+              <SmoothImage
                 src={getOptimizedImageUrl(banner.image, 1920, 100)}
                 srcSet={`${getOptimizedImageUrl(banner.image, 640, 100)} 640w, ${getOptimizedImageUrl(banner.image, 1024, 100)} 1024w, ${getOptimizedImageUrl(banner.image, 1920, 100)} 1920w`}
                 alt={banner.title || 'Featured collection preview'}
-                className="absolute inset-0 w-full h-full object-cover object-bottom transition-opacity duration-700 opacity-0 text-transparent"
-                onLoad={(e) => {
-                  e.currentTarget.classList.remove('opacity-0');
-                  e.currentTarget.parentElement?.classList.remove('skel');
-                }}
+                className="absolute inset-0 w-full h-full object-cover object-bottom"
                 fetchPriority={index === 0 ? 'high' : 'auto'}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"
