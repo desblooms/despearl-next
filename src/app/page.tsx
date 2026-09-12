@@ -169,7 +169,7 @@ export default async function HomePage() {
               const imageUrl = o.banner || o.banner_image || o.image_url || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=800';
 
               return (
-                <div key={o.id} className="w-full relative aspect-[3/4] rounded-2xl bg-brand-cream shadow-lg shadow-gray-900/10 cursor-pointer overflow-hidden group skel">
+                <div key={o.id} className="w-full relative aspect-[3/4] rounded-2xl bg-brand-cream border border-gray-200/70 cursor-pointer overflow-hidden group skel">
                   <SmoothImage
                     src={getOptimizedImageUrl(imageUrl)}
                     alt={o.title || 'Special Offer'}
