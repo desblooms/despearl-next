@@ -38,7 +38,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
   }
 
   return (
-    <div className="w-full relative aspect-video bg-brand-espresso overflow-hidden group">
+    <div className="w-full relative aspect-[4/3] md:aspect-[1920/900] bg-brand-espresso overflow-hidden group">
       <div className="embla w-full h-full" ref={emblaRef}>
         <div className="embla__container flex w-full h-full">
           {banners.map((banner, index) => (
@@ -47,18 +47,18 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
               className="embla__slide flex-[0_0_100%] min-w-0 relative w-full h-full"
               style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
             >
-              <img 
-                src={getOptimizedImageUrl(banner.image, 1920, 100)} 
+              <img
+                src={getOptimizedImageUrl(banner.image, 1920, 100)}
                 srcSet={`${getOptimizedImageUrl(banner.image, 640, 100)} 640w, ${getOptimizedImageUrl(banner.image, 1024, 100)} 1024w, ${getOptimizedImageUrl(banner.image, 1920, 100)} 1920w`}
-                alt={banner.title || 'Featured collection preview'} 
-                className="absolute inset-0 w-full h-full object-cover" 
-                fetchPriority={index === 0 ? 'high' : 'auto'} 
-                loading={index === 0 ? 'eager' : 'lazy'} 
-                decoding="async" 
-                sizes="100vw" 
+                alt={banner.title || 'Featured collection preview'}
+                className="absolute inset-0 w-full h-full object-cover object-bottom"
+                fetchPriority={index === 0 ? 'high' : 'auto'}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                sizes="100vw"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-50%"></div>
-              
+
               <div className="absolute inset-0 flex items-center">
                 <div className="max-w-[1440px] w-full mx-auto px-4 md:px-6">
                   <div className="max-w-xl text-left relative z-10">
@@ -85,15 +85,15 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
       {/* Controls */}
       {banners.length > 1 && (
         <>
-          <button 
-            onClick={scrollPrev} 
+          <button
+            onClick={scrollPrev}
             aria-label="Previous slide"
             className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center bg-black/20 hover:bg-black/50 text-white rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
-          <button 
-            onClick={scrollNext} 
+          <button
+            onClick={scrollNext}
             aria-label="Next slide"
             className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center bg-black/20 hover:bg-black/50 text-white rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
           >
@@ -107,9 +107,8 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
                 key={i}
                 onClick={() => emblaApi && emblaApi.scrollTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
-                className={`transition-all rounded-full ${
-                  i === currentIndex ? 'w-8 h-1.5 bg-white' : 'w-2 h-1.5 bg-white/50 hover:bg-white/80'
-                }`}
+                className={`transition-all rounded-full ${i === currentIndex ? 'w-8 h-1.5 bg-white' : 'w-2 h-1.5 bg-white/50 hover:bg-white/80'
+                  }`}
               />
             ))}
           </div>
