@@ -44,7 +44,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
           {banners.map((banner, index) => (
             <div
               key={banner.id || index}
-              className="embla__slide flex-[0_0_100%] min-w-0 relative w-full h-full"
+              className="embla__slide relative aspect-[4/3] md:aspect-[1920/900] flex-[0_0_100%] min-w-0 skel"
               style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
             >
               <img
