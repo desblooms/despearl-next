@@ -435,7 +435,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               <div className="pb-5 text-sm text-gray-600">
                 <strong className="block text-gray-900 mb-2 font-bold">Description</strong>
                 {product.description ? (
-                  <div className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{ __html: product.description }}></div>
+                  <div className="mb-4 leading-relaxed product-desc" dangerouslySetInnerHTML={{ __html: product.description }}></div>
                 ) : (
                   <p className="text-gray-400 italic">No description available.</p>
                 )}
