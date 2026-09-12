@@ -138,9 +138,9 @@ export default async function HomePage() {
             </div>
             <div className="flex gap-4 md:gap-8 pt-6 pb-2 overflow-x-auto no-scrollbar snap-x snap-mandatory" id="home-cats">
               {categories.slice(0, 10).map((c: any) => (
-                <Link key={c.id} href={`/shop/${c.id}`} className="flex flex-col items-center gap-2.5 shrink-0 snap-start cursor-pointer group">
-                  <div className="p-[1px] bg-gradient-to-br from-[#E8D48B] via-[#F7EDBC] to-[#C9A84C] rounded-[20px] transition-all duration-500 group-hover:scale-105 group-active:scale-95">
-                    <div className="w-[60px] h-[60px] md:w-40 md:h-40 rounded-[20px] overflow-hidden flex items-center justify-center relative">
+                <Link key={c.id} href={`/shop/${c.id}`} className="w-[23vw] md:w-auto flex flex-col items-center gap-2.5 shrink-0 snap-start cursor-pointer group">
+                  <div className="w-full p-[1px] bg-gradient-to-br from-[#E8D48B] via-[#F7EDBC] to-[#C9A84C] rounded-[20px] transition-all duration-500 group-hover:scale-105 group-active:scale-95">
+                    <div className="w-full aspect-square md:w-40 md:h-40 rounded-[20px] overflow-hidden flex items-center justify-center relative">
                       <img src={getOptimizedImageUrl(c.thumb, 200, 75)} loading="lazy" decoding="async" className="w-full h-full object-cover" alt={c.name} />
                       <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
