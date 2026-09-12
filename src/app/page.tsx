@@ -23,7 +23,7 @@ async function fetchCategories() {
 async function fetchOffers() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/offers.php`, {
-      next: { revalidate: 1800 },
+      cache: 'no-store',
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
