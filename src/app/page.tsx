@@ -5,6 +5,7 @@ import ProductCard from '@/components/ProductCard';
 import { Product } from '@/context/StoreContext';
 import HeroCarousel from '@/components/HeroCarousel';
 import { getOptimizedImageUrl } from '@/utils/image';
+import SmoothImage from '@/components/SmoothImage';
 
 export const dynamic = 'force-dynamic';
 async function fetchCategories() {
@@ -141,16 +142,12 @@ export default async function HomePage() {
                 <Link key={c.id} href={`/shop/${c.id}`} className="w-[23vw] md:w-auto flex flex-col items-center gap-2.5 shrink-0 snap-start cursor-pointer group">
                   <div className="w-full p-[1px] bg-gradient-to-br from-[#E8D48B] via-[#F7EDBC] to-[#C9A84C] rounded-[20px] transition-all duration-500 group-hover:scale-105 group-active:scale-95">
                     <div className="w-full aspect-square md:w-40 md:h-40 rounded-[20px] overflow-hidden flex items-center justify-center relative skel">
-                      <img 
+                      <SmoothImage 
                         src={getOptimizedImageUrl(c.thumb, 200, 75)} 
                         loading="lazy" 
                         decoding="async" 
-                        className="w-full h-full object-cover transition-opacity duration-500 opacity-0 text-transparent" 
+                        className="w-full h-full object-cover" 
                         alt={c.name}
-                        onLoad={(e) => {
-                          e.currentTarget.classList.remove('opacity-0');
-                          e.currentTarget.parentElement?.classList.remove('skel');
-                        }}
                       />
                       <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
@@ -173,14 +170,10 @@ export default async function HomePage() {
 
               return (
                 <div key={o.id} className="w-full relative aspect-[3/4] rounded-2xl bg-brand-cream shadow-lg shadow-gray-900/10 cursor-pointer overflow-hidden group skel">
-                  <img
+                  <SmoothImage
                     src={getOptimizedImageUrl(imageUrl)}
                     alt={o.title || 'Special Offer'}
-                    className="absolute inset-0 w-full h-full object-cover object-right group-hover:scale-105 transition-all duration-700 opacity-0 text-transparent"
-                    onLoad={(e) => {
-                      e.currentTarget.classList.remove('opacity-0');
-                      e.currentTarget.parentElement?.classList.remove('skel');
-                    }}
+                    className="absolute inset-0 w-full h-full object-cover object-right group-hover:scale-105"
                   />
 
                   {hasText && (
@@ -232,16 +225,12 @@ export default async function HomePage() {
           <div className="flex gap-4 pt-8 pb-2 overflow-x-auto no-scrollbar snap-x snap-mandatory" id="featured-row">
             {categories.slice(0, 4).map((c: any) => (
               <Link key={c.id} href={`/shop/${c.id}`} className="w-[240px] md:w-[320px] h-[140px] md:h-[180px] rounded-2xl overflow-hidden relative shrink-0 snap-start cursor-pointer group shadow-md shadow-gray-200/50 border border-brand-cream/50 skel">
-                <img 
+                <SmoothImage 
                   src={getOptimizedImageUrl(c.banner, 400, 75)} 
                   loading="lazy" 
                   decoding="async" 
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 opacity-0 text-transparent" 
+                  className="w-full h-full object-cover group-hover:scale-105" 
                   alt={`Featured category ${c.name}`}
-                  onLoad={(e) => {
-                    e.currentTarget.classList.remove('opacity-0');
-                    e.currentTarget.parentElement?.classList.remove('skel');
-                  }}
                 />
                 <div className="absolute inset-0 bg-black/50 opacity-90 group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute inset-0 p-4 md:p-5 flex flex-col justify-end">
