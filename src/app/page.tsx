@@ -109,9 +109,9 @@ export default async function HomePage() {
         <link 
           rel="preload" 
           as="image" 
-          href={getOptimizedImageUrl(firstHeroBannerImage, 1024, 85)} 
-          imageSrcSet={`${getOptimizedImageUrl(firstHeroBannerImage, 640, 80)} 640w, ${getOptimizedImageUrl(firstHeroBannerImage, 1024, 80)} 1024w, ${getOptimizedImageUrl(firstHeroBannerImage, 1440, 85)} 1440w`}
-          imageSizes="(max-width: 768px) 100vw, 1440px"
+          href={getOptimizedImageUrl(firstHeroBannerImage, 1920, 100)} 
+          imageSrcSet={`${getOptimizedImageUrl(firstHeroBannerImage, 640, 100)} 640w, ${getOptimizedImageUrl(firstHeroBannerImage, 1024, 100)} 1024w, ${getOptimizedImageUrl(firstHeroBannerImage, 1920, 100)} 1920w`}
+          imageSizes="100vw"
           fetchPriority="high" 
         />
       )}
