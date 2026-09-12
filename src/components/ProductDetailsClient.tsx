@@ -48,9 +48,10 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
     return `https://app.votee.in/uploads/products/${url}`;
   };
 
-  const images = [getImageUrl(product.image), ...(product.gallery || []).map((g: any) => getImageUrl(g.media_path))].filter(Boolean);
   const fallbackImg = `data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8f9fa%22/%3E%3Ctext x=%22200%22 y=%22200%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2248%22%3E📦%3C/text%3E%3C/svg%3E`;
-  const [mainImg, setMainImg] = useState(images[0] || fallbackImg);
+  const rawImages = [getImageUrl(product.image), ...(product.gallery || []).map((g: any) => getImageUrl(g.media_path))].filter(Boolean);
+  const images = rawImages.length > 0 ? rawImages : [fallbackImg];
+  const [mainImg, setMainImg] = useState(images[0]);
   const [imgLoaded, setImgLoaded] = useState<Record<string, boolean>>({});
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
@@ -144,23 +145,9 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
 
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 flex flex-col md:flex-row items-start gap-6 lg:gap-8">
         <div className={`md:w-1/2 flex flex-col md:grid gap-4 md:sticky md:top-[0px] md:self-start ${images.length > 1 ? 'md:grid-cols-[80px_1fr]' : 'md:grid-cols-1'}`}>
-          {/* Desktop Vertical Thumbnails */}
-          {images.length > 1 && (
-            <div className="hidden md:flex flex-col gap-3 overflow-y-auto no-scrollbar w-full min-h-0 pb-4 h-full">
-              {images.map((img: string, i: number) => (
-                <div
-                  key={i}
-                  className={`w-full aspect-square overflow-hidden cursor-pointer border-[2px] transition-all shrink-0 ${mainImg === img ? 'border-brand-espresso shadow-sm opacity-100' : 'border-transparent hover:border-brand-rose/30 opacity-60 hover:opacity-100 bg-[#f8f9fa]'}`}
-                  onClick={() => setMainImg(img)}
-                >
-                  <img src={img} className="w-full h-full object-cover" alt="" />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Desktop Main Image */}
-          <div className="hidden md:block w-full bg-[#f8f9fa] overflow-hidden relative shadow-sm aspect-square">
+          
+          {/* Main Image (Visible everywhere) */}
+          <div className="w-full bg-[#f8f9fa] overflow-hidden relative shadow-sm aspect-square order-1 md:order-2">
             <img
               src={mainImg}
               alt={product.name}
@@ -171,38 +158,20 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
             />
           </div>
 
-          {/* Mobile Embla Carousel */}
-          <div className="md:hidden w-full aspect-square relative bg-[#f8f9fa]">
-            <div className="embla absolute inset-0 overflow-hidden" ref={emblaRef}>
-              <div className="embla__container flex h-full">
-                {images.map((img: string, index: number) => (
-                  <div key={index} className="embla__slide flex-[0_0_100%] min-w-0 relative h-full">
-                    <img
-                      src={img}
-                      alt={`${product.name} ${index}`}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = fallbackImg;
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
+          {/* Thumbnails (Horizontal row on mobile, Vertical column on desktop) */}
+          {images.length > 1 && (
+            <div className="flex flex-row md:flex-col gap-3 overflow-x-auto md:overflow-x-visible md:overflow-y-auto no-scrollbar w-full pb-2 md:pb-4 md:h-full order-2 md:order-1 snap-x snap-mandatory">
+              {images.map((img: string, i: number) => (
+                <div
+                  key={i}
+                  className={`w-[70px] md:w-full aspect-square overflow-hidden cursor-pointer border-[2px] transition-all shrink-0 snap-start ${mainImg === img ? 'border-brand-espresso shadow-sm opacity-100' : 'border-transparent hover:border-brand-rose/30 opacity-60 hover:opacity-100 bg-[#f8f9fa]'}`}
+                  onClick={() => setMainImg(img)}
+                >
+                  <img src={img} className="w-full h-full object-cover" alt="" />
+                </div>
+              ))}
             </div>
-            {/* Dots */}
-            {images.length > 1 && (
-              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
-                {images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => emblaApi && emblaApi.scrollTo(i)}
-                    className={`w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-brand-espresso w-4' : 'bg-white/80 hover:bg-white border border-gray-300/50 shadow-sm'
-                      }`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
         {/* Right: Product Info */}
