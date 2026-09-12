@@ -72,7 +72,7 @@ async function fetchSettings() {
 async function fetchHeroBanners() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/hero_banners.php`, { 
-      next: { revalidate: 1800 },
+      next: { revalidate: 0 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
