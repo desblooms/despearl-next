@@ -51,7 +51,11 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
                 src={getOptimizedImageUrl(banner.image, 1920, 100)}
                 srcSet={`${getOptimizedImageUrl(banner.image, 640, 100)} 640w, ${getOptimizedImageUrl(banner.image, 1024, 100)} 1024w, ${getOptimizedImageUrl(banner.image, 1920, 100)} 1920w`}
                 alt={banner.title || 'Featured collection preview'}
-                className="absolute inset-0 w-full h-full object-cover object-bottom"
+                className="absolute inset-0 w-full h-full object-cover object-bottom transition-opacity duration-700 opacity-0 text-transparent"
+                onLoad={(e) => {
+                  e.currentTarget.classList.remove('opacity-0');
+                  e.currentTarget.parentElement?.classList.remove('skel');
+                }}
                 fetchPriority={index === 0 ? 'high' : 'auto'}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"

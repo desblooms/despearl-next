@@ -64,7 +64,11 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
             loading="lazy" 
             decoding="async"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            className="w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-all duration-700 opacity-0 text-transparent"
+            onLoad={(e) => {
+              e.currentTarget.classList.remove('opacity-0');
+              e.currentTarget.parentElement?.classList.remove('skel');
+            }}
             onError={(e) => {
               (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23f8f9fa%22/%3E%3Ctext x=%22100%22 y=%22100%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2236%22%3E📦%3C/text%3E%3C/svg%3E`;
             }}
