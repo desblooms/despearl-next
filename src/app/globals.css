@@ -81,6 +81,10 @@ h6 {
   -webkit-font-smoothing: subpixel-antialiased;
 }
 
+h1 {
+  line-height: 1;
+}
+
 p {
   text-wrap: pretty;
 }

@@ -62,10 +62,10 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
               <div className="absolute inset-0 flex items-center">
                 <div className="max-w-[1440px] w-full mx-auto px-4 md:px-6">
                   <div className="max-w-xl text-left relative z-10">
-                    <div className="inline-flex items-center gap-2 bg-white text-gray-900 rounded-md px-2 py-1 md:px-3 text-[11px] md:text-[10px] font-normal mb-3 md:mb-4 tracking-widest uppercase shadow-sm">
+                    <div className="inline-flex items-center gap-1.5 bg-[#A67C2E] text-white rounded px-2 py-0.5 text-[9px] md:text-[9px] font-normal mb-3 md:mb-4 tracking-[0.2em] uppercase shadow-sm">
                       New Collection
                     </div>
-                    <h1 className="text-xl md:text-5xl lg:text-7xl font-light leading-tight mb-2 md:mb-4 tracking-normal md:tracking-tighter text-white whitespace-pre-line">
+                    <h1 className="text-xl md:text-5xl lg:text-7xl font-light leading-none mb-1 md:mb-2 tracking-normal md:tracking-[-0.04em] text-white whitespace-pre-line">
                       {banner.title || 'Elevate Your\nLiving Space'}
                     </h1>
                     <p className="text-xs md:text-lg text-white/90 mb-4 md:mb-8 font-normal leading-relaxed drop-shadow-sm">

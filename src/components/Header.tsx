@@ -106,7 +106,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             
              <Link href="/" className="font-black text-xl md:text-2xl tracking-tighter cursor-pointer text-gray-900 flex items-center font-outfit group">
               {logoUrl ? (
-                <img src={getOptimizedImageUrl(logoUrl, 160, 85)} alt="Store Logo" className="h-8 md:h-10 object-contain group-hover:opacity-90 transition" />
+                <img src={getOptimizedImageUrl(logoUrl, 160, 85)} alt="Store Logo" className="h-8 md:h-13 object-contain group-hover:opacity-90 transition" />
               ) : (
                 <>
                   <span className="text-gray-900 group-hover:text-brand-burgundy transition-colors">Despearl</span>
