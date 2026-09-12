@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 async function fetchCategories() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/categories.php`, {
-      next: { revalidate: 3600 },
+      cache: 'no-store',
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -36,7 +36,7 @@ async function fetchOffers() {
 async function fetchProducts(limit = 24, offset = 0) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/products.php?limit=${limit}&offset=${offset}`, {
-      next: { revalidate: 300 },
+      cache: 'no-store',
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -60,7 +60,7 @@ async function fetchProducts(limit = 24, offset = 0) {
 async function fetchSettings() {
   try {
     const res = await fetch(`https://admin.despearl.com/api/settings`, {
-      next: { revalidate: 3600 },
+      cache: 'no-store',
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -73,7 +73,7 @@ async function fetchSettings() {
 async function fetchHeroBanners() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/hero_banners.php`, {
-      next: { revalidate: 0 },
+      cache: 'no-store',
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
