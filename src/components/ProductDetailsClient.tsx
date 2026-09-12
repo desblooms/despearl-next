@@ -161,20 +161,12 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
 
           {/* Desktop Main Image */}
           <div className="hidden md:block w-full bg-[#f8f9fa] overflow-hidden relative shadow-sm aspect-square">
-            {!imgLoaded[mainImg] && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-500 rounded-full animate-spin"></div>
-              </div>
-            )}
             <img
               src={mainImg}
               alt={product.name}
-              className={`w-full h-full object-cover transition-opacity duration-500 ${imgLoaded[mainImg] ? 'opacity-100' : 'opacity-0'}`}
-              ref={(img) => { if (img?.complete && !imgLoaded[mainImg]) setImgLoaded(prev => ({ ...prev, [mainImg]: true })) }}
-              onLoad={() => setImgLoaded(prev => ({ ...prev, [mainImg]: true }))}
+              className="w-full h-full object-cover"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = fallbackImg;
-                setImgLoaded(prev => ({ ...prev, [mainImg]: true }));
               }}
             />
           </div>
@@ -185,20 +177,12 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               <div className="embla__container flex h-full">
                 {images.map((img: string, index: number) => (
                   <div key={index} className="embla__slide flex-[0_0_100%] min-w-0 relative h-full">
-                    {!imgLoaded[`mobile_${index}`] && (
-                      <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                        <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-500 rounded-full animate-spin"></div>
-                      </div>
-                    )}
                     <img
                       src={img}
                       alt={`${product.name} ${index}`}
-                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${imgLoaded[`mobile_${index}`] ? 'opacity-100' : 'opacity-0'}`}
-                      ref={(imgEl) => { if (imgEl?.complete && !imgLoaded[`mobile_${index}`]) setImgLoaded(prev => ({ ...prev, [`mobile_${index}`]: true })) }}
-                      onLoad={() => setImgLoaded(prev => ({ ...prev, [`mobile_${index}`]: true }))}
+                      className="absolute inset-0 w-full h-full object-cover"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = fallbackImg;
-                        setImgLoaded(prev => ({ ...prev, [`mobile_${index}`]: true }));
                       }}
                     />
                   </div>
