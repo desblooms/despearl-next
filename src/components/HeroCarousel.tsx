@@ -39,13 +39,13 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
   }
 
   return (
-    <div className="w-full relative aspect-[4/3] md:aspect-[1920/900] bg-brand-espresso overflow-hidden group">
+    <div className="w-full relative aspect-[16/9] md:aspect-[1920/900] bg-brand-espresso overflow-hidden group">
       <div className="embla w-full h-full" ref={emblaRef}>
         <div className="embla__container flex w-full h-full">
           {banners.map((banner, index) => (
             <div
               key={banner.id || index}
-              className="embla__slide relative aspect-[4/3] md:aspect-[1920/900] flex-[0_0_100%] min-w-0 skel"
+              className="embla__slide relative aspect-[16/9] md:aspect-[1920/900] flex-[0_0_100%] min-w-0 skel"
               style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
             >
               <SmoothImage
@@ -58,22 +58,22 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
                 decoding="async"
                 sizes="100vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-50%"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent md:from-black/60 md:via-black/30 md:to-transparent md:to-60%"></div>
 
               <div className="absolute inset-0 flex items-center">
                 <div className="max-w-[1440px] w-full mx-auto px-4 md:px-6">
-                  <div className="max-w-xl text-left relative z-10">
-                    <div className="inline-flex items-center gap-1.5 bg-[#A67C2E] text-white rounded px-2 py-0.5 text-[9px] md:text-[9px] font-normal mb-3 md:mb-4 tracking-[0.2em] uppercase shadow-sm">
+                  <div className="w-[55%] sm:w-[50%] md:w-full md:max-w-xl text-left relative z-10 flex flex-col items-start">
+                    <div className="inline-flex items-center gap-1.5 bg-[#A67C2E] text-white rounded px-2 py-0.5 text-[8px] md:text-[9px] font-medium mb-1.5 md:mb-4 tracking-[0.2em] uppercase shadow-sm">
                       New Collection
                     </div>
-                    <h1 className="text-xl md:text-5xl lg:text-7xl font-light leading-none mb-1 md:mb-2 tracking-normal md:tracking-[-0.04em] text-white whitespace-pre-line">
+                    <h1 className="text-2xl sm:text-3xl font-bold md:font-light md:text-5xl lg:text-7xl leading-tight md:leading-none mb-1 md:mb-2 tracking-wide md:tracking-[-0.04em] text-white whitespace-pre-line drop-shadow-md">
                       {banner.title || 'Elevate Your\nLiving Space'}
                     </h1>
-                    <p className="text-xs md:text-lg text-white/90 mb-4 md:mb-8 font-normal leading-relaxed drop-shadow-sm">
+                    <p className="hidden md:block text-lg text-white/90 mb-8 font-normal leading-relaxed drop-shadow-sm">
                       {banner.subtitle || 'Discover premium furniture pieces designed to bring comfort, elegance, and modern aesthetics to your home.'}
                     </p>
-                    <Link href={banner.link || '/categories'} className="bg-white hover:bg-brand-cream/50 text-gray-900 px-5 py-2 md:px-8 md:py-4 rounded-xl text-xs md:text-sm font-normal w-max flex items-center gap-2 transition active:scale-95 shadow-lg inline-flex group/btn">
-                      {banner.button_text || 'Shop Collection'} <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover/btn:translate-x-1 transition-transform" />
+                    <Link href={banner.link || '/categories'} className="mt-[20px] bg-brand-burgundy text-white hover:bg-brand-burgundy/90 px-3 py-1.5 md:px-8 md:py-4 rounded-full md:rounded-xl text-[9px] md:text-sm font-extrabold md:font-medium uppercase md:capitalize tracking-wider md:tracking-normal w-max flex items-center gap-1.5 md:gap-2 transition active:scale-95 shadow-[0_4px_12px_rgba(110,25,36,0.35)] group/btn">
+                      {banner.button_text || 'Shop Collection'} <ArrowRight className="w-2.5 h-2.5 md:w-4 md:h-4 group-hover/btn:translate-x-1 transition-transform" />
                     </Link>
                   </div>
                 </div>
@@ -102,13 +102,13 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
           </button>
 
           {/* Indicators */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+          <div className="absolute bottom-2 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
             {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => emblaApi && emblaApi.scrollTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
-                className={`transition-all rounded-full ${i === currentIndex ? 'w-8 h-1.5 bg-white' : 'w-2 h-1.5 bg-white/50 hover:bg-white/80'
+                className={`transition-all rounded-full ${i === currentIndex ? 'w-2 h-2 bg-[#A67C2E] shadow-sm scale-110' : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/70'
                   }`}
               />
             ))}

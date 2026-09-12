@@ -31,7 +31,7 @@ export default function Footer() {
     <div className="fixed bottom-5 left-0 right-0 z-50 flex justify-center px-4 md:hidden pointer-events-none">
       <nav 
         id="app-nav" 
-        className="pointer-events-auto w-full max-w-[420px] bg-white border border-gray-150 rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,0.12)] p-2.5 flex items-center select-none transition-all duration-300"
+        className="pointer-events-auto w-full max-w-[420px] bg-white rounded-[24px] shadow-[0_16px_40px_rgba(0,0,0,0.12)] p-2.5 flex items-center select-none transition-all duration-300"
       >
         {/* Bottom Tab Options Row */}
         <div className="flex items-center justify-between w-full">
