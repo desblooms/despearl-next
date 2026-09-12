@@ -46,14 +46,14 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
               className="embla__slide flex-[0_0_100%] min-w-0 relative w-full h-full"
             >
               <img 
-                src={getOptimizedImageUrl(banner.image, 1024, 85)} 
-                srcSet={`${getOptimizedImageUrl(banner.image, 640, 80)} 640w, ${getOptimizedImageUrl(banner.image, 1024, 80)} 1024w, ${getOptimizedImageUrl(banner.image, 1440, 85)} 1440w`}
+                src={getOptimizedImageUrl(banner.image, 1920, 100)} 
+                srcSet={`${getOptimizedImageUrl(banner.image, 640, 100)} 640w, ${getOptimizedImageUrl(banner.image, 1024, 100)} 1024w, ${getOptimizedImageUrl(banner.image, 1920, 100)} 1920w`}
                 alt={banner.title || 'Featured collection preview'} 
                 className="absolute inset-0 w-full h-full object-cover" 
                 fetchPriority={index === 0 ? 'high' : 'auto'} 
                 loading={index === 0 ? 'eager' : 'lazy'} 
                 decoding="async" 
-                sizes="(max-width: 768px) 100vw, 1440px" 
+                sizes="100vw" 
               />
               <div className="absolute inset-0 bg-transparent"></div>
               
