@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 // Image import removed (using <img> for compatibility)
@@ -9,7 +9,8 @@ import Autoplay from 'embla-carousel-autoplay';
 import { getOptimizedImageUrl } from '@/utils/image';
 
 export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000, stopOnInteraction: false })]);
+  const autoplayPlugin = useMemo(() => Autoplay({ delay: 5000, stopOnInteraction: false }), []);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 30 }, [autoplayPlugin]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const scrollPrev = useCallback(() => {
@@ -44,6 +45,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
             <div
               key={banner.id || index}
               className="embla__slide flex-[0_0_100%] min-w-0 relative w-full h-full"
+              style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
             >
               <img 
                 src={getOptimizedImageUrl(banner.image, 1920, 100)} 
