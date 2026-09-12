@@ -6,6 +6,7 @@ import { Product } from '@/context/StoreContext';
 import HeroCarousel from '@/components/HeroCarousel';
 import { getOptimizedImageUrl } from '@/utils/image';
 
+export const dynamic = 'force-dynamic';
 async function fetchCategories() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/categories.php`, { 
