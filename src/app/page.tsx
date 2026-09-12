@@ -154,7 +154,7 @@ export default async function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-[11px] font-bold text-gray-800 text-center leading-tight max-w-[70px] truncate">{c.name}</div>
+                  <div className="text-[13px] font-bold text-gray-800 text-center leading-tight max-w-[80px] truncate">{c.name}</div>
                 </Link>
               ))}
             </div>
