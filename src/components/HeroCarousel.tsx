@@ -63,7 +63,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
                     <div className="inline-flex items-center gap-2 bg-white text-gray-900 rounded-md px-2 py-1 md:px-3 text-[8px] md:text-[10px] font-normal mb-4 tracking-widest uppercase shadow-sm">
                       New Collection
                     </div>
-                    <h1 className="text-sm md:text-5xl lg:text-7xl font-normal leading-tight mb-2 md:mb-4 tracking-normal md:tracking-tighter text-white whitespace-pre-line">
+                    <h1 className="text-sm md:text-5xl lg:text-7xl font-light leading-tight mb-2 md:mb-4 tracking-normal md:tracking-tighter text-white whitespace-pre-line">
                       {banner.title || 'Elevate Your\nLiving Space'}
                     </h1>
                     <p className="text-[10px] md:text-lg text-white/90 mb-4 md:mb-8 font-normal leading-relaxed drop-shadow-sm">
