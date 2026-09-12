@@ -214,7 +214,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       newCart.push({ ...product, qty, cartItemId });
     }
     saveCart(newCart);
-    toast(`${product.name.substring(0, 20)}... added!`);
+    setDrawerOpen(true);
   };
 
   const removeFromCart = (cartItemId: string) => {

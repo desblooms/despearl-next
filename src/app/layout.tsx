@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 async function fetchGlobalSettings() {
   try {
     const res = await fetch(`https://admin.despearl.com/api/settings`, { 
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();

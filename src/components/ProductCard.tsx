@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
-import { Heart, Plus, ShoppingBag } from 'lucide-react';
+import React, { useState } from 'react';
+import { Heart, Check } from 'lucide-react';
+import { Tote, PlusCircle } from '@phosphor-icons/react';
 import { useStore, Product } from '@/context/StoreContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -36,6 +37,8 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
   
   const wrapperClass = horizontal ? "w-[150px] md:w-[200px] shrink-0 snap-start" : "";
 
+  const [isAdding, setIsAdding] = useState(false);
+
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!inStock) {
@@ -46,7 +49,9 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
       router.push('/cart');
       return;
     }
+    setIsAdding(true);
     addToCart(product);
+    setTimeout(() => setIsAdding(false), 750);
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -86,28 +91,44 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
 
       <div className="p-3 flex flex-col flex-1">
         <Link href={`/product/${product.id}`} className="block flex-1">
-          <div className="text-[11px] font-bold text-gray-700 uppercase tracking-wide mb-1 truncate font-outfit">
-            {product.brand ? product.brand : (product.category_name || 'Premium Product')}
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <span className="w-2.5 h-[1px] bg-brand-rose/50 shrink-0" />
+            <span className="text-[9.5px] font-medium text-gray-400/90 uppercase tracking-[0.18em] truncate leading-none" style={{ fontStretch: 'condensed', letterSpacing: '0.18em' }}>
+              {product.brand ? product.brand : (product.category_name || 'Collection')}
+            </span>
           </div>
           <div className="text-[13px] font-semibold leading-snug mb-2 line-clamp-2 text-gray-900 hover:text-brand-burgundy transition-colors min-h-[36px]">
             {product.name}
           </div>
         </Link>
         <div className="flex items-center justify-between mt-auto pt-1">
-            <div className="text-[15px] font-black text-gray-950 tracking-tight font-mono">₹{Number(product.price || 0).toFixed(2)}</div>
+            <div className="text-[15px] font-black text-brand-burgundy tracking-tight font-outfit">₹{Number(product.price || 0).toFixed(2)}</div>
             {!horizontal && (
               <button 
-                className={`w-8 h-8 rounded-md flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-105 active:scale-90 shadow-xs disabled:opacity-30 disabled:cursor-not-allowed ${
-                  inCart 
-                    ? 'bg-brand-burgundy border border-brand-burgundy text-white hover:bg-brand-wine hover:shadow-sm' 
-                    : 'bg-white border border-brand-rose/30 hover:border-brand-burgundy text-gray-900 hover:text-brand-burgundy hover:bg-brand-burgundy/5 group-hover:border-brand-burgundy group-hover:text-brand-burgundy'
+                className={`w-8 h-8 rounded-md flex items-center justify-center transition-all duration-300 cursor-pointer active:scale-90 shadow-xs disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden ${
+                  isAdding
+                    ? 'bg-emerald-500 border border-emerald-500 text-white scale-110'
+                    : inCart 
+                      ? 'bg-brand-burgundy border border-brand-burgundy text-white hover:bg-brand-wine hover:shadow-sm hover:scale-105' 
+                      : 'bg-white border border-brand-rose/30 hover:border-brand-burgundy text-gray-900 hover:text-brand-burgundy hover:bg-brand-burgundy/5 group-hover:border-brand-burgundy group-hover:text-brand-burgundy hover:scale-105'
                 }`} 
                 onClick={handleQuickAdd}
                 disabled={!inStock}
                 title={inCart ? "Go to Cart" : "Add to Bag"}
                 aria-label={inCart ? "View shopping cart" : `Add ${product.name} to cart`}
               >
-                {inCart ? <ShoppingBag className="w-4 h-4" /> : <Plus className="w-4.5 h-4.5" />}
+                {/* Ripple ring on add */}
+                {isAdding && (
+                  <span className="absolute inset-0 rounded-md animate-ping bg-emerald-400/50" />
+                )}
+                <span className={`transition-all duration-200 ${isAdding ? 'scale-110' : 'scale-100'}`}>
+                  {isAdding
+                    ? <Check className="w-4 h-4 stroke-[3]" />
+                    : inCart
+                      ? <Tote weight="duotone" className="w-4 h-4" />
+                      : <PlusCircle weight="bold" className="w-4.5 h-4.5" />
+                  }
+                </span>
               </button>
             )}
         </div>

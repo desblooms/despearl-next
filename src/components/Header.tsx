@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, ShoppingBag, ArrowLeft, MapPin, ChevronDown, Heart, User, Sparkles, Building2 } from 'lucide-react';
+import { Search, ArrowLeft, MapPin, ChevronDown, Heart, User, Sparkles, Building2 } from 'lucide-react';
+import { Tote } from '@phosphor-icons/react';
 import { useStore } from '@/context/StoreContext';
 import { getOptimizedImageUrl } from '@/utils/image';
 
@@ -16,7 +17,8 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
     user, 
     selectedPlace, 
     setPlaceModalOpen, 
-    setAuthOpen 
+    setAuthOpen,
+    setDrawerOpen
   } = useStore();
 
   const [scrolled, setScrolled] = useState(false);
@@ -108,10 +110,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               {logoUrl ? (
                 <img src={getOptimizedImageUrl(logoUrl, 160, 85)} alt="Store Logo" className="h-8 md:h-13 object-contain group-hover:opacity-90 transition" />
               ) : (
-                <>
-                  <span className="text-gray-900 group-hover:text-brand-burgundy transition-colors">Despearl</span>
-                  <span className="text-brand-burgundy font-serif font-bold text-2xl group-hover:rotate-12 transition-transform inline-block">.</span>
-                </>
+                <img src="/despearl.png" alt="Despearl Logo" className="h-8 md:h-12 object-contain group-hover:opacity-90 transition" />
               )}
             </Link>
           </div>
@@ -193,18 +192,19 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             </Link>
 
             {/* Shopping Bag / Cart */}
-            <Link 
-              href="/cart" 
+            <button
+              onClick={() => setDrawerOpen(true)}
               className="w-9 h-9 flex items-center justify-center rounded-full text-gray-700 hover:bg-brand-cream/50 transition relative group cursor-pointer"
               title="Shopping Bag"
+              aria-label="Open shopping cart"
             >
-              <ShoppingBag className="w-4.5 h-4.5 group-hover:text-brand-burgundy transition-colors duration-300" />
+              <Tote weight="duotone" className="w-5 h-5 group-hover:text-brand-burgundy transition-colors duration-300" />
               {cartCount > 0 && (
                 <span id="cart-badge" className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 bg-brand-burgundy text-white rounded-full text-[9px] font-black flex items-center justify-center border border-white shadow-xs animate-in zoom-in duration-200">
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
               )}
-            </Link>
+            </button>
 
             {/* User Account Sheet Trigger */}
             <button

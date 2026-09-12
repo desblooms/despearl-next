@@ -17,16 +17,16 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
   const { toggleWishlist, isWished, addToCart, isInCart } = useStore();
   const router = useRouter();
   const [qty, setQty] = useState(1);
-  
+
   const extendedData = product.extended_data || {};
-  
+
   // State for dynamic interactions
   const colors = Array.isArray(extendedData.colors) ? extendedData.colors : [];
   const hasColors = colors.length > 0;
-  const legacySizes = typeof extendedData.sizes === 'string' && extendedData.sizes.trim() !== '' 
-      ? extendedData.sizes.split(',').map((s:string) => s.trim()).filter(Boolean) 
-      : [];
-      
+  const legacySizes = typeof extendedData.sizes === 'string' && extendedData.sizes.trim() !== ''
+    ? extendedData.sizes.split(',').map((s: string) => s.trim()).filter(Boolean)
+    : [];
+
   const [selectedColor, setSelectedColor] = useState<any>(hasColors ? colors[0] : null);
   const [selectedSize, setSelectedSize] = useState(legacySizes[0] || '');
   const [pincode, setPincode] = useState('');
@@ -34,7 +34,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
   const [deliveryStatus, setDeliveryStatus] = useState<{ message: string; error?: boolean } | null>(null);
 
   const inStock = Number(product.stock_quantity || 0) > 0;
-  
+
   const cartProductSize = selectedSize || undefined;
   const cartProductColor = hasColors && selectedColor ? selectedColor.name : undefined;
   const inCart = isInCart(product.id, cartProductSize, cartProductColor);
@@ -106,7 +106,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
       setDeliveryStatus({ message: 'Please enter a valid 6-digit pincode', error: true });
       return;
     }
-    
+
     // Kerala pincodes start with 67, 68, or 69
     const isKerala = /^(67|68|69)\d{4}$/.test(pincode);
 
@@ -142,16 +142,15 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-4 md:px-6 flex flex-col md:flex-row gap-6 lg:gap-8">
-        {/* Left: Image Gallery */}
-        <div className="md:w-[55%] flex flex-col md:flex-row gap-4 md:sticky md:top-[80px] md:self-start h-auto">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-6 flex flex-col md:flex-row items-start gap-6 lg:gap-8">
+        <div className={`md:w-1/2 flex flex-col md:grid gap-4 md:sticky md:top-[0px] md:self-start ${images.length > 1 ? 'md:grid-cols-[80px_1fr]' : 'md:grid-cols-1'}`}>
           {/* Desktop Vertical Thumbnails */}
           {images.length > 1 && (
-            <div className="hidden md:flex flex-col gap-3 overflow-y-auto no-scrollbar w-20 shrink-0 h-full pb-4">
+            <div className="hidden md:flex flex-col gap-3 overflow-y-auto no-scrollbar w-full min-h-0 pb-4 h-full">
               {images.map((img: string, i: number) => (
-                <div 
+                <div
                   key={i}
-                  className={`w-full aspect-square overflow-hidden cursor-pointer border-[2px] transition-all shrink-0 ${mainImg === img ? 'border-brand-espresso shadow-sm opacity-100' : 'border-transparent hover:border-brand-rose/30 opacity-60 hover:opacity-100 bg-[#f8f9fa]'}`} 
+                  className={`w-full aspect-square overflow-hidden cursor-pointer border-[2px] transition-all shrink-0 ${mainImg === img ? 'border-brand-espresso shadow-sm opacity-100' : 'border-transparent hover:border-brand-rose/30 opacity-60 hover:opacity-100 bg-[#f8f9fa]'}`}
                   onClick={() => setMainImg(img)}
                 >
                   <img src={img} className="w-full h-full object-cover" alt="" />
@@ -161,21 +160,21 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
           )}
 
           {/* Desktop Main Image */}
-          <div className="hidden md:block flex-1 bg-[#f8f9fa] overflow-hidden relative shadow-sm aspect-square md:h-auto">
+          <div className="hidden md:block w-full bg-[#f8f9fa] overflow-hidden relative shadow-sm aspect-square">
             {!imgLoaded[mainImg] && (
               <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-500 rounded-full animate-spin"></div>
               </div>
             )}
-            <img 
-              src={mainImg} 
-              alt={product.name} 
-              className={`w-full h-full object-cover transition-opacity duration-500 ${imgLoaded[mainImg] ? 'opacity-100' : 'opacity-0'}`} 
-              ref={(img) => { if (img?.complete && !imgLoaded[mainImg]) setImgLoaded(prev => ({...prev, [mainImg]: true})) }}
-              onLoad={() => setImgLoaded(prev => ({...prev, [mainImg]: true}))}
+            <img
+              src={mainImg}
+              alt={product.name}
+              className={`w-full h-full object-cover transition-opacity duration-500 ${imgLoaded[mainImg] ? 'opacity-100' : 'opacity-0'}`}
+              ref={(img) => { if (img?.complete && !imgLoaded[mainImg]) setImgLoaded(prev => ({ ...prev, [mainImg]: true })) }}
+              onLoad={() => setImgLoaded(prev => ({ ...prev, [mainImg]: true }))}
               onError={(e) => {
                 (e.target as HTMLImageElement).src = fallbackImg;
-                setImgLoaded(prev => ({...prev, [mainImg]: true}));
+                setImgLoaded(prev => ({ ...prev, [mainImg]: true }));
               }}
             />
           </div>
@@ -191,15 +190,15 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
                         <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-500 rounded-full animate-spin"></div>
                       </div>
                     )}
-                    <img 
-                      src={img} 
+                    <img
+                      src={img}
                       alt={`${product.name} ${index}`}
                       className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${imgLoaded[`mobile_${index}`] ? 'opacity-100' : 'opacity-0'}`}
-                      ref={(imgEl) => { if (imgEl?.complete && !imgLoaded[`mobile_${index}`]) setImgLoaded(prev => ({...prev, [`mobile_${index}`]: true})) }}
-                      onLoad={() => setImgLoaded(prev => ({...prev, [`mobile_${index}`]: true}))}
+                      ref={(imgEl) => { if (imgEl?.complete && !imgLoaded[`mobile_${index}`]) setImgLoaded(prev => ({ ...prev, [`mobile_${index}`]: true })) }}
+                      onLoad={() => setImgLoaded(prev => ({ ...prev, [`mobile_${index}`]: true }))}
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = fallbackImg;
-                        setImgLoaded(prev => ({...prev, [`mobile_${index}`]: true}));
+                        setImgLoaded(prev => ({ ...prev, [`mobile_${index}`]: true }));
                       }}
                     />
                   </div>
@@ -213,9 +212,8 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
                   <button
                     key={i}
                     onClick={() => emblaApi && emblaApi.scrollTo(i)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      i === currentSlide ? 'bg-brand-espresso w-4' : 'bg-white/80 hover:bg-white border border-gray-300/50 shadow-sm'
-                    }`}
+                    className={`w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-brand-espresso w-4' : 'bg-white/80 hover:bg-white border border-gray-300/50 shadow-sm'
+                      }`}
                   />
                 ))}
               </div>
@@ -224,13 +222,13 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
         </div>
 
         {/* Right: Product Info */}
-        <div className="md:w-[45%] flex flex-col pb-10">
-          
+        <div className="md:w-1/2 flex flex-col pb-10">
+
           {/* Title & Price */}
           <div className="mb-5">
-            <h2 className="text-xl md:text-2xl font-black font-outfit text-gray-900 mb-1">{product.brand || 'Brand'}</h2>
-            <h1 className="text-sm md:text-base font-medium text-gray-600 mb-3 leading-tight">{product.name}</h1>
-            
+            <h2 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#e4a257] mb-2">{product.brand || 'Brand'}</h2>
+            <h1 className="text-2xl md:text-3xl font-black font-outfit text-gray-900 mb-4 leading-tight">{product.name}</h1>
+
             <div className="flex items-end gap-3 mb-1">
               <span className="text-2xl font-black text-gray-900">₹{currentPrice.toFixed(2)}</span>
               {hasDiscount && <span className="text-sm font-medium text-gray-500 line-through mb-1">₹{originalPrice.toFixed(2)}</span>}
@@ -253,7 +251,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               </div>
               <div className="flex flex-wrap gap-3">
                 {colors.map((c: any, i: number) => (
-                  <button 
+                  <button
                     key={i}
                     onClick={() => setSelectedColor(c)}
                     className={`w-9 h-9 rounded-full border-2 flex items-center justify-center transition-all ${selectedColor === c ? 'border-gray-900 shadow-md scale-110' : 'border-gray-200 hover:border-gray-400'}`}
@@ -277,7 +275,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               </div>
               <div className="flex flex-wrap gap-3">
                 {legacySizes.map((size: string) => (
-                  <button 
+                  <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     className={`min-w-[42px] h-[42px] px-3 rounded-full border text-[13px] font-bold flex items-center justify-center transition-all ${selectedSize === size ? 'border-gray-900 bg-gray-900 text-white shadow-md' : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white'}`}
@@ -291,16 +289,16 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
 
           {/* Action Buttons */}
           <div className="flex gap-3 mb-6">
-            <button 
+            <button
               className={`flex-1 md:flex-none md:w-[180px] h-12 rounded-sm flex items-center justify-center gap-2 border-[1.5px] font-bold text-sm transition-all duration-300 cursor-pointer hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 ${wished ? 'border-brand-burgundy text-brand-burgundy bg-brand-cream' : 'border-brand-rose/30 text-gray-700 hover:border-brand-espresso'}`}
               onClick={handleWishlist}
             >
               <Heart className={`w-4 h-4 ${wished ? 'fill-brand-burgundy' : ''}`} />
               {wished ? 'Wishlisted' : 'Wishlist'}
             </button>
-            <button 
+            <button
               className={`flex-[2] h-12 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`}
-              onClick={handleCartClick} 
+              onClick={handleCartClick}
               disabled={!inStock}
             >
               {!inStock ? 'Out of Stock' : (inCart ? <><ShoppingBag className="w-4 h-4" /> Go to Cart</> : <><ShoppingBag className="w-4 h-4" /> Add to Cart</>)}
@@ -313,16 +311,16 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               Check delivery time & services
             </h3>
             <p className="text-xs text-gray-500 mb-4">Please enter your PIN code to check delivery time and availability</p>
-            <div className="flex h-12 rounded-md border border-gray-300 overflow-hidden focus-within:border-gray-900 transition-colors w-full md:w-3/4">
-              <input 
-                type="text" 
-                placeholder="Enter PIN code" 
+            <div className="flex h-12 rounded-md border border-gray-300 overflow-hidden focus-within:border-gray-900 transition-colors w-full">
+              <input
+                type="text"
+                placeholder="Enter PIN code"
                 className="flex-1 px-4 text-sm font-semibold text-gray-900 outline-none placeholder:text-gray-400 bg-transparent"
                 value={pincode}
                 onChange={(e) => setPincode(e.target.value)}
                 maxLength={6}
               />
-              <button 
+              <button
                 className="px-5 text-sm font-bold text-pink-600 hover:text-pink-800 transition-colors bg-transparent h-full uppercase tracking-wider"
                 onClick={handleCheckPincode}
               >
@@ -389,13 +387,13 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               </div>
             </div>
           )}
-          
+
           <hr className="border-gray-200 mb-2" />
 
           {/* Accordions */}
-          
+
           <div className="border-b border-gray-200">
-            <button 
+            <button
               className="w-full py-4 flex items-center justify-between text-[15px] font-bold text-gray-900 group"
               onClick={() => toggleAccordion('product_details')}
             >
@@ -424,7 +422,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
           </div>
 
           <div className="border-b border-gray-200">
-            <button 
+            <button
               className="w-full py-4 flex items-center justify-between text-[15px] font-bold text-gray-900 group"
               onClick={() => toggleAccordion('know_your_product')}
             >
@@ -468,7 +466,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
           </div>
 
           <div className="border-b border-gray-200">
-            <button 
+            <button
               className="w-full py-4 flex items-center justify-between text-[15px] font-bold text-gray-900 group"
               onClick={() => toggleAccordion('vendor_details')}
             >
@@ -497,7 +495,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
           </div>
 
           <div className="border-b border-gray-200">
-            <button 
+            <button
               className="w-full py-4 flex items-center justify-between text-[15px] font-bold text-gray-900 group"
               onClick={() => toggleAccordion('return_policy')}
             >
@@ -511,7 +509,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               </div>
             )}
           </div>
-          
+
           {/* About Brand */}
           <div className="mt-8">
             <h3 className="text-sm font-bold text-gray-900 mb-3">About {product.brand || 'the Brand'}</h3>
@@ -520,7 +518,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
             ) : (
               <p className="text-sm text-gray-400 italic mb-4">No brand details provided.</p>
             )}
-            
+
             {extendedData.brand_stats && extendedData.brand_stats.length > 0 && (
               <div className="grid grid-cols-3 divide-x divide-gray-200 border border-brand-rose/20 text-center mb-6">
                 {extendedData.brand_stats.map((stat: string, idx: number) => {
@@ -540,7 +538,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               </div>
             )}
           </div>
-          
+
           {/* Customer Reviews */}
           {extendedData.customer_reviews && extendedData.customer_reviews.length > 0 && (
             <div className="mt-2 mb-6">
@@ -568,7 +566,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
       {relatedProducts && relatedProducts.length > 0 && (
         <div className="bg-brand-cream/20/50 py-10 mt-10">
           <div className="max-w-[1440px] mx-auto w-full px-4 md:px-6">
-            
+
             <div className="mb-12">
               <h2 className="text-lg md:text-xl font-black font-outfit text-gray-900 mb-6">Similar Products</h2>
               <div className="flex gap-3 md:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4">
@@ -621,15 +619,15 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
 
       {/* Mobile Sticky Add to Bag */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-brand-rose/20 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex gap-3 z-40 md:hidden shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
-        <button 
-          className={`w-12 h-12 rounded-sm flex items-center justify-center border transition-all duration-300 cursor-pointer active:scale-95 ${wished ? 'border-brand-burgundy bg-brand-cream text-brand-burgundy' : 'border-brand-rose/30 bg-white text-gray-600'}`} 
+        <button
+          className={`w-12 h-12 rounded-sm flex items-center justify-center border transition-all duration-300 cursor-pointer active:scale-95 ${wished ? 'border-brand-burgundy bg-brand-cream text-brand-burgundy' : 'border-brand-rose/30 bg-white text-gray-600'}`}
           onClick={handleWishlist}
         >
           <Heart className={`w-5 h-5 ${wished ? 'fill-brand-burgundy' : ''}`} />
         </button>
-        <button 
-          className={`flex-1 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.98] ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`} 
-          onClick={handleCartClick} 
+        <button
+          className={`flex-1 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.98] ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`}
+          onClick={handleCartClick}
           disabled={!inStock}
         >
           {!inStock ? 'Out of Stock' : (inCart ? <><ShoppingBag className="w-5 h-5" /> Go to Cart</> : <><ShoppingBag className="w-5 h-5" /> Add to Cart</>)}
