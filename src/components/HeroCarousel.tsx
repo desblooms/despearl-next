@@ -37,7 +37,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
   }
 
   return (
-    <div className="w-full relative h-[400px] md:h-[600px] bg-brand-espresso overflow-hidden group">
+    <div className="w-full relative aspect-video bg-brand-espresso overflow-hidden group">
       <div className="embla w-full h-full" ref={emblaRef}>
         <div className="embla__container flex w-full h-full">
           {banners.map((banner, index) => (
