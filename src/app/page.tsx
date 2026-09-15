@@ -6,6 +6,7 @@ import { Product } from '@/context/StoreContext';
 import HeroCarousel from '@/components/HeroCarousel';
 import { getOptimizedImageUrl } from '@/utils/image';
 import SmoothImage from '@/components/SmoothImage';
+import ReelsSection from '@/components/ReelsSection';
 
 export const dynamic = 'force-dynamic';
 async function fetchCategories() {
@@ -84,13 +85,27 @@ async function fetchHeroBanners() {
   }
 }
 
+async function fetchReels() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/reels.php`, {
+      cache: 'no-store',
+      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
+    });
+    const data = await res.json();
+    return data.status === 'success' ? data.data : [];
+  } catch (e) {
+    return [];
+  }
+}
+
 export default async function HomePage() {
-  const [categories, offers, { products, total }, settings, heroBanners] = await Promise.all([
+  const [categories, offers, { products, total }, settings, heroBanners, reels] = await Promise.all([
     fetchCategories(),
     fetchOffers(),
     fetchProducts(24, 0),
     fetchSettings(),
-    fetchHeroBanners()
+    fetchHeroBanners(),
+    fetchReels()
   ]);
 
   const newArrivals = products.slice(0, 8);
@@ -251,6 +266,13 @@ export default async function HomePage() {
             </div>
           );
         })()}
+
+        {/* Reels Section */}
+        {reels && reels.length > 0 && (
+          <div className="-mx-4 md:-mx-6 px-4 md:px-6">
+            <ReelsSection reels={reels} />
+          </div>
+        )}
 
         {/* All Products Grid */}
         <div className="flex items-end justify-between pt-10 pb-4 border-b border-brand-cream/50">
