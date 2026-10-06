@@ -97,6 +97,17 @@ export default function ReelsPageClient({ initialReels }: ReelsPageClientProps) 
           ))
         )}
       </div>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes scaleUpDownCustom {
+          0% { transform: scale(0); opacity: 0; }
+          30% { transform: scale(1.4); opacity: 1; }
+          50% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(0.8); opacity: 0; }
+        }
+        .animate-custom-heart {
+          animation: scaleUpDownCustom 1s ease-in-out forwards;
+        }
+      `}} />
     </div>
   );
 }
@@ -231,7 +242,7 @@ function ReelItem({
       {showLikeAnimation && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
           <Heart 
-            className="w-32 h-32 text-red-500 fill-red-500 animate-scale-up-down drop-shadow-2xl" 
+            className="w-32 h-32 text-red-500 fill-red-500 animate-custom-heart drop-shadow-2xl" 
           />
         </div>
       )}
