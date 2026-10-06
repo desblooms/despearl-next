@@ -138,8 +138,16 @@ function ReelItem({
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const lastTapRef = useRef<number>(0);
+
+  // Sync muted state directly to the video element (required for autoplay)
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = muted;
+    }
+  }, [muted]);
 
   // Handle visibility and playing state
   useEffect(() => {
@@ -147,9 +155,16 @@ function ReelItem({
       ([entry]) => {
         if (entry.isIntersecting) {
           setActiveReelId(reel.id);
+        } else {
+          // Pause and reset when scrolled away
+          if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+          }
+          setIsPlaying(false);
         }
       },
-      { threshold: 0.6 } // When 60% of the video is visible
+      { threshold: 0.5 }
     );
 
     if (containerRef.current) {
@@ -161,21 +176,29 @@ function ReelItem({
     };
   }, [reel.id, setActiveReelId]);
 
+  // Play/pause based on active state
   useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
     if (isActive) {
-      videoRef.current?.play().catch(e => console.log('Autoplay prevented', e));
-      setIsPlaying(true);
-    } else {
-      videoRef.current?.pause();
-      if (videoRef.current) {
-        videoRef.current.currentTime = 0;
+      // Ensure muted before attempting autoplay
+      video.muted = true;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
       }
+    } else {
+      video.pause();
+      video.currentTime = 0;
       setIsPlaying(false);
     }
   }, [isActive]);
 
   const handleTimeUpdate = () => {
-    if (videoRef.current) {
+    if (videoRef.current && videoRef.current.duration) {
       const current = videoRef.current.currentTime;
       const total = videoRef.current.duration;
       setProgress((current / total) * 100);
@@ -183,16 +206,13 @@ function ReelItem({
   };
 
   const togglePlay = (e: React.MouseEvent) => {
-    // Implement double tap logic
     const now = Date.now();
     const DOUBLE_TAP_DELAY = 300;
     
     if (now - lastTapRef.current < DOUBLE_TAP_DELAY) {
-      // Double tap detected
       handleDoubleTap();
       lastTapRef.current = 0;
     } else {
-      // Single tap - toggle play/pause after a short delay to ensure it's not a double tap
       lastTapRef.current = now;
       setTimeout(() => {
         if (lastTapRef.current === now) {
@@ -201,8 +221,7 @@ function ReelItem({
               videoRef.current.pause();
               setIsPlaying(false);
             } else {
-              videoRef.current.play();
-              setIsPlaying(true);
+              videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
             }
           }
           lastTapRef.current = 0;
@@ -220,11 +239,13 @@ function ReelItem({
       <video
         ref={videoRef}
         src={resolveVideoUrl(reel.video_url)}
-        poster={reel.thumbnail_url ? getOptimizedImageUrl(reel.thumbnail_url, 600, 80) : undefined}
         loop
         playsInline
-        muted={muted}
+        muted
+        preload="auto"
         onTimeUpdate={handleTimeUpdate}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         className="w-full h-full object-cover cursor-pointer"
         onClick={togglePlay}
       />
