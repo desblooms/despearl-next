@@ -61,23 +61,6 @@ export default function ReelsSection({ reels }: ReelsSectionProps) {
     setMuted(!muted);
   };
 
-  const togglePlay = (videoRef: HTMLVideoElement | null, reelId: number, e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    if (!videoRef) return;
-
-    if (videoRef.paused) {
-      videoRef.play();
-      setPlayingState((prev) => ({ ...prev, [reelId]: true }));
-    } else {
-      videoRef.pause();
-      setPlayingState((prev) => ({ ...prev, [reelId]: false }));
-    }
-  };
-
   if (!reels || reels.length === 0) return null;
 
   return (
@@ -103,7 +86,6 @@ export default function ReelsSection({ reels }: ReelsSectionProps) {
               muted={muted}
               toggleMute={toggleMute}
               isPlaying={playingState[reel.id] || false}
-              togglePlay={(video, e) => togglePlay(video, reel.id, e)}
             />
           ))}
         </div>
@@ -117,20 +99,18 @@ function ReelCard({
   muted,
   toggleMute,
   isPlaying,
-  togglePlay,
 }: {
   reel: Reel;
   muted: boolean;
   toggleMute: (e: React.MouseEvent) => void;
   isPlaying: boolean;
-  togglePlay: (video: HTMLVideoElement | null, e?: React.MouseEvent) => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   
   const innerContent = (
-    <div
-      className="relative w-[240px] md:w-[280px] shrink-0 snap-center aspect-[9/16] rounded-2xl overflow-hidden bg-black group cursor-pointer"
-      onClick={(e) => togglePlay(videoRef.current, e)}
+    <Link
+      href="/reels"
+      className="relative w-[240px] md:w-[280px] shrink-0 snap-center aspect-[9/16] rounded-2xl overflow-hidden bg-black group cursor-pointer block focus:outline-none"
     >
       <video
         ref={videoRef}
@@ -140,7 +120,7 @@ function ReelCard({
         loop
         playsInline
         muted={muted}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
       />
       
       {/* Dark overlay for text readability */}
@@ -159,7 +139,7 @@ function ReelCard({
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-3">
         <button
           onClick={toggleMute}
-          className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/60 transition-colors"
+          className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/60 transition-colors pointer-events-auto"
           aria-label={muted ? 'Unmute' : 'Mute'}
         >
           {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -167,30 +147,16 @@ function ReelCard({
       </div>
 
       {/* Content Overlay */}
-      <div className="absolute bottom-4 left-4 right-4 z-10">
+      <div className="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">
         <h3 className="text-white font-bold text-base leading-tight drop-shadow-md mb-2 line-clamp-2">
           {reel.title}
         </h3>
-        {reel.link_url && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-md rounded-lg text-white text-xs font-semibold hover:bg-white/30 transition-colors">
-            Shop Now <ExternalLink className="w-3 h-3" />
-          </div>
-        )}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-md rounded-lg text-white text-xs font-semibold group-hover:bg-brand-burgundy transition-colors pointer-events-auto">
+          Watch Reels <Play className="w-3 h-3 fill-current" />
+        </div>
       </div>
-    </div>
+    </Link>
   );
 
-  if (reel.link_url) {
-    return (
-      <Link href={reel.link_url} className="shrink-0 snap-center focus:outline-none">
-        {innerContent}
-      </Link>
-    );
-  }
-
-  return (
-    <div className="shrink-0 snap-center focus:outline-none">
-      {innerContent}
-    </div>
-  );
+  return innerContent;
 }
