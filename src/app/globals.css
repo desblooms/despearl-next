@@ -35,6 +35,26 @@
   --font-sans: var(--font-lato);
   --font-outfit: var(--font-outfit);
   --font-heading: var(--font-outfit);
+
+  --animate-scale-up-down: scale-up-down 1s ease-in-out forwards;
+  @keyframes scale-up-down {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    30% {
+      transform: scale(1.4);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -144,33 +164,10 @@ p {
   .product-desc li {
     margin-bottom: 0.25rem;
   }
-
-  .animate-scale-up-down {
-    animation: scale-up-down 1s ease-in-out forwards;
-  }
 }
 
 @keyframes skel-anim {
   100% {
     transform: translateX(100%);
-  }
-}
-
-@keyframes scale-up-down {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  30% {
-    transform: scale(1.4);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.8);
-    opacity: 0;
   }
 }
