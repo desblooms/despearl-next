@@ -33,18 +33,22 @@ export default function ReelsSection({ reels }: ReelsSectionProps) {
           const reelId = Number(video.dataset.reelid);
 
           if (entry.isIntersecting) {
-            video.play().catch(() => {
-              // Autoplay might be blocked by browser policy, keep track of state
-              setPlayingState((prev) => ({ ...prev, [reelId]: false }));
-            });
-            setPlayingState((prev) => ({ ...prev, [reelId]: true }));
+            // Always ensure muted before play to satisfy autoplay policy
+            video.muted = true;
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => setPlayingState((prev) => ({ ...prev, [reelId]: true })))
+                .catch(() => setPlayingState((prev) => ({ ...prev, [reelId]: false })));
+            }
           } else {
             video.pause();
+            video.currentTime = 0;
             setPlayingState((prev) => ({ ...prev, [reelId]: false }));
           }
         });
       },
-      { threshold: 0.6 } // Play when 60% of the video is visible
+      { threshold: 0.5 }
     );
 
     const videoElements = scrollRef.current.querySelectorAll('video');
@@ -116,10 +120,10 @@ function ReelCard({
         ref={videoRef}
         data-reelid={reel.id}
         src={resolveVideoUrl(reel.video_url)}
-        poster={reel.thumbnail_url ? getOptimizedImageUrl(reel.thumbnail_url, 400, 80) : undefined}
         loop
         playsInline
-        muted={muted}
+        muted
+        preload="auto"
         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
       />
       
