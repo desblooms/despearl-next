@@ -151,3 +151,28 @@ p {
     transform: translateX(100%);
   }
 }
+
+@keyframes scale-up-down {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.4);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+@layer utilities {
+  .animate-scale-up-down {
+    animation: scale-up-down 1s ease-in-out forwards;
+  }
+}

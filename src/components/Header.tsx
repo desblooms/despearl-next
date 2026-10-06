@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, ArrowLeft, MapPin, ChevronDown, Heart, User, Sparkles, Building2 } from 'lucide-react';
+import { Search, ArrowLeft, MapPin, ChevronDown, Heart, User, Sparkles, Building2, PlaySquare } from 'lucide-react';
 import { Tote } from '@phosphor-icons/react';
 import { useStore } from '@/context/StoreContext';
 import { getOptimizedImageUrl } from '@/utils/image';
@@ -26,6 +26,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
   const isHome = pathname === '/';
   const isShop = pathname.startsWith('/shop');
   const isCategories = pathname.startsWith('/categories');
+  const isReels = pathname.startsWith('/reels');
   const isProfile = pathname.startsWith('/profile');
   const isInnerPage = ['/product', '/cart', '/checkout', '/orders'].some(path => pathname.startsWith(path));
 
@@ -142,6 +143,14 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               Categories
             </Link>
             <Link 
+              href="/reels" 
+              className={`font-bold text-xs uppercase tracking-widest cursor-pointer transition-all py-1 relative ${
+                isReels ? 'text-brand-burgundy font-black after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-brand-burgundy' : 'text-gray-600 hover:text-brand-burgundy'
+              }`}
+            >
+              Reels
+            </Link>
+            <Link 
               href="/profile" 
               className={`font-bold text-xs uppercase tracking-widest cursor-pointer transition-all py-1 relative ${
                 isProfile ? 'text-brand-burgundy font-black after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-brand-burgundy' : 'text-gray-600 hover:text-brand-burgundy'
@@ -189,6 +198,15 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               aria-label="Search"
             >
               <Search className="w-4.5 h-4.5 text-gray-600" />
+            </Link>
+
+            {/* Mobile Reels Icon */}
+            <Link 
+              href="/reels" 
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-gray-700 hover:bg-gray-100 transition cursor-pointer"
+              aria-label="Reels"
+            >
+              <PlaySquare className="w-4.5 h-4.5 text-gray-600" />
             </Link>
 
             {/* Shopping Bag / Cart */}
