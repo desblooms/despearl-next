@@ -144,6 +144,10 @@ p {
   .product-desc li {
     margin-bottom: 0.25rem;
   }
+
+  .animate-scale-up-down {
+    animation: scale-up-down 1s ease-in-out forwards;
+  }
 }
 
 @keyframes skel-anim {
@@ -168,11 +172,5 @@ p {
   100% {
     transform: scale(0.8);
     opacity: 0;
-  }
-}
-
-@layer utilities {
-  .animate-scale-up-down {
-    animation: scale-up-down 1s ease-in-out forwards;
   }
 }
