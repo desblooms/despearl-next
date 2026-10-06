@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Volume2, VolumeX, Play, ExternalLink } from 'lucide-react';
-import { getOptimizedImageUrl } from '@/utils/image';
+import { getOptimizedImageUrl, resolveVideoUrl } from '@/utils/image';
 
 interface Reel {
   id: number;
@@ -115,7 +115,7 @@ function ReelCard({
       <video
         ref={videoRef}
         data-reelid={reel.id}
-        src={reel.video_url}
+        src={resolveVideoUrl(reel.video_url)}
         poster={reel.thumbnail_url ? getOptimizedImageUrl(reel.thumbnail_url, 400, 80) : undefined}
         loop
         playsInline

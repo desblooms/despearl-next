@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Heart, MessageCircle, Share2, ArrowLeft, Volume2, VolumeX, Play, ExternalLink, MoreVertical } from 'lucide-react';
-import { getOptimizedImageUrl } from '@/utils/image';
+import { getOptimizedImageUrl, resolveVideoUrl } from '@/utils/image';
 import { useRouter } from 'next/navigation';
 
 interface Reel {
@@ -19,8 +19,9 @@ interface ReelsPageClientProps {
 }
 
 export default function ReelsPageClient({ initialReels }: ReelsPageClientProps) {
-  const [reels] = useState<Reel[]>(initialReels);
-  const [activeReelId, setActiveReelId] = useState<number | null>(initialReels[0]?.id || null);
+  const safeReels = initialReels || [];
+  const [reels] = useState<Reel[]>(safeReels);
+  const [activeReelId, setActiveReelId] = useState<number | null>(safeReels[0]?.id || null);
   const [likedReels, setLikedReels] = useState<Record<number, boolean>>({});
   const [muted, setMuted] = useState(true);
   const [likeAnimation, setLikeAnimation] = useState<number | null>(null);
@@ -207,7 +208,7 @@ function ReelItem({
       {/* Video Element */}
       <video
         ref={videoRef}
-        src={reel.video_url}
+        src={resolveVideoUrl(reel.video_url)}
         poster={reel.thumbnail_url ? getOptimizedImageUrl(reel.thumbnail_url, 600, 80) : undefined}
         loop
         playsInline

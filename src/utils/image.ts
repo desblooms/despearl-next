@@ -28,3 +28,11 @@ export function getOptimizedImageUrl(url: string | undefined, width: number = 64
   // Return the direct URL to guarantee images are visible on all deployment environments
   return targetUrl;
 }
+
+export function resolveVideoUrl(url: string | undefined) {
+  if (!url) return '';
+  if (url.startsWith('http') || url.startsWith('data:') || url.startsWith('blob:')) return url;
+  if (url.startsWith('/')) return `https://app.votee.in${url}`;
+  if (url.startsWith('uploads/')) return `https://app.votee.in/${url}`;
+  return `https://app.votee.in/uploads/reels/${url}`;
+}
