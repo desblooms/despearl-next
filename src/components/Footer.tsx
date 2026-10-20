@@ -240,13 +240,9 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
           COMPREHENSIVE STATIC SITE FOOTER (DESKTOP & MOBILE)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {!hideFullFooter && (
-        <>
-          {/* 🚀 STATIC AI-FIRST SEO ENHANCER MODULE (AI OVERVIEWS / SGE / PERPLEXITY / FAQ SCHEMA) */}
-          <SeoEnhancer />
-
-          <footer className="w-full bg-[#111215] text-gray-300 border-t border-white/10 pt-12 md:pt-16 pb-24 md:pb-12 text-xs md:text-sm select-none">
+        <footer className="w-full bg-[#111215] text-gray-300 border-t border-white/10 pt-12 md:pt-16 pb-24 md:pb-12 text-xs md:text-sm select-none">
           
-          {/* 🌟 PINTEREST CUSTOM FURNITURE & KERALA'S LARGEST SOFA FACTORY HERO BANNER */}
+          {/* PINTEREST CUSTOM FURNITURE & KERALA'S LARGEST SOFA FACTORY HERO BANNER */}
           <div className="max-w-[1440px] mx-auto px-4 md:px-6 mb-12">
             <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#1c1815] via-[#241a15] to-[#161311] border border-[#dfa054]/30 p-6 md:p-10 shadow-2xl">
               <div className="absolute top-0 right-0 w-96 h-96 bg-[#dfa054]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
@@ -351,7 +347,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
               {/* Brand & Factory Identity with Logo */}
               <div className="lg:col-span-2 space-y-4">
                 
-                {/* 🏷️ LOGO IN FOOTER */}
+                {/* LOGO IN FOOTER */}
                 <Link href="/" className="inline-flex items-center gap-2 group">
                   {logoUrl ? (
                     <img 
@@ -532,6 +528,11 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
             </div>
           </div>
 
+          {/* FACTORY DIRECT COMPARISON & BUYER GUIDE FAQ */}
+          <div className="max-w-[1440px] mx-auto px-4 md:px-6">
+            <SeoEnhancer />
+          </div>
+
           {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
               STATIC SEO KEYWORDS SECTION: KERALA AUDIENCE & ALL CATEGORIES
               ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -553,12 +554,12 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
               </p>
             </div>
 
-            {/* BLOCK 1: KERALA AUDIENCE & LOCATIONS (KERALA AUFENCE) */}
+            {/* KERALA SERVICE HUBS & LOCATIONS */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[#dfa054]" />
-                <h4 className="text-white font-bold text-sm tracking-wide font-outfit">
-                  Kerala Locations & Major Service Hubs
+                <h4 className="text-white font-bold text-sm tracking-wide font-outfit uppercase">
+                  Kerala Locations &amp; Major Service Hubs
                 </h4>
               </div>
               
@@ -568,7 +569,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                   <Link
                     key={i}
                     href={`/search?q=${encodeURIComponent(dist.query + ' Furniture Factory')}`}
-                    className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/5 hover:border-[#dfa054]/40 transition duration-200"
+                    className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-[#dfa054]/40 transition duration-200"
                     title={`Buy custom furniture & sofas in ${dist.name}`}
                   >
                     Furniture {dist.name}
@@ -578,10 +579,10 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
 
               {/* Kerala Popular Search Phrases */}
               <div className="pt-2">
-                <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2.5">
-                  Popular Kerala Factory & Custom Searches:
+                <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+                  Popular Searches Across Kerala:
                 </span>
-                <div className="flex flex-wrap gap-x-4 gap-y-2 text-[11px] text-gray-400 leading-relaxed">
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-gray-400 leading-relaxed">
                   {KERALA_POPULAR_SEARCHES.map((item, idx) => (
                     <React.Fragment key={idx}>
                       <Link
@@ -591,7 +592,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                         {item.text}
                       </Link>
                       {idx < KERALA_POPULAR_SEARCHES.length - 1 && (
-                        <span className="text-white/20 select-none">•</span>
+                        <span className="text-white/20 select-none">&bull;</span>
                       )}
                     </React.Fragment>
                   ))}
@@ -599,64 +600,63 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
               </div>
             </div>
 
-            {/* BLOCK 2: ALL CATEGORY KEYWORDS (All Category) */}
-            <div className="space-y-6 pt-4 border-t border-white/5">
+            {/* BLOCK 2: ALL CATEGORY KEYWORDS DIRECTORY */}
+            <div className="space-y-6 pt-6 border-t border-white/10">
               <div className="flex items-center gap-2">
                 <LayoutGrid className="w-4 h-4 text-[#dfa054]" />
-                <h4 className="text-white font-bold text-sm tracking-wide font-outfit">
-                  All Furniture Categories & Custom Manufacturing Types
+                <h4 className="text-white font-bold text-sm tracking-wide font-outfit uppercase">
+                  Furniture Categories &amp; Custom Manufacturing Directory
                 </h4>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
                 {CATEGORY_KEYWORDS.map((catGroup, cIdx) => (
-                  <div key={cIdx} className="bg-white/[0.02] p-4 rounded-xl border border-white/5 space-y-2.5">
-                    <h5 className="text-white font-bold text-xs uppercase tracking-wider text-[#dfa054] flex items-center justify-between">
-                      <span>{catGroup.category}</span>
-                      <ArrowRight className="w-3 h-3 opacity-60" />
+                  <div key={cIdx} className="space-y-2.5">
+                    <h5 className="text-[#dfa054] font-bold text-xs uppercase tracking-wider font-outfit border-b border-white/10 pb-1.5">
+                      {catGroup.category}
                     </h5>
-                    <div className="flex flex-wrap gap-1.5 text-[11px]">
+                    <ul className="space-y-1.5 text-xs">
                       {catGroup.keywords.map((kw, kIdx) => (
-                        <Link
-                          key={kIdx}
-                          href={`/search?q=${encodeURIComponent(kw.query)}`}
-                          className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#dfa054]/20 hover:text-[#dfa054] text-gray-300 transition duration-150"
-                        >
-                          {kw.text}
-                        </Link>
+                        <li key={kIdx}>
+                          <Link
+                            href={`/search?q=${encodeURIComponent(kw.query)}`}
+                            className="text-gray-400 hover:text-white hover:underline transition leading-relaxed block truncate"
+                            title={kw.text}
+                          >
+                            {kw.text}
+                          </Link>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* BLOCK 3: AUDIENCE TYPE KEYWORDS (Type Audience) */}
-            <div className="space-y-6 pt-4 border-t border-white/5">
+            {/* BLOCK 3: AUDIENCE & BUYER COLLECTIONS */}
+            <div className="space-y-4 pt-6 border-t border-white/10">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-[#dfa054]" />
-                <h4 className="text-white font-bold text-sm tracking-wide font-outfit">
-                  Tailored Collections by Audience & Buyer Type
+                <h4 className="text-white font-bold text-sm tracking-wide font-outfit uppercase">
+                  Tailored Collections by Audience &amp; Buyer Type
                 </h4>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {AUDIENCE_TYPE_KEYWORDS.map((audGroup, aIdx) => (
-                  <div key={aIdx} className="bg-white/[0.02] p-4 rounded-xl border border-white/5 space-y-2.5 flex flex-col justify-between">
-                    <div>
-                      <h5 className="text-white font-bold text-xs tracking-wide mb-1 font-outfit">
-                        {audGroup.audience}
-                      </h5>
-                      <p className="text-[11px] text-gray-400 mb-3 leading-snug">
-                        {audGroup.description}
-                      </p>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 text-[11px]">
+                  <div key={aIdx} className="space-y-2 border-l-2 border-[#dfa054]/40 pl-3.5">
+                    <h5 className="text-white font-bold text-xs font-outfit">
+                      {audGroup.audience}
+                    </h5>
+                    <p className="text-[11px] text-gray-400 leading-snug">
+                      {audGroup.description}
+                    </p>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] pt-1">
                       {audGroup.keywords.map((kw, kIdx) => (
                         <Link
                           key={kIdx}
                           href={`/search?q=${encodeURIComponent(kw.query)}`}
-                          className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/5 transition"
+                          className="text-gray-400 hover:text-[#dfa054] hover:underline transition"
                         >
                           {kw.text}
                         </Link>
@@ -688,7 +688,6 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
           </div>
 
         </footer>
-        </>
       )}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
