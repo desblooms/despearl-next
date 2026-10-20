@@ -269,7 +269,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
           </div>
           <div className="shrink-0 flex items-center gap-2 text-gray-500 font-semibold text-[10px]">
             <MapPin className="w-3 h-3 text-brand-burgundy" />
-            <span>Kochi • Calicut • Trivandrum • Thrissur</span>
+            <span>Kochi • Calicut • Malappuram • Thrissur • Palakkad</span>
           </div>
         </div>
       </div>

@@ -279,7 +279,7 @@ export default function Footer() {
                 <div className="pt-2 space-y-2 text-xs text-gray-400">
                   <div className="flex items-center gap-2.5">
                     <MapPin className="w-4 h-4 text-[#dfa054] shrink-0" />
-                    <span>Serving Kochi, Kozhikode, Thiruvananthapuram, Thrissur & All Kerala</span>
+                    <span>Serving Kochi, Kozhikode, Malappuram, Thrissur, Palakkad & All Kerala</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Clock className="w-4 h-4 text-[#dfa054] shrink-0" />
