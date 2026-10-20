@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, ArrowLeft, MapPin, ChevronDown, Heart, User, Sparkles, Building2, PlaySquare } from 'lucide-react';
+import { Search, ArrowLeft, MapPin, ChevronDown, Heart, User, Sparkles, Building2, PlaySquare, Phone, MessageCircle, Factory } from 'lucide-react';
 import { Tote } from '@phosphor-icons/react';
 import { useStore } from '@/context/StoreContext';
 import { getOptimizedImageUrl } from '@/utils/image';
@@ -46,26 +46,50 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
     <>
     <header id="app-header" className="w-full shrink-0 sticky top-0 z-50 transition-all duration-300 shadow-xs">
       
-      {/* 1. Top Utility & Location Ticker Bar */}
+      {/* 1. Top Utility & Factory Helpline Bar */}
       <div className="bg-brand-burgundy text-white text-[11px] font-medium py-1.5 px-4 md:px-6">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
           
           {/* Announcement Ticker */}
           <div className="flex items-center gap-2 truncate">
             <span className="bg-white/15 text-brand-rose px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shrink-0">
-              <Sparkles className="w-3 h-3 animate-pulse" /> Express
+              <Factory className="w-3 h-3" /> Factory Direct
             </span>
-            <span className="truncate opacity-90 font-outfit">
-              Fast Free Delivery in Kerala
+            <span className="truncate opacity-95 font-outfit">
+              Kerala&apos;s Largest Furniture &amp; Custom Sofa Factory &bull; All Pinterest Designs Custom Made
             </span>
           </div>
 
           {/* Location & Support Actions */}
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="flex items-center gap-3 md:gap-4 shrink-0">
+            {/* Phone & WhatsApp Quick Access */}
+            <a
+              href="tel:+919895363788"
+              className="flex items-center gap-1.5 text-white/95 hover:text-white transition font-semibold text-[11px] group"
+              title="Call Factory Direct: 9895363788"
+            >
+              <Phone className="w-3 h-3 text-[#dfa054] group-hover:scale-110 transition" />
+              <span className="hidden sm:inline">Factory Helpline:</span>
+              <span className="font-bold text-white tracking-wide">9895363788</span>
+            </a>
+
+            <a
+              href="https://wa.me/919895363788?text=Hi%20Despearl%20Factory,%20I%20have%20a%20Pinterest%20/%20Custom%20furniture%20design%20to%20quote"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold transition shadow-xs"
+              title="WhatsApp Despearl Factory"
+            >
+              <MessageCircle className="w-2.5 h-2.5 fill-white" />
+              <span>WhatsApp</span>
+            </a>
+
+            <span className="hidden md:inline-block text-white/30">|</span>
+
             {/* Desktop Location Selector Trigger */}
             <button
               onClick={() => setPlaceModalOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/10 px-2.5 py-1 rounded-full text-white transition cursor-pointer group"
+              className="hidden md:flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/10 px-2.5 py-1 rounded-full text-white transition cursor-pointer group"
               title="Change Delivery Location or Store Branch"
               aria-label="Change delivery location or store branch"
             >
@@ -74,18 +98,11 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               ) : (
                 <MapPin className="w-3.5 h-3.5 text-brand-rose group-hover:scale-110 transition" />
               )}
-              <span className="text-[11px] font-bold max-w-[140px] truncate">
-                {selectedPlace?.name || 'Select Location'}
+              <span className="text-[11px] font-bold max-w-[130px] truncate">
+                {selectedPlace?.name || 'Kerala Hubs'}
               </span>
               <ChevronDown className="w-3 h-3 text-white/90 group-hover:translate-y-0.5 transition" />
             </button>
-
-            <span className="hidden md:inline-block text-white/30">|</span>
-
-            {/* Free Delivery indicator */}
-            <div className="hidden md:flex items-center gap-1 text-white/80 text-[11px] font-semibold">
-              <span>Free Delivery</span>
-            </div>
           </div>
 
         </div>
@@ -252,6 +269,12 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               <Sparkles className="w-3 h-3 text-[#dfa054]" /> Trending:
             </span>
             <div className="flex items-center gap-2.5 text-gray-600 font-medium truncate">
+              <Link href="/search?q=Pinterest+Sofa" className="text-brand-burgundy font-bold hover:underline transition">Pinterest Sofas</Link>
+              <span className="text-gray-300 select-none">•</span>
+              <Link href="/search?q=Custom+Sofa" className="text-brand-burgundy font-bold hover:underline transition">Custom Sofa Factory</Link>
+              <span className="text-gray-300 select-none">•</span>
+              <Link href="/search?q=Nilambur+Teak" className="hover:text-brand-burgundy transition">Nilambur Teak</Link>
+              <span className="text-gray-300 select-none">•</span>
               <Link href="/search?q=Sofa+Sets+Kerala" className="hover:text-brand-burgundy transition">Sofas in Kerala</Link>
               <span className="text-gray-300 select-none">•</span>
               <Link href="/search?q=King+Size+Bed" className="hover:text-brand-burgundy transition">King Size Beds</Link>
@@ -259,10 +282,6 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               <Link href="/search?q=Dining+Table" className="hover:text-brand-burgundy transition">Marble Dining Sets</Link>
               <span className="text-gray-300 select-none">•</span>
               <Link href="/search?q=Teak+Wood" className="hover:text-brand-burgundy transition">Teak Wood Cots</Link>
-              <span className="text-gray-300 select-none">•</span>
-              <Link href="/search?q=Wardrobe" className="hover:text-brand-burgundy transition">Wardrobes</Link>
-              <span className="text-gray-300 select-none">•</span>
-              <Link href="/search?q=Office+Chair" className="hover:text-brand-burgundy transition">Ergonomic Chairs</Link>
               <span className="text-gray-300 select-none">•</span>
               <Link href="/search?q=Gruhapravesam" className="hover:text-brand-burgundy transition">Gruhapravesam Packages</Link>
             </div>
@@ -275,23 +294,29 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
       </div>
     </header>
 
-      {/* 3. Mobile Location Bar (Visible on mobile under header - non-sticky) */}
-      <div className="sm:hidden bg-gray-50 border-b border-gray-200 px-4 py-2 flex items-center justify-between text-xs text-gray-700 relative z-40">
+      {/* 3. Mobile Location & Factory Helpline Bar (Visible on mobile under header - non-sticky) */}
+      <div className="sm:hidden bg-gray-50 border-b border-gray-200 px-3 py-1.5 flex items-center justify-between text-xs text-gray-700 relative z-40">
         <button
           onClick={() => setPlaceModalOpen(true)}
           className="flex items-center gap-1.5 text-[11px] font-bold text-gray-800 truncate cursor-pointer hover:text-brand-burgundy transition"
           aria-label="Change delivery location"
         >
           <MapPin className="w-3.5 h-3.5 text-brand-burgundy shrink-0" />
-          <span className="text-gray-700 font-normal">Deliver to:</span>
-          <span className="truncate max-w-[180px] font-outfit text-brand-burgundy">
-            {selectedPlace?.name || 'Select Location'}
+          <span className="text-gray-600 font-normal">Deliver:</span>
+          <span className="truncate max-w-[120px] font-outfit text-brand-burgundy font-semibold">
+            {selectedPlace?.name || 'Kerala Hubs'}
           </span>
           <ChevronDown className="w-3 h-3 text-gray-500 shrink-0" />
         </button>
-        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-          {selectedPlace?.type === 'store' ? 'Store Pickup' : 'Express'}
-        </span>
+
+        <a
+          href="tel:+919895363788"
+          className="flex items-center gap-1 text-[10px] font-bold text-brand-burgundy bg-brand-cream/70 hover:bg-brand-cream px-2 py-0.5 rounded-full transition shrink-0"
+          title="Direct Factory Helpline: 9895363788"
+        >
+          <Phone className="w-2.5 h-2.5 text-brand-burgundy" />
+          <span>Call 9895363788</span>
+        </a>
       </div>
 
     </>
