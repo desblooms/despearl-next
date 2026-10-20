@@ -243,6 +243,36 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
           </div>
         </div>
       </div>
+
+      {/* 3. Header Trending Keywords & Kerala Categories Strip */}
+      <div className="hidden lg:block bg-brand-cream/30 border-b border-brand-cream/60 py-1.5 px-4 md:px-6 overflow-x-auto no-scrollbar">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4 text-[11px]">
+          <div className="flex items-center gap-2 truncate">
+            <span className="text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0 text-[10px]">
+              <Sparkles className="w-3 h-3 text-[#dfa054]" /> Trending:
+            </span>
+            <div className="flex items-center gap-2.5 text-gray-600 font-medium truncate">
+              <Link href="/search?q=Sofa+Sets+Kerala" className="hover:text-brand-burgundy transition">Sofas in Kerala</Link>
+              <span className="text-gray-300 select-none">•</span>
+              <Link href="/search?q=King+Size+Bed" className="hover:text-brand-burgundy transition">King Size Beds</Link>
+              <span className="text-gray-300 select-none">•</span>
+              <Link href="/search?q=Dining+Table" className="hover:text-brand-burgundy transition">Marble Dining Sets</Link>
+              <span className="text-gray-300 select-none">•</span>
+              <Link href="/search?q=Teak+Wood" className="hover:text-brand-burgundy transition">Teak Wood Cots</Link>
+              <span className="text-gray-300 select-none">•</span>
+              <Link href="/search?q=Wardrobe" className="hover:text-brand-burgundy transition">Wardrobes</Link>
+              <span className="text-gray-300 select-none">•</span>
+              <Link href="/search?q=Office+Chair" className="hover:text-brand-burgundy transition">Ergonomic Chairs</Link>
+              <span className="text-gray-300 select-none">•</span>
+              <Link href="/search?q=Gruhapravesam" className="hover:text-brand-burgundy transition">Gruhapravesam Packages</Link>
+            </div>
+          </div>
+          <div className="shrink-0 flex items-center gap-2 text-gray-500 font-semibold text-[10px]">
+            <MapPin className="w-3 h-3 text-brand-burgundy" />
+            <span>Kochi • Calicut • Trivandrum • Thrissur</span>
+          </div>
+        </div>
+      </div>
     </header>
 
       {/* 3. Mobile Location Bar (Visible on mobile under header - non-sticky) */}
