@@ -522,6 +522,11 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                       <ChevronRight className="w-3 h-3 text-amber-700" /> 5-Year Factory Warranty
                     </Link>
                   </li>
+                  <li>
+                    <Link href="/faqs" className="text-amber-800 font-bold hover:underline transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> FAQs &amp; AI Help Guide
+                    </Link>
+                  </li>
                 </ul>
               </div>
 
@@ -686,6 +691,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                 <Link href="/categories" className="text-gray-600 hover:text-gray-900 transition">All Categories</Link>
                 <Link href="/search" className="text-gray-600 hover:text-gray-900 transition">Search Catalog</Link>
                 <Link href="/orders" className="text-gray-600 hover:text-gray-900 transition">Order Tracking</Link>
+                <Link href="/faqs" className="text-gray-600 hover:text-gray-900 transition">FAQs</Link>
                 <Link href="/profile" className="text-gray-600 hover:text-gray-900 transition">Account</Link>
               </div>
             </div>
