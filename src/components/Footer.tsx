@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
 import { getOptimizedImageUrl } from '@/utils/image';
+import SeoEnhancer from '@/components/SeoEnhancer';
 
 // ── Static Keywords & Data ──
 
@@ -239,7 +240,11 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
           COMPREHENSIVE STATIC SITE FOOTER (DESKTOP & MOBILE)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {!hideFullFooter && (
-        <footer className="w-full bg-[#111215] text-gray-300 border-t border-white/10 pt-12 md:pt-16 pb-24 md:pb-12 text-xs md:text-sm select-none">
+        <>
+          {/* 🚀 STATIC AI-FIRST SEO ENHANCER MODULE (AI OVERVIEWS / SGE / PERPLEXITY / FAQ SCHEMA) */}
+          <SeoEnhancer />
+
+          <footer className="w-full bg-[#111215] text-gray-300 border-t border-white/10 pt-12 md:pt-16 pb-24 md:pb-12 text-xs md:text-sm select-none">
           
           {/* 🌟 PINTEREST CUSTOM FURNITURE & KERALA'S LARGEST SOFA FACTORY HERO BANNER */}
           <div className="max-w-[1440px] mx-auto px-4 md:px-6 mb-12">
@@ -683,6 +688,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
           </div>
 
         </footer>
+        </>
       )}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
