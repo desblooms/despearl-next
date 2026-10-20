@@ -240,34 +240,34 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
           COMPREHENSIVE STATIC SITE FOOTER (DESKTOP & MOBILE)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {!hideFullFooter && (
-        <footer className="w-full bg-[#111215] text-gray-300 border-t border-white/10 pt-12 md:pt-16 pb-24 md:pb-12 text-xs md:text-sm select-none">
+        <footer className="w-full bg-white text-gray-700 border-t border-gray-200 pt-12 md:pt-16 pb-24 md:pb-12 text-xs md:text-sm select-none">
           
           {/* PINTEREST CUSTOM FURNITURE & KERALA'S LARGEST SOFA FACTORY HERO BANNER */}
           <div className="max-w-[1440px] mx-auto px-4 md:px-6 mb-12">
-            <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#1c1815] via-[#241a15] to-[#161311] border border-[#dfa054]/30 p-6 md:p-10 shadow-2xl">
+            <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-r from-[#FFFDF9] via-[#FAF6EE] to-[#FFF9F0] border border-[#E8DEC8] p-6 md:p-10 shadow-xs">
               <div className="absolute top-0 right-0 w-96 h-96 bg-[#dfa054]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
 
               <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 md:gap-8">
                 <div className="max-w-2xl space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#dfa054]/20 border border-[#dfa054]/40 text-[#dfa054] text-[11px] font-bold uppercase tracking-wider">
-                    <Factory className="w-3.5 h-3.5" />
-                    <span>Kerala's Largest Furniture & Custom Sofa Factory</span>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-bold uppercase tracking-wider">
+                    <Factory className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Kerala's Largest Furniture &amp; Custom Sofa Factory</span>
                   </div>
 
-                  <h3 className="text-xl md:text-3xl font-black font-outfit text-white tracking-tight leading-tight">
+                  <h3 className="text-xl md:text-3xl font-black font-outfit text-gray-900 tracking-tight leading-tight">
                     Saw a Design on Pinterest or Instagram? <br />
-                    <span className="text-[#dfa054]">We Custom-Manufacture Any Furniture For You!</span>
+                    <span className="text-[#a06822]">We Custom-Manufacture Any Furniture For You!</span>
                   </h3>
 
-                  <p className="text-gray-300 text-xs md:text-sm leading-relaxed">
+                  <p className="text-gray-700 text-xs md:text-sm leading-relaxed">
                     Share any picture, sketch, or Pinterest link with our factory master craftsmen. We manufacture custom luxury sofas, solid teak wood cots, dining tables, and modular interiors to your exact room dimensions &mdash; with 100% solid wood and direct factory pricing (zero showroom middleman markups).
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-4 pt-1 text-[11px] text-gray-300 font-medium">
-                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#dfa054]" /> Direct Factory Prices</span>
-                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#dfa054]" /> Custom Sizes & Colors</span>
-                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#dfa054]" /> 100% Solid Teak Guarantee</span>
-                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#dfa054]" /> Delivery Across All Kerala</span>
+                  <div className="flex flex-wrap items-center gap-4 pt-1 text-[11px] text-gray-700 font-medium">
+                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Direct Factory Prices</span>
+                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Custom Sizes &amp; Colors</span>
+                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> 100% Solid Teak Guarantee</span>
+                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Delivery Across All Kerala</span>
                   </div>
                 </div>
 
@@ -277,7 +277,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs md:text-sm shadow-lg hover:shadow-emerald-600/30 transition-all active:scale-95 group"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs md:text-sm shadow-xs hover:shadow-emerald-600/20 transition-all active:scale-95 group"
                   >
                     <MessageCircle className="w-4 h-4 fill-white text-emerald-600" />
                     <span>WhatsApp Your Pinterest Design</span>
@@ -285,9 +285,9 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
 
                   <a
                     href={phoneTel}
-                    className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs md:text-sm transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 font-bold text-xs md:text-sm transition-all active:scale-95 shadow-3xs"
                   >
-                    <Phone className="w-4 h-4 text-[#dfa054]" />
+                    <Phone className="w-4 h-4 text-amber-700" />
                     <span>Call Factory: {phoneDisplay}</span>
                   </a>
                 </div>
@@ -295,148 +295,148 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
             </div>
           </div>
 
-          {/* Trust Highlights Bar */}
-          <div className="max-w-[1440px] mx-auto px-4 md:px-6 pb-12 border-b border-white/10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#dfa054] shrink-0">
+          {/* Trust Highlights Bar (Nykaa & Myntra Style) */}
+          <div className="max-w-[1440px] mx-auto px-4 md:px-6 pb-12 border-b border-gray-200">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              <div className="flex items-start gap-3.5 p-4 rounded-xl bg-[#FAFAFA] border border-gray-200">
+                <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-amber-700 shrink-0 shadow-3xs">
                   <Factory className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-sm mb-0.5">Direct Factory Pricing</h4>
-                  <p className="text-gray-400 text-xs leading-relaxed">Kerala's largest direct sofa & furniture factory. Zero middleman markup.</p>
+                  <h4 className="text-gray-900 font-bold text-sm mb-0.5">Direct Factory Pricing</h4>
+                  <p className="text-gray-600 text-xs leading-relaxed">Kerala's largest direct sofa &amp; furniture factory. Zero middleman markup.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#dfa054] shrink-0">
+              <div className="flex items-start gap-3.5 p-4 rounded-xl bg-[#FAFAFA] border border-gray-200">
+                <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-amber-700 shrink-0 shadow-3xs">
                   <Palette className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-sm mb-0.5">All Pinterest Designs</h4>
-                  <p className="text-gray-400 text-xs leading-relaxed">Send us any photo; we custom manufacture to your exact room size.</p>
+                  <h4 className="text-gray-900 font-bold text-sm mb-0.5">All Pinterest Designs</h4>
+                  <p className="text-gray-600 text-xs leading-relaxed">Send us any photo; we custom manufacture to your exact room size.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#dfa054] shrink-0">
+              <div className="flex items-start gap-3.5 p-4 rounded-xl bg-[#FAFAFA] border border-gray-200">
+                <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-amber-700 shrink-0 shadow-3xs">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-sm mb-0.5">100% Solid Wood</h4>
-                  <p className="text-gray-400 text-xs leading-relaxed">Authentic Teak, Mahogany & Rosewood treated for coastal longevity.</p>
+                  <h4 className="text-gray-900 font-bold text-sm mb-0.5">100% Solid Wood</h4>
+                  <p className="text-gray-600 text-xs leading-relaxed">Authentic Teak, Mahogany &amp; Rosewood treated for coastal longevity.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#dfa054] shrink-0">
+              <div className="flex items-start gap-3.5 p-4 rounded-xl bg-[#FAFAFA] border border-gray-200">
+                <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-amber-700 shrink-0 shadow-3xs">
                   <Truck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-sm mb-0.5">Kerala-Wide Delivery</h4>
-                  <p className="text-gray-400 text-xs leading-relaxed">Free doorstep delivery & assembly across all 14 districts in Kerala.</p>
+                  <h4 className="text-gray-900 font-bold text-sm mb-0.5">Kerala-Wide Delivery</h4>
+                  <p className="text-gray-600 text-xs leading-relaxed">Free doorstep delivery &amp; assembly across all 14 districts in Kerala.</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Main Footer Navigation Links */}
-          <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-12 border-b border-white/10">
+          {/* Main Footer Navigation Links (Nykaa / Myntra Directory Style) */}
+          <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-12 border-b border-gray-200">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
               
               {/* Brand & Factory Identity with Logo */}
               <div className="lg:col-span-2 space-y-4">
                 
-                {/* LOGO IN FOOTER */}
+                {/* LOGO IN FOOTER - Clean on White */}
                 <Link href="/" className="inline-flex items-center gap-2 group">
                   {logoUrl ? (
                     <img 
                       src={getOptimizedImageUrl(logoUrl, 220, 90)} 
                       alt="Despearl – Kerala's Largest Furniture & Custom Sofa Factory" 
-                      className="h-10 md:h-14 object-contain brightness-0 invert group-hover:opacity-90 transition" 
+                      className="h-10 md:h-14 object-contain group-hover:opacity-90 transition" 
                     />
                   ) : (
                     <div className="flex items-center gap-2">
                       <img 
                         src="/despearl.png" 
                         alt="Despearl Logo" 
-                        className="h-9 md:h-12 object-contain brightness-0 invert group-hover:opacity-90 transition"
+                        className="h-9 md:h-12 object-contain group-hover:opacity-90 transition"
                         onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                       />
-                      <span className="font-black text-2xl md:text-3xl tracking-tight text-white font-outfit">
+                      <span className="font-black text-2xl md:text-3xl tracking-tight text-gray-900 font-outfit">
                         DESPEARL
                       </span>
                     </div>
                   )}
-                  <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-sm bg-[#dfa054]/20 text-[#dfa054] border border-[#dfa054]/30">
+                  <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-sm bg-amber-100 text-amber-900 border border-amber-300">
                     Factory Direct
                   </span>
                 </Link>
 
-                <p className="text-gray-300 text-xs md:text-sm leading-relaxed max-w-md">
-                  <strong className="text-white">Despearl is Kerala’s largest and best direct furniture factory and custom sofa manufacturer.</strong> Specializing in all types of trending Pinterest-inspired furniture, bespoke luxury sofa sets, solid Nilambur teak cots, and marble dining sets &mdash; handcrafted in-house to your custom dimensions at direct factory prices.
+                <p className="text-gray-700 text-xs md:text-sm leading-relaxed max-w-md">
+                  <strong className="text-gray-900">Despearl is Kerala’s largest and best direct furniture factory and custom sofa manufacturer.</strong> Specializing in all types of trending Pinterest-inspired furniture, bespoke luxury sofa sets, solid Nilambur teak cots, and marble dining sets &mdash; handcrafted in-house to your custom dimensions at direct factory prices.
                 </p>
 
-                <div className="pt-2 space-y-2 text-xs text-gray-400">
+                <div className="pt-2 space-y-2 text-xs text-gray-600">
                   <div className="flex items-center gap-2.5">
-                    <Phone className="w-4 h-4 text-[#dfa054] shrink-0" />
-                    <span className="text-white font-semibold">Direct Factory Orders: </span>
-                    <a href={phoneTel} className="text-[#dfa054] hover:underline font-bold text-sm tracking-wide">
+                    <Phone className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span className="text-gray-900 font-semibold">Direct Factory Orders: </span>
+                    <a href={phoneTel} className="text-amber-800 hover:underline font-bold text-sm tracking-wide">
                       {phoneDisplay}
                     </a>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>WhatsApp Designs: </span>
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline font-semibold">
+                    <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span className="text-gray-900 font-medium">WhatsApp Designs: </span>
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-700 hover:underline font-semibold">
                       +91 9895363788 (Instant Photo Quote)
                     </a>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <MapPin className="w-4 h-4 text-[#dfa054] shrink-0" />
-                    <span>Factory & Showrooms serving Kochi, Calicut, Malappuram, Thrissur, Palakkad & All Kerala</span>
+                    <MapPin className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span>Factory &amp; Showrooms serving Kochi, Calicut, Malappuram, Thrissur, Palakkad &amp; All Kerala</span>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <Clock className="w-4 h-4 text-[#dfa054] shrink-0" />
-                    <span>Support: Mon – Sat (9:00 AM – 8:30 PM IST)</span>
+                    <Clock className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span>Support: Mon &ndash; Sat (9:00 AM &ndash; 8:30 PM IST)</span>
                   </div>
                 </div>
               </div>
 
               {/* Quick Navigation */}
               <div>
-                <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 font-outfit">
-                  Quick Links
+                <h4 className="text-gray-900 font-bold text-xs uppercase tracking-wider mb-4 font-outfit">
+                  Online Shopping
                 </h4>
                 <ul className="space-y-2.5 text-xs">
                   <li>
-                    <Link href="/" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Home
+                    <Link href="/" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Home
                     </Link>
                   </li>
                   <li>
-                    <Link href="/categories" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Shop by Categories
+                    <Link href="/categories" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Shop by Categories
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> New Arrivals
+                    <Link href="/search" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> New Arrivals
                     </Link>
                   </li>
                   <li>
-                    <Link href="/reels" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Video Showcase & Reels
+                    <Link href="/reels" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Video Showcase &amp; Reels
                     </Link>
                   </li>
                   <li>
-                    <Link href="/cart" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Shopping Bag
+                    <Link href="/cart" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Shopping Bag
                     </Link>
                   </li>
                   <li>
-                    <Link href="/wishlist" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Wishlist
+                    <Link href="/wishlist" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Wishlist
                     </Link>
                   </li>
                 </ul>
@@ -444,82 +444,82 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
 
               {/* Top Furniture Categories */}
               <div>
-                <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 font-outfit">
-                  Factory Categories
+                <h4 className="text-gray-900 font-bold text-xs uppercase tracking-wider mb-4 font-outfit">
+                  Factory Collections
                 </h4>
                 <ul className="space-y-2.5 text-xs">
                   <li>
-                    <Link href="/search?q=Custom+Sofa" className="hover:text-white transition flex items-center gap-1.5 font-semibold text-[#dfa054]">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Custom Sofa Manufacturing
+                    <Link href="/search?q=Custom+Sofa" className="text-amber-800 font-bold hover:underline transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Custom Sofa Manufacturing
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Pinterest+Furniture" className="hover:text-white transition flex items-center gap-1.5 font-semibold text-[#dfa054]">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Pinterest Furniture Designs
+                    <Link href="/search?q=Pinterest+Furniture" className="text-amber-800 font-bold hover:underline transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Pinterest Furniture Designs
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Sofa" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Living Room & Couches
+                    <Link href="/search?q=Sofa" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Living Room &amp; Couches
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Bed" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Solid Teak Cots & Beds
+                    <Link href="/search?q=Bed" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Solid Teak Cots &amp; Beds
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Dining" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Marble Dining Sets
+                    <Link href="/search?q=Dining" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Marble Dining Sets
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Wardrobe" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Custom Wardrobes
+                    <Link href="/search?q=Wardrobe" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Custom Wardrobes
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Office" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Ergonomic Office Chairs
+                    <Link href="/search?q=Office" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Ergonomic Office Chairs
                     </Link>
                   </li>
                 </ul>
               </div>
 
-              {/* Customer Care & Direct Orders */}
+              {/* Customer Policies & Direct Orders */}
               <div>
-                <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 font-outfit">
-                  Factory Support
+                <h4 className="text-gray-900 font-bold text-xs uppercase tracking-wider mb-4 font-outfit">
+                  Customer Policies
                 </h4>
                 <ul className="space-y-2.5 text-xs">
                   <li>
-                    <a href={phoneTel} className="text-white font-bold hover:text-[#dfa054] transition flex items-center gap-1.5">
-                      <Phone className="w-3 h-3 text-[#dfa054]" /> Call: {phoneDisplay}
+                    <a href={phoneTel} className="text-gray-900 font-bold hover:text-amber-700 transition flex items-center gap-1.5">
+                      <Phone className="w-3 h-3 text-amber-700" /> Call: {phoneDisplay}
                     </a>
                   </li>
                   <li>
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-bold hover:underline transition flex items-center gap-1.5">
-                      <MessageCircle className="w-3 h-3 text-emerald-400" /> WhatsApp Custom Order
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-700 font-bold hover:underline transition flex items-center gap-1.5">
+                      <MessageCircle className="w-3 h-3 text-emerald-600" /> WhatsApp Custom Order
                     </a>
                   </li>
                   <li>
-                    <Link href="/orders" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Track My Order
+                    <Link href="/orders" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Track My Order
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Gruhapravesam" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> Gruhapravesam Offers
+                    <Link href="/search?q=Gruhapravesam" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> Gruhapravesam Offers
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Kerala" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> All 14 Districts Delivery
+                    <Link href="/search?q=Kerala" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> All 14 Districts Delivery
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search?q=Warranty" className="hover:text-white transition flex items-center gap-1.5">
-                      <ChevronRight className="w-3 h-3 text-[#dfa054]" /> 5-Year Factory Warranty
+                    <Link href="/search?q=Warranty" className="text-gray-600 hover:text-gray-900 transition flex items-center gap-1.5">
+                      <ChevronRight className="w-3 h-3 text-amber-700" /> 5-Year Factory Warranty
                     </Link>
                   </li>
                 </ul>
@@ -534,156 +534,160 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
           </div>
 
           {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              STATIC SEO KEYWORDS SECTION: KERALA AUDIENCE & ALL CATEGORIES
+              STATIC SEO KEYWORDS SECTION: KERALA AUDIENCE & ALL CATEGORIES (NYKAA/MYNTRA DIRECTORY STYLE)
               ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-          <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-12 border-b border-white/10 space-y-10">
-            
-            {/* Header for SEO Section */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="w-2 h-2 rounded-full bg-[#dfa054]"></span>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#dfa054]">
-                  Kerala's Premier Furniture & Sofa Factory &bull; Popular Searches
-                </span>
-              </div>
-              <h3 className="text-lg md:text-xl font-black font-outfit text-white tracking-tight">
-                Kerala’s Best Custom Sofa Manufacturers & Solid Wood Furniture Factory
-              </h3>
-              <p className="text-gray-400 text-xs mt-1 leading-relaxed max-w-3xl">
-                Direct factory prices on all Pinterest-inspired couches, Nilambur teak beds, and luxury dining tables. Serving Kochi, Calicut, Malappuram, Thrissur, Palakkad, Trivandrum, and all 14 districts across Kerala. Call/WhatsApp: <a href={phoneTel} className="text-[#dfa054] underline font-bold">{phoneDisplay}</a>.
-              </p>
-            </div>
-
-            {/* KERALA SERVICE HUBS & LOCATIONS */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#dfa054]" />
-                <h4 className="text-white font-bold text-sm tracking-wide font-outfit uppercase">
-                  Kerala Locations &amp; Major Service Hubs
-                </h4>
-              </div>
+          <div className="w-full bg-[#FAFAFA] border-t border-gray-200">
+            <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-12 space-y-10">
               
-              {/* Districts Tag Cloud */}
-              <div className="flex flex-wrap gap-2 text-xs">
-                {KERALA_DISTRICTS.map((dist, i) => (
-                  <Link
-                    key={i}
-                    href={`/search?q=${encodeURIComponent(dist.query + ' Furniture Factory')}`}
-                    className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-[#dfa054]/40 transition duration-200"
-                    title={`Buy custom furniture & sofas in ${dist.name}`}
-                  >
-                    Furniture {dist.name}
-                  </Link>
-                ))}
+              {/* Header for SEO Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-600"></span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800">
+                    Kerala's Premier Furniture &amp; Sofa Factory &bull; Popular Searches
+                  </span>
+                </div>
+                <h3 className="text-lg md:text-xl font-black font-outfit text-gray-900 tracking-tight">
+                  Kerala’s Best Custom Sofa Manufacturers &amp; Solid Wood Furniture Factory
+                </h3>
+                <p className="text-gray-600 text-xs mt-1 leading-relaxed max-w-3xl">
+                  Direct factory prices on all Pinterest-inspired couches, Nilambur teak beds, and luxury dining tables. Serving Kochi, Calicut, Malappuram, Thrissur, Palakkad, Trivandrum, and all 14 districts across Kerala. Call/WhatsApp: <a href={phoneTel} className="text-amber-800 underline font-bold">{phoneDisplay}</a>.
+                </p>
               </div>
 
-              {/* Kerala Popular Search Phrases */}
-              <div className="pt-2">
-                <span className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
-                  Popular Searches Across Kerala:
-                </span>
-                <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-gray-400 leading-relaxed">
-                  {KERALA_POPULAR_SEARCHES.map((item, idx) => (
-                    <React.Fragment key={idx}>
-                      <Link
-                        href={`/search?q=${encodeURIComponent(item.query)}`}
-                        className="hover:text-[#dfa054] hover:underline transition"
-                      >
-                        {item.text}
-                      </Link>
-                      {idx < KERALA_POPULAR_SEARCHES.length - 1 && (
-                        <span className="text-white/20 select-none">&bull;</span>
-                      )}
-                    </React.Fragment>
+              {/* KERALA SERVICE HUBS & LOCATIONS */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-amber-700" />
+                  <h4 className="text-gray-900 font-bold text-xs uppercase tracking-wider font-outfit">
+                    Kerala Locations &amp; Major Service Hubs
+                  </h4>
+                </div>
+                
+                {/* Districts Tag Cloud (Nykaa/Myntra Clean Pill Buttons) */}
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {KERALA_DISTRICTS.map((dist, i) => (
+                    <Link
+                      key={i}
+                      href={`/search?q=${encodeURIComponent(dist.query + ' Furniture Factory')}`}
+                      className="px-3 py-1.5 rounded-md bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900 border border-gray-200 font-medium shadow-3xs transition duration-200"
+                      title={`Buy custom furniture & sofas in ${dist.name}`}
+                    >
+                      Furniture {dist.name}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Kerala Popular Search Phrases */}
+                <div className="pt-2">
+                  <span className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-2">
+                    Popular Searches Across Kerala:
+                  </span>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-gray-600 leading-relaxed">
+                    {KERALA_POPULAR_SEARCHES.map((item, idx) => (
+                      <React.Fragment key={idx}>
+                        <Link
+                          href={`/search?q=${encodeURIComponent(item.query)}`}
+                          className="hover:text-gray-900 hover:underline transition"
+                        >
+                          {item.text}
+                        </Link>
+                        {idx < KERALA_POPULAR_SEARCHES.length - 1 && (
+                          <span className="text-gray-300 select-none">&bull;</span>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* BLOCK 2: ALL CATEGORY KEYWORDS DIRECTORY */}
+              <div className="space-y-6 pt-6 border-t border-gray-200">
+                <div className="flex items-center gap-2">
+                  <LayoutGrid className="w-4 h-4 text-amber-700" />
+                  <h4 className="text-gray-900 font-bold text-xs uppercase tracking-wider font-outfit">
+                    Furniture Categories &amp; Custom Manufacturing Directory
+                  </h4>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
+                  {CATEGORY_KEYWORDS.map((catGroup, cIdx) => (
+                    <div key={cIdx} className="space-y-2.5">
+                      <h5 className="text-gray-900 font-bold text-xs uppercase tracking-wider font-outfit border-b border-gray-200 pb-1.5">
+                        {catGroup.category}
+                      </h5>
+                      <ul className="space-y-1.5 text-xs">
+                        {catGroup.keywords.map((kw, kIdx) => (
+                          <li key={kIdx}>
+                            <Link
+                              href={`/search?q=${encodeURIComponent(kw.query)}`}
+                              className="text-gray-600 hover:text-gray-900 hover:underline transition leading-relaxed block truncate"
+                              title={kw.text}
+                            >
+                              {kw.text}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
                 </div>
               </div>
-            </div>
 
-            {/* BLOCK 2: ALL CATEGORY KEYWORDS DIRECTORY */}
-            <div className="space-y-6 pt-6 border-t border-white/10">
-              <div className="flex items-center gap-2">
-                <LayoutGrid className="w-4 h-4 text-[#dfa054]" />
-                <h4 className="text-white font-bold text-sm tracking-wide font-outfit uppercase">
-                  Furniture Categories &amp; Custom Manufacturing Directory
-                </h4>
-              </div>
+              {/* BLOCK 3: AUDIENCE & BUYER COLLECTIONS */}
+              <div className="space-y-4 pt-6 border-t border-gray-200">
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-amber-700" />
+                  <h4 className="text-gray-900 font-bold text-xs uppercase tracking-wider font-outfit">
+                    Tailored Collections by Audience &amp; Buyer Type
+                  </h4>
+                </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
-                {CATEGORY_KEYWORDS.map((catGroup, cIdx) => (
-                  <div key={cIdx} className="space-y-2.5">
-                    <h5 className="text-[#dfa054] font-bold text-xs uppercase tracking-wider font-outfit border-b border-white/10 pb-1.5">
-                      {catGroup.category}
-                    </h5>
-                    <ul className="space-y-1.5 text-xs">
-                      {catGroup.keywords.map((kw, kIdx) => (
-                        <li key={kIdx}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {AUDIENCE_TYPE_KEYWORDS.map((audGroup, aIdx) => (
+                    <div key={aIdx} className="space-y-2 border-l-2 border-amber-500 pl-3.5 bg-white p-3.5 rounded-r-xl border border-l-2 border-gray-200 border-l-amber-500 shadow-3xs">
+                      <h5 className="text-gray-900 font-bold text-xs font-outfit">
+                        {audGroup.audience}
+                      </h5>
+                      <p className="text-[11px] text-gray-600 leading-snug">
+                        {audGroup.description}
+                      </p>
+                      <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] pt-1">
+                        {audGroup.keywords.map((kw, kIdx) => (
                           <Link
+                            key={kIdx}
                             href={`/search?q=${encodeURIComponent(kw.query)}`}
-                            className="text-gray-400 hover:text-white hover:underline transition leading-relaxed block truncate"
-                            title={kw.text}
+                            className="text-gray-600 hover:text-amber-800 hover:underline transition"
                           >
                             {kw.text}
                           </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* BLOCK 3: AUDIENCE & BUYER COLLECTIONS */}
-            <div className="space-y-4 pt-6 border-t border-white/10">
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-[#dfa054]" />
-                <h4 className="text-white font-bold text-sm tracking-wide font-outfit uppercase">
-                  Tailored Collections by Audience &amp; Buyer Type
-                </h4>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {AUDIENCE_TYPE_KEYWORDS.map((audGroup, aIdx) => (
-                  <div key={aIdx} className="space-y-2 border-l-2 border-[#dfa054]/40 pl-3.5">
-                    <h5 className="text-white font-bold text-xs font-outfit">
-                      {audGroup.audience}
-                    </h5>
-                    <p className="text-[11px] text-gray-400 leading-snug">
-                      {audGroup.description}
-                    </p>
-                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] pt-1">
-                      {audGroup.keywords.map((kw, kIdx) => (
-                        <Link
-                          key={kIdx}
-                          href={`/search?q=${encodeURIComponent(kw.query)}`}
-                          className="text-gray-400 hover:text-[#dfa054] hover:underline transition"
-                        >
-                          {kw.text}
-                        </Link>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
+            </div>
           </div>
 
-          {/* Bottom Copyright & Legal Info */}
-          <div className="max-w-[1440px] mx-auto px-4 md:px-6 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
-            <div className="text-center md:text-left">
-              <p>© {new Date().getFullYear()} DESPEARL (FoxaCart Global). All Rights Reserved.</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">
-                Kerala's Largest Furniture & Custom Sofa Factory &bull; Direct Manufacturer Prices &bull; Helpline: <a href={phoneTel} className="text-[#dfa054] underline">{phoneDisplay}</a>
-              </p>
-            </div>
+          {/* Bottom Copyright & Legal Info (Myntra/Nykaa Style) */}
+          <div className="w-full bg-[#F5F5F6] border-t border-gray-200">
+            <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-600">
+              <div className="text-center md:text-left">
+                <p className="font-medium text-gray-700">&copy; {new Date().getFullYear()} DESPEARL (FoxaCart Global). All Rights Reserved.</p>
+                <p className="text-[11px] text-gray-500 mt-0.5">
+                  Kerala's Largest Furniture &amp; Custom Sofa Factory &bull; Direct Manufacturer Prices &bull; Helpline: <a href={phoneTel} className="text-amber-800 underline font-semibold">{phoneDisplay}</a>
+                </p>
+              </div>
 
-            <div className="flex items-center gap-6 text-[11px]">
-              <a href={phoneTel} className="text-[#dfa054] font-bold hover:underline">Direct Call: {phoneDisplay}</a>
-              <Link href="/categories" className="hover:text-white transition">All Categories</Link>
-              <Link href="/search" className="hover:text-white transition">Search Catalog</Link>
-              <Link href="/orders" className="hover:text-white transition">Order Tracking</Link>
-              <Link href="/profile" className="hover:text-white transition">Account</Link>
+              <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-2 text-[11px]">
+                <a href={phoneTel} className="text-amber-800 font-bold hover:underline">Direct Call: {phoneDisplay}</a>
+                <Link href="/categories" className="text-gray-600 hover:text-gray-900 transition">All Categories</Link>
+                <Link href="/search" className="text-gray-600 hover:text-gray-900 transition">Search Catalog</Link>
+                <Link href="/orders" className="text-gray-600 hover:text-gray-900 transition">Order Tracking</Link>
+                <Link href="/profile" className="text-gray-600 hover:text-gray-900 transition">Account</Link>
+              </div>
             </div>
           </div>
 
