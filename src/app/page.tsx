@@ -7,6 +7,7 @@ import HeroCarousel from '@/components/HeroCarousel';
 import { getOptimizedImageUrl } from '@/utils/image';
 import SmoothImage from '@/components/SmoothImage';
 import ReelsSection from '@/components/ReelsSection';
+import YouTubeSection from '@/components/YouTubeSection';
 
 export const dynamic = 'force-dynamic';
 async function fetchCategories() {
@@ -98,14 +99,28 @@ async function fetchReels() {
   }
 }
 
+async function fetchYouTubeVideos() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/youtube_videos.php`, {
+      cache: 'no-store',
+      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
+    });
+    const data = await res.json();
+    return data.status === 'success' ? data.data : [];
+  } catch (e) {
+    return [];
+  }
+}
+
 export default async function HomePage() {
-  const [categories, offers, { products, total }, settings, heroBanners, reels] = await Promise.all([
+  const [categories, offers, { products, total }, settings, heroBanners, reels, youtubeVideos] = await Promise.all([
     fetchCategories(),
     fetchOffers(),
     fetchProducts(24, 0),
     fetchSettings(),
     fetchHeroBanners(),
-    fetchReels()
+    fetchReels(),
+    fetchYouTubeVideos()
   ]);
 
   const newArrivals = products.slice(0, 8);
@@ -115,6 +130,7 @@ export default async function HomePage() {
   const showOffers = homeConfig.show_offers !== false;
   const showCategories = homeConfig.show_categories !== false;
   const showNewArrivals = homeConfig.show_new_arrivals !== false;
+  const showYoutubeVideos = homeConfig.show_youtube_videos !== false;
 
   const firstHeroBannerImage = (heroBanners && heroBanners.length > 0 && heroBanners[0].image) ? heroBanners[0].image : (homeConfig.hero_image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1000');
 
@@ -266,6 +282,13 @@ export default async function HomePage() {
             </div>
           );
         })()}
+
+        {/* YouTube Showcase Section */}
+        {showYoutubeVideos && youtubeVideos && youtubeVideos.length > 0 && (
+          <div className="-mx-4 md:-mx-6 px-4 md:px-6">
+            <YouTubeSection videos={youtubeVideos} />
+          </div>
+        )}
 
         {/* Reels Section */}
         {reels && reels.length > 0 && (
