@@ -3,43 +3,49 @@ import Link from 'next/link';
 import { PackageOpen } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/context/StoreContext';
-async function fetchCategories() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/categories.php`, { 
-      next: { revalidate: 300 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    return data.status === 'success' ? data.data : [];
-  } catch (e) {
-    return [];
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'https://app.votee.in/api/ecommerce';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://despearl.com';
+
+async function safeFetchJson(url: string, retries = 1): Promise<any> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(url, { 
+        next: { revalidate: 60 },
+        headers: { 'Origin': SITE_URL }
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      if (i === retries) {
+        console.error(`Fetch error for ${url}:`, e);
+      }
+    }
   }
+  return null;
+}
+
+async function fetchCategories() {
+  const data = await safeFetchJson(`${API_BASE}/categories.php`);
+  return data && data.status === 'success' && Array.isArray(data.data) ? data.data : [];
 }
 
 async function fetchProducts(catId?: string) {
-  try {
-    let url = `${process.env.NEXT_PUBLIC_API_BASE}/products.php?limit=100`;
-    if (catId) url += `&category_id=${catId}`;
-    const res = await fetch(url, { 
-      next: { revalidate: 60 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    if (data.status === 'success') {
-      const uniqueProducts = [];
-      const seen = new Set();
-      for (const p of data.data || []) {
-        if (!seen.has(p.id)) {
-          seen.add(p.id);
-          uniqueProducts.push(p);
-        }
+  let url = `${API_BASE}/products.php?limit=100`;
+  if (catId) url += `&category_id=${catId}`;
+  const data = await safeFetchJson(url);
+  if (data && data.status === 'success' && Array.isArray(data.data)) {
+    const uniqueProducts = [];
+    const seen = new Set();
+    for (const p of data.data) {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        uniqueProducts.push(p);
       }
-      return { products: uniqueProducts, total: uniqueProducts.length };
     }
-    return { products: [], total: 0 };
-  } catch (e) {
-    return { products: [], total: 0 };
+    return { products: uniqueProducts, total: uniqueProducts.length };
   }
+  return { products: [], total: 0 };
 }
 
 export default async function ShopPage({ params }: { params: Promise<{ catId?: string[] }> }) {

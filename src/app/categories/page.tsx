@@ -1,11 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'https://app.votee.in/api/ecommerce';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://despearl.com';
+
 async function fetchCategories() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/categories.php`, { 
+    const res = await fetch(`${API_BASE}/categories.php`, { 
       next: { revalidate: 300 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
+      headers: { 'Origin': SITE_URL }
     });
     const data = await res.json();
     return data.status === 'success' ? data.data : [];

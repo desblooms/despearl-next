@@ -715,6 +715,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
               {/* Home Tab */}
               <Link 
                 href="/" 
+                prefetch={false}
                 className="flex flex-col items-center justify-center gap-1 flex-1 transition"
               >
                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition duration-300 ${isHome ? 'bg-gray-900 text-white shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>

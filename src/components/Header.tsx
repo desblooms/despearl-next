@@ -124,7 +124,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               </button>
             )}
             
-             <Link href="/" className="font-black text-xl md:text-2xl tracking-tighter cursor-pointer text-gray-900 flex items-center font-outfit group">
+             <Link href="/" prefetch={false} className="font-black text-xl md:text-2xl tracking-tighter cursor-pointer text-gray-900 flex items-center font-outfit group">
               {logoUrl ? (
                 <img src={getOptimizedImageUrl(logoUrl, 160, 85)} alt="Store Logo" className="h-8 md:h-13 object-contain group-hover:opacity-90 transition" />
               ) : (
@@ -137,6 +137,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
           <nav id="app-header-desktop-nav" className="hidden md:flex items-center gap-8">
             <Link 
               href="/" 
+              prefetch={false}
               className={`font-bold text-xs uppercase tracking-widest cursor-pointer transition-all py-1 relative ${
                 isHome ? 'text-brand-burgundy font-black after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-brand-burgundy' : 'text-gray-600 hover:text-brand-burgundy'
               }`}
@@ -145,6 +146,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             </Link>
             <Link 
               href="/shop" 
+              prefetch={false}
               className={`font-bold text-xs uppercase tracking-widest cursor-pointer transition-all py-1 relative ${
                 isShop ? 'text-brand-burgundy font-black after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-brand-burgundy' : 'text-gray-600 hover:text-brand-burgundy'
               }`}
@@ -153,6 +155,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             </Link>
             <Link 
               href="/categories" 
+              prefetch={false}
               className={`font-bold text-xs uppercase tracking-widest cursor-pointer transition-all py-1 relative ${
                 isCategories ? 'text-brand-burgundy font-black after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-brand-burgundy' : 'text-gray-600 hover:text-brand-burgundy'
               }`}

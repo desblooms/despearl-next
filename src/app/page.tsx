@@ -9,108 +9,74 @@ import SmoothImage from '@/components/SmoothImage';
 import ReelsSection from '@/components/ReelsSection';
 import YouTubeSection from '@/components/YouTubeSection';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'https://app.votee.in/api/ecommerce';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://despearl.com';
+
+async function safeFetchJson(url: string, retries = 1): Promise<any> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(url, {
+        cache: 'no-store',
+        headers: { 'Origin': SITE_URL }
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      if (i === retries) {
+        console.error(`Fetch error for ${url}:`, e);
+      }
+    }
+  }
+  return null;
+}
 
 async function fetchCategories() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/categories.php`, {
-      next: { revalidate: 120 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    return data.status === 'success' ? data.data : [];
-  } catch (e) {
-    return [];
-  }
+  const data = await safeFetchJson(`${API_BASE}/categories.php`);
+  return data && data.status === 'success' && Array.isArray(data.data) ? data.data : [];
 }
 
 async function fetchOffers() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/offers.php`, {
-      next: { revalidate: 60 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    return data.status === 'success' ? data.data : [];
-  } catch (e) {
-    return [];
-  }
+  const data = await safeFetchJson(`${API_BASE}/offers.php`);
+  return data && data.status === 'success' && Array.isArray(data.data) ? data.data : [];
 }
 
 async function fetchProducts(limit = 24, offset = 0) {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/products.php?limit=${limit}&offset=${offset}`, {
-      next: { revalidate: 60 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    if (data.status === 'success') {
-      const uniqueProducts = [];
-      const seen = new Set();
-      for (const p of data.data || []) {
-        if (!seen.has(p.id)) {
-          seen.add(p.id);
-          uniqueProducts.push(p);
-        }
+  const data = await safeFetchJson(`${API_BASE}/products.php?limit=${limit}&offset=${offset}`);
+  if (data && data.status === 'success' && Array.isArray(data.data)) {
+    const uniqueProducts = [];
+    const seen = new Set();
+    for (const p of data.data) {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        uniqueProducts.push(p);
       }
-      return { products: uniqueProducts, total: uniqueProducts.length };
     }
-    return { products: [], total: 0 };
-  } catch (e) {
-    return { products: [], total: 0 };
+    return { products: uniqueProducts, total: uniqueProducts.length };
   }
+  return { products: [], total: 0 };
 }
 
 async function fetchSettings() {
-  try {
-    const res = await fetch(`https://admin.despearl.com/api/settings`, {
-      next: { revalidate: 60 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    return data.status === 'success' ? data.data : null;
-  } catch (e) {
-    return null;
-  }
+  const data = await safeFetchJson(`https://admin.despearl.com/api/settings`);
+  return data && data.status === 'success' ? data.data : null;
 }
 
 async function fetchHeroBanners() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/hero_banners.php`, {
-      next: { revalidate: 60 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    return data.status === 'success' ? data.data : [];
-  } catch (e) {
-    return [];
-  }
+  const data = await safeFetchJson(`${API_BASE}/hero_banners.php`);
+  return data && data.status === 'success' && Array.isArray(data.data) ? data.data : [];
 }
 
 async function fetchReels() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/reels.php`, {
-      next: { revalidate: 120 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    return data.status === 'success' ? data.data : [];
-  } catch (e) {
-    return [];
-  }
+  const data = await safeFetchJson(`${API_BASE}/reels.php`);
+  return data && data.status === 'success' && Array.isArray(data.data) ? data.data : [];
 }
 
 async function fetchYouTubeVideos() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/youtube_videos.php`, {
-      next: { revalidate: 120 },
-      headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
-    });
-    const data = await res.json();
-    return data.status === 'success' ? data.data : [];
-  } catch (e) {
-    return [];
-  }
+  const data = await safeFetchJson(`${API_BASE}/youtube_videos.php`);
+  return data && data.status === 'success' && Array.isArray(data.data) ? data.data : [];
 }
 
 export default async function HomePage() {
