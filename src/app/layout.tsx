@@ -120,7 +120,7 @@ const KERALA_META_KEYWORDS = [
   "executive office desks",
 
   // Factory Direct, Custom Sofa & Pinterest Keywords
-  "kerala largest furniture factory",
+  "kerala best furniture factory",
   "best sofa factory kerala",
   "custom sofa manufacturers kerala",
   "pinterest furniture makers kerala",
@@ -208,9 +208,9 @@ export default async function RootLayout({
   const jsonLdSchema = {
     "@context": "https://schema.org",
     "@type": "FurnitureStore",
-    "name": "Despearl – Kerala's Largest Furniture & Custom Sofa Factory",
+    "name": "Despearl – Kerala's Best Furniture & Custom Sofa Factory",
     "image": logoUrl ? getOptimizedImageUrl(logoUrl, 400, 85) : "https://despearl.com/despearl.png",
-    "description": "Kerala's largest direct furniture factory and custom sofa manufacturer. Bring any Pinterest or designer furniture to life at direct factory prices with free doorstep delivery across Kochi, Calicut, Malappuram, Thrissur, Palakkad, and all 14 districts of Kerala.",
+    "description": "Kerala's best direct furniture factory and custom sofa manufacturer. Bring any Pinterest or designer furniture to life at direct factory prices with free doorstep delivery across Kochi, Calicut, Malappuram, Thrissur, Palakkad, and all 14 districts of Kerala.",
     "url": "https://despearl.com",
     "telephone": "+91 9895363788",
     "priceRange": "$$",

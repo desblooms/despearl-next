@@ -67,7 +67,7 @@ const KERALA_POPULAR_SEARCHES = [
   { text: 'Doorstep Furniture Delivery All Kerala', query: 'Furniture Kerala' },
   
   // Factory Direct & Custom Pinterest Searches
-  { text: 'Kerala Largest Furniture Factory', query: 'Furniture Factory Kerala' },
+  { text: 'Kerala Best Furniture Factory', query: 'Best Furniture Factory Kerala' },
   { text: 'Custom Sofa Manufacturers Kerala', query: 'Custom Sofa' },
   { text: 'Pinterest Furniture Makers Kerala', query: 'Pinterest Furniture' },
   { text: 'Nilambur Teak Wood Furniture Online', query: 'Nilambur Teak' },
@@ -242,7 +242,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
       {!hideFullFooter && (
         <footer className="w-full bg-white text-gray-700 border-t border-gray-200 pt-12 md:pt-16 pb-24 md:pb-12 text-xs md:text-sm select-none">
           
-          {/* PINTEREST CUSTOM FURNITURE & KERALA'S LARGEST SOFA FACTORY HERO BANNER */}
+          {/* PINTEREST CUSTOM FURNITURE & KERALA'S BEST SOFA FACTORY HERO BANNER */}
           <div className="max-w-[1440px] mx-auto px-4 md:px-6 mb-12">
             <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-r from-[#FFFDF9] via-[#FAF6EE] to-[#FFF9F0] border border-[#E8DEC8] p-6 md:p-10 shadow-xs">
               <div className="absolute top-0 right-0 w-96 h-96 bg-[#dfa054]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
@@ -251,7 +251,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                 <div className="max-w-2xl space-y-3">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-bold uppercase tracking-wider">
                     <Factory className="w-3.5 h-3.5 text-amber-700" />
-                    <span>Kerala's Largest Furniture &amp; Custom Sofa Factory</span>
+                    <span>Kerala's Best Furniture &amp; Custom Sofa Factory</span>
                   </div>
 
                   <h3 className="text-xl md:text-3xl font-black font-outfit text-gray-900 tracking-tight leading-tight">
@@ -304,7 +304,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                 </div>
                 <div>
                   <h4 className="text-gray-900 font-bold text-sm mb-0.5">Direct Factory Pricing</h4>
-                  <p className="text-gray-600 text-xs leading-relaxed">Kerala's largest direct sofa &amp; furniture factory. Zero middleman markup.</p>
+                  <p className="text-gray-600 text-xs leading-relaxed">Kerala's best direct sofa &amp; furniture factory. Zero middleman markup.</p>
                 </div>
               </div>
 
@@ -352,7 +352,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                   {logoUrl ? (
                     <img 
                       src={getOptimizedImageUrl(logoUrl, 220, 90)} 
-                      alt="Despearl – Kerala's Largest Furniture & Custom Sofa Factory" 
+                      alt="Despearl – Kerala's Best Furniture & Custom Sofa Factory" 
                       className="h-10 md:h-14 object-contain group-hover:opacity-90 transition" 
                     />
                   ) : (
@@ -374,7 +374,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
                 </Link>
 
                 <p className="text-gray-700 text-xs md:text-sm leading-relaxed max-w-md">
-                  <strong className="text-gray-900">Despearl is Kerala’s largest and best direct furniture factory and custom sofa manufacturer.</strong> Specializing in all types of trending Pinterest-inspired furniture, bespoke luxury sofa sets, solid Nilambur teak cots, and marble dining sets &mdash; handcrafted in-house to your custom dimensions at direct factory prices.
+                  <strong className="text-gray-900">Despearl is Kerala’s best direct furniture factory and custom sofa manufacturer.</strong> Specializing in all types of trending Pinterest-inspired furniture, bespoke luxury sofa sets, solid Nilambur teak cots, and marble dining sets &mdash; handcrafted in-house to your custom dimensions at direct factory prices.
                 </p>
 
                 <div className="pt-2 space-y-2 text-xs text-gray-600">
@@ -682,7 +682,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
               <div className="text-center md:text-left">
                 <p className="font-medium text-gray-700">&copy; {new Date().getFullYear()} DESPEARL (FoxaCart Global). All Rights Reserved.</p>
                 <p className="text-[11px] text-gray-500 mt-0.5">
-                  Kerala's Largest Furniture &amp; Custom Sofa Factory &bull; Direct Manufacturer Prices &bull; Helpline: <a href={phoneTel} className="text-amber-800 underline font-semibold">{phoneDisplay}</a>
+                  Kerala's Best Furniture &amp; Custom Sofa Factory &bull; Direct Manufacturer Prices &bull; Helpline: <a href={phoneTel} className="text-amber-800 underline font-semibold">{phoneDisplay}</a>
                 </p>
               </div>
 

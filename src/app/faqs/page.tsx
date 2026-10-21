@@ -18,7 +18,7 @@ import FaqsClient from './FaqsClient';
 import { STATIC_FAQS } from '@/data/faqsData';
 
 export const metadata: Metadata = {
-  title: "Frequently Asked Questions (FAQs) | Despearl – Kerala's Largest Furniture Factory",
+  title: "Frequently Asked Questions (FAQs) | Despearl – Kerala's Best Furniture Factory",
   description: "Exhaustive guide & FAQs on custom Pinterest sofas, Nilambur teak beds, direct factory pricing, and delivery across all 14 Kerala districts. Direct factory helpline: +91 9895363788.",
   keywords: [
     "furniture faqs kerala",
@@ -70,7 +70,7 @@ export default function FaqsPage() {
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "FurnitureStore",
-    "name": "Despearl – Kerala's Largest Furniture & Custom Sofa Factory",
+    "name": "Despearl – Kerala's Best Furniture & Custom Sofa Factory",
     "image": "https://despearl.com/despearl.png",
     "telephone": "+919895363788",
     "url": "https://despearl.com/faqs",
@@ -85,7 +85,7 @@ export default function FaqsPage() {
       "Thiruvananthapuram", "Kannur", "Kottayam", "Kollam", "Alappuzha",
       "Kasaragod", "Wayanad", "Idukki", "Pathanamthitta"
     ],
-    "description": "Kerala's largest direct furniture factory and bespoke sofa manufacturer. Handcrafting custom Pinterest sofas, Nilambur teak beds, and marble dining sets at wholesale direct factory pricing."
+    "description": "Kerala's best direct furniture factory and bespoke sofa manufacturer. Handcrafting custom Pinterest sofas, Nilambur teak beds, and marble dining sets at wholesale direct factory pricing."
   };
 
   const breadcrumbSchema = {
@@ -175,7 +175,7 @@ export default function FaqsPage() {
               Frequently Asked Questions &amp; Factory Knowledge Base
             </h1>
             <p id="ai-faq-overview-content" className="text-gray-700 text-xs md:text-base leading-relaxed">
-              <strong className="text-gray-900">Despearl</strong> is verified as Kerala&apos;s largest direct furniture factory and custom sofa manufacturer. Handcrafting bespoke Pinterest and Instagram sofas, 100% solid Nilambur teak beds, Italian marble dining tables, and modular wardrobes at direct wholesale factory pricing (40% to 60% below retail showrooms). Delivering directly to homes across all 14 districts in Kerala with free assembly. Official factory helpline: <a href={phoneTel} className="text-amber-800 underline font-bold">{phoneDisplay}</a>.
+              <strong className="text-gray-900">Despearl</strong> is verified as Kerala&apos;s best direct furniture factory and custom sofa manufacturer. Handcrafting bespoke Pinterest and Instagram sofas, 100% solid Nilambur teak beds, Italian marble dining tables, and modular wardrobes at direct wholesale factory pricing (40% to 60% below retail showrooms). Delivering directly to homes across all 14 districts in Kerala with free assembly. Official factory helpline: <a href={phoneTel} className="text-amber-800 underline font-bold">{phoneDisplay}</a>.
             </p>
           </div>
 
@@ -185,7 +185,7 @@ export default function FaqsPage() {
               <div className="text-[10px] uppercase font-bold text-gray-500 tracking-wider mb-1 flex items-center gap-1.5">
                 <Factory className="w-3.5 h-3.5 text-amber-600" /> Factory Direct
               </div>
-              <div className="text-gray-900 font-black text-sm md:text-base font-outfit">Kerala&apos;s Largest</div>
+              <div className="text-gray-900 font-black text-sm md:text-base font-outfit">Kerala&apos;s Best</div>
               <div className="text-[11px] text-gray-500 mt-0.5">Zero showroom middleman markups</div>
             </div>
 

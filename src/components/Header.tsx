@@ -56,7 +56,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               <Factory className="w-3 h-3" /> Factory Direct
             </span>
             <span className="truncate opacity-95 font-outfit">
-              Kerala&apos;s Largest Furniture &amp; Custom Sofa Factory &bull; All Pinterest Designs Custom Made
+              Kerala&apos;s Best Furniture &amp; Custom Sofa Factory &bull; All Pinterest Designs Custom Made
             </span>
           </div>
 

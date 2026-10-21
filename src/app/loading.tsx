@@ -6,7 +6,7 @@ export default function RootLoading() {
     <div className="w-full min-h-[calc(100vh-140px)] flex flex-col justify-start">
       <LuxuryLoadingScreen 
         message="DESPEARL"
-        subtext="KERALA'S LARGEST FURNITURE FACTORY"
+        subtext="KERALA'S BEST FURNITURE FACTORY"
         fullScreen={false}
       />
       
