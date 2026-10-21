@@ -28,7 +28,41 @@ function isAllowedDomain(url: string): boolean {
   }
 }
 
-export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
+export const DEFAULT_HERO_BANNERS = [
+  {
+    id: 1,
+    image: 'https://admin.despearl.com/public/images/banner-1789217259-8116.png',
+    title: 'Modern Sofas',
+    subtitle: 'Elegant Design, Premium Comfort & Timeless Style.',
+    button_text: 'Shop Now',
+    link: '/categories',
+    sort_order: 0
+  },
+  {
+    id: 2,
+    image: 'https://admin.despearl.com/public/images/banner-1789199784-2464.webp',
+    title: 'Dining Tables',
+    subtitle: 'Modern Design, Lasting Quality & Elegant Style.',
+    button_text: 'Shop Now',
+    link: '/categories',
+    sort_order: 1
+  },
+  {
+    id: 3,
+    image: 'https://admin.despearl.com/public/images/banner-1789202089-1810.webp',
+    title: 'Premium Bed Frames',
+    subtitle: 'Elegant Design, Comfort & Timeless Luxury.',
+    button_text: 'Shop Now',
+    link: '/categories',
+    sort_order: 2
+  }
+];
+
+export default function HeroCarousel({ banners = [] }: { banners?: any[] }) {
+  const activeBanners = useMemo(() => {
+    return (banners && banners.length > 0) ? banners : DEFAULT_HERO_BANNERS;
+  }, [banners]);
+
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 5000, stopOnInteraction: false }), []);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 30 }, [autoplayPlugin]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,15 +87,11 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
 
-  if (!banners || banners.length === 0) {
-    return null;
-  }
-
   return (
     <div className="w-full relative aspect-[16/9] md:aspect-[1920/900] bg-brand-espresso overflow-hidden group">
       <div className="embla w-full h-full" ref={emblaRef}>
         <div className="embla__container flex w-full h-full">
-          {banners.map((banner, index) => {
+          {activeBanners.map((banner, index) => {
             const isFirst = index === 0;
             const bannerSrc = getOptimizedImageUrl(banner.image, 1920, 85);
             const canOptimize = isAllowedDomain(bannerSrc);
@@ -111,7 +141,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
       </div>
 
       {/* Controls */}
-      {banners.length > 1 && (
+      {activeBanners.length > 1 && (
         <>
           <button
             onClick={scrollPrev}
@@ -130,7 +160,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
 
           {/* Indicators */}
           <div className="absolute bottom-2 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-            {banners.map((_, i) => (
+            {activeBanners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => emblaApi && emblaApi.scrollTo(i)}

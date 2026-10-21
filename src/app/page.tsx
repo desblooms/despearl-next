@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/context/StoreContext';
-import HeroCarousel from '@/components/HeroCarousel';
+import HeroCarousel, { DEFAULT_HERO_BANNERS } from '@/components/HeroCarousel';
 import { getOptimizedImageUrl } from '@/utils/image';
 import SmoothImage from '@/components/SmoothImage';
 import ReelsSection from '@/components/ReelsSection';
@@ -17,10 +17,14 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://despearl.com';
 async function safeFetchJson(url: string, retries = 1): Promise<any> {
   for (let i = 0; i <= retries; i++) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
       const res = await fetch(url, {
         cache: 'no-store',
-        headers: { 'Origin': SITE_URL }
+        headers: { 'Origin': SITE_URL },
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
       if (res.ok) {
         return await res.json();
       }
@@ -65,8 +69,15 @@ async function fetchSettings() {
 }
 
 async function fetchHeroBanners() {
-  const data = await safeFetchJson(`${API_BASE}/hero_banners.php`);
-  return data && data.status === 'success' && Array.isArray(data.data) ? data.data : [];
+  try {
+    const data = await safeFetchJson(`${API_BASE}/hero_banners.php`);
+    if (data && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data;
+    }
+  } catch (e) {
+    console.error('Error fetching hero banners:', e);
+  }
+  return DEFAULT_HERO_BANNERS;
 }
 
 async function fetchReels() {
@@ -99,11 +110,13 @@ export default async function HomePage() {
   const showNewArrivals = homeConfig.show_new_arrivals !== false;
   const showYoutubeVideos = homeConfig.show_youtube_videos !== false;
 
+  const effectiveBanners = (heroBanners && heroBanners.length > 0) ? heroBanners : DEFAULT_HERO_BANNERS;
+
   return (
     <>
       {/* Hero Slider */}
       {showHero && (
-        <HeroCarousel banners={heroBanners} />
+        <HeroCarousel banners={effectiveBanners} />
       )}
 
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 w-full">
