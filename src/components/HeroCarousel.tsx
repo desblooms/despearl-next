@@ -81,8 +81,7 @@ export default function HeroCarousel({ banners = [] }: { banners: any[] }) {
                   fetchPriority={isFirst ? 'high' : 'auto'}
                   decoding={isFirst ? 'sync' : 'async'}
                   sizes="100vw"
-                  quality={85}
-                  unoptimized={!canOptimize}
+                  unoptimized={true}
                   className="object-cover object-bottom"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent md:from-black/60 md:via-black/30 md:to-transparent md:to-60% pointer-events-none"></div>
