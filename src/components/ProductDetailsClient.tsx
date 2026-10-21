@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function ProductDetailsClient({ product, relatedProducts = [] }: Props) {
-  const { toggleWishlist, isWished, addToCart, isInCart } = useStore();
+  const { toggleWishlist, isWished, addToCart, isInCart, canCheckoutProduct } = useStore();
   const router = useRouter();
   const [qty, setQty] = useState(1);
 
@@ -33,7 +33,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
   const [openAccordion, setOpenAccordion] = useState<string | null>('details');
   const [deliveryStatus, setDeliveryStatus] = useState<{ message: string; error?: boolean } | null>(null);
 
-  const inStock = Number(product.stock_quantity || 0) > 0;
+  const canCheckout = canCheckoutProduct ? canCheckoutProduct(product) : true;
 
   const cartProductSize = selectedSize || undefined;
   const cartProductColor = hasColors && selectedColor ? selectedColor.name : undefined;
@@ -82,6 +82,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
   };
 
   const handleCartClick = () => {
+    if (!canCheckout) return;
     if (inCart) {
       router.push('/cart');
       return;
@@ -250,11 +251,11 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               {wished ? 'Wishlisted' : 'Wishlist'}
             </button>
             <button
-              className={`flex-[2] h-12 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`}
+              className={`flex-[2] h-12 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm ${!canCheckout ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`}
               onClick={handleCartClick}
-              disabled={!inStock}
+              disabled={!canCheckout}
             >
-              {!inStock ? 'Out of Stock' : (inCart ? <><ShoppingBag className="w-4 h-4" /> Go to Cart</> : <><ShoppingBag className="w-4 h-4" /> Add to Cart</>)}
+              {!canCheckout ? 'Out of Stock' : (inCart ? <><ShoppingBag className="w-4 h-4" /> Go to Cart</> : <><ShoppingBag className="w-4 h-4" /> Add to Cart</>)}
             </button>
           </div>
 
@@ -579,11 +580,11 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
           <Heart className={`w-5 h-5 ${wished ? 'fill-brand-burgundy' : ''}`} />
         </button>
         <button
-          className={`flex-1 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.98] ${!inStock ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`}
+          className={`flex-1 rounded-sm font-bold text-white text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer active:scale-[0.98] ${!canCheckout ? 'bg-gray-300 cursor-not-allowed' : (inCart ? 'bg-gray-900 hover:bg-black' : 'bg-brand-burgundy hover:bg-brand-wine')}`}
           onClick={handleCartClick}
-          disabled={!inStock}
+          disabled={!canCheckout}
         >
-          {!inStock ? 'Out of Stock' : (inCart ? <><ShoppingBag className="w-5 h-5" /> Go to Cart</> : <><ShoppingBag className="w-5 h-5" /> Add to Cart</>)}
+          {!canCheckout ? 'Out of Stock' : (inCart ? <><ShoppingBag className="w-5 h-5" /> Go to Cart</> : <><ShoppingBag className="w-5 h-5" /> Add to Cart</>)}
         </button>
       </div>
     </div>

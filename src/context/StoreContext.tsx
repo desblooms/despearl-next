@@ -12,6 +12,7 @@ export type Product = {
   brand?: string;
   size?: string;
   color?: string;
+  extended_data?: any;
 };
 
 export type CartItem = Product & {
@@ -62,6 +63,8 @@ type StoreContextType = {
   setAuthOpen: (open: boolean) => void;
   authMode: 'login' | 'register';
   setAuthMode: (mode: 'login' | 'register') => void;
+  allowOutOfStockCheckout: boolean;
+  canCheckoutProduct: (product: Product) => boolean;
 };
 
 const DEFAULT_PLACE: Place = {
@@ -85,6 +88,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [allowOutOfStockCheckout, setAllowOutOfStockCheckout] = useState<boolean>(true); // Default: true (all products can checkout even if stock is zero)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -102,6 +106,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       } else {
         // Automatically fetch live user location if no saved place exists
         fetchUserLocation();
+      }
+
+      // Fetch global store checkout policy from API
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE;
+      if (apiBase) {
+        fetch(`${apiBase}/settings.php`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data?.status === 'success' && data?.data?.inventory) {
+              if (typeof data.data.inventory.allow_out_of_stock_checkout === 'boolean') {
+                setAllowOutOfStockCheckout(data.data.inventory.allow_out_of_stock_checkout);
+              }
+            }
+          })
+          .catch(() => {});
       }
     }
   }, []);
@@ -277,6 +296,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('foxa_user_token');
   };
 
+  const canCheckoutProduct = (product: Product): boolean => {
+    const rawStock = Number(product.stock_quantity ?? 0);
+    // If physical inventory is > 0, checkout is always allowed
+    if (rawStock > 0) return true;
+
+    // Check product specific override if set in extended_data
+    const ext = product.extended_data;
+    if (ext) {
+      if (ext.allow_out_of_stock_checkout === 'block') {
+        return false;
+      }
+      if (ext.allow_out_of_stock_checkout === 'allow') {
+        return true;
+      }
+    }
+
+    // Default to global store setting (defaults to true)
+    return allowOutOfStockCheckout;
+  };
+
   return (
     <StoreContext.Provider
       value={{
@@ -305,7 +344,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         authOpen,
         setAuthOpen,
         authMode,
-        setAuthMode
+        setAuthMode,
+        allowOutOfStockCheckout,
+        canCheckoutProduct
       }}
     >
       {children}

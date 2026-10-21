@@ -15,12 +15,12 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, horizontal = false }: ProductCardProps) {
-  const { toggleWishlist, isWished, addToCart, isInCart, toast } = useStore();
+  const { toggleWishlist, isWished, addToCart, isInCart, toast, canCheckoutProduct } = useStore();
   const router = useRouter();
 
   const wished = isWished(product.id);
   const inCart = isInCart(product.id);
-  const inStock = Number(product.stock_quantity || 0) > 0;
+  const canCheckout = canCheckoutProduct ? canCheckoutProduct(product) : true;
   
   const getImageUrl = (url: string | undefined) => {
     if (!url) return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f8f9fa'/%3E%3Ctext x='100' y='100' text-anchor='middle' fill='%2394a3b8' font-size='36'%3E📦%3C/text%3E%3C/svg%3E`;
@@ -41,7 +41,7 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!inStock) {
+    if (!canCheckout) {
       toast('Out of stock', 'alert-circle');
       return;
     }
@@ -75,7 +75,7 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
               (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23f8f9fa%22/%3E%3Ctext x=%22100%22 y=%22100%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2236%22%3E📦%3C/text%3E%3C/svg%3E`;
             }}
           />
-          {!inStock && (
+          {!canCheckout && (
             <span className="absolute top-2 left-2 bg-brand-espresso text-white text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-widest shadow-sm z-10">Sold Out</span>
           )}
         </div>
@@ -113,8 +113,8 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
                       : 'bg-white border border-brand-rose/30 hover:border-brand-burgundy text-gray-900 hover:text-brand-burgundy hover:bg-brand-burgundy/5 group-hover:border-brand-burgundy group-hover:text-brand-burgundy hover:scale-105'
                 }`} 
                 onClick={handleQuickAdd}
-                disabled={!inStock}
-                title={inCart ? "Go to Cart" : "Add to Bag"}
+                disabled={!canCheckout}
+                title={!canCheckout ? "Sold Out" : (inCart ? "Go to Cart" : "Add to Bag")}
                 aria-label={inCart ? "View shopping cart" : `Add ${product.name} to cart`}
               >
                 {/* Ripple ring on add */}
