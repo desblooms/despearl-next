@@ -1,25 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Lato, Outfit } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/context/StoreContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ClientProviders from "@/components/ClientProviders";
 import { getOptimizedImageUrl } from "@/utils/image";
-
-const lato = Lato({ 
-  subsets: ["latin"], 
-  weight: ["400", "700"], 
-  variable: "--font-lato",
-  display: "swap"
-});
-
-const outfit = Outfit({ 
-  subsets: ["latin"], 
-  weight: ["400", "600", "700", "800"], 
-  variable: "--font-outfit",
-  display: "swap"
-});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -276,6 +261,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
         <link rel="preconnect" href="https://admin.despearl.com" />
         <link rel="preconnect" href="https://app.votee.in" />
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
@@ -300,7 +291,7 @@ export default async function RootLayout({
           <link rel="preload" as="image" href={getOptimizedImageUrl(logoUrl, 160, 85)} fetchPriority="high" />
         )}
       </head>
-      <body className={`${lato.className} ${lato.variable} ${outfit.variable} min-h-screen w-full m-0 font-sans`}>
+      <body className="min-h-screen w-full m-0 font-sans">
         <StoreProvider>
           <div id="app" className="flex flex-col min-h-screen w-full mx-auto bg-white relative transition-all duration-300">
             <Header logoUrl={logoUrl} />

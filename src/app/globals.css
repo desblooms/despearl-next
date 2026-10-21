@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  --font-lato: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-outfit: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --background: #F2F1ED;
   --foreground: #161616;
   --brand-burgundy: #710014;
