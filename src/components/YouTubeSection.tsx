@@ -309,7 +309,7 @@ export default function YouTubeSection({
                     src={embedUrl}
                     title={video.title || "Video"}
                     onLoad={() => handleIframeLoad(video.id)}
-                    className="w-[325%] h-full max-w-none object-cover pointer-events-none border-0"
+                    className="w-full h-full object-cover pointer-events-none border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   />
                 </div>
