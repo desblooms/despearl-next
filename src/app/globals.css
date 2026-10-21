@@ -108,7 +108,7 @@ p {
   }
 
   .skel {
-    background-color: #f8f9fa;
+    background-color: #f7f6f2;
     position: relative;
     overflow: hidden;
   }
@@ -118,8 +118,37 @@ p {
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-    animation: skel-anim 1.5s infinite;
+    background-image: linear-gradient(
+      90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.5) 35%, 
+      rgba(212, 175, 55, 0.12) 50%, 
+      rgba(255, 255, 255, 0.6) 65%, 
+      transparent 100%
+    );
+    animation: skel-anim 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .skel-luxury {
+    background: #f5f4ef;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skel-luxury::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.45) 30%,
+      rgba(212, 175, 55, 0.16) 50%,
+      rgba(255, 255, 255, 0.65) 70%,
+      transparent 100%
+    );
+    animation: skel-luxury-anim 1.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
   .product-desc p {
@@ -152,4 +181,38 @@ p {
   100% {
     transform: translateX(100%);
   }
+}
+
+@keyframes skel-luxury-anim {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes luxury-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.88;
+    transform: scale(1.015);
+  }
+}
+
+.animate-luxury-pulse {
+  animation: luxury-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 14s linear infinite;
 }
