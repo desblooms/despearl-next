@@ -9,8 +9,9 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', 'embla-carousel-react'],
   },
   images: {
-    deviceSizes: [640, 1024, 1440],
-    imageSizes: [400, 800, 1200],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1440, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
@@ -18,7 +19,15 @@ const nextConfig: NextConfig = {
         hostname: 'admin.despearl.com',
       },
       {
+        protocol: 'http',
+        hostname: 'admin.despearl.com',
+      },
+      {
         protocol: 'https',
+        hostname: 'app.votee.in',
+      },
+      {
+        protocol: 'http',
         hostname: 'app.votee.in',
       },
       {
@@ -27,6 +36,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'despearl.com',
+      },
+      {
+        protocol: 'http',
         hostname: 'despearl.com',
       },
     ],

@@ -9,11 +9,12 @@ import SmoothImage from '@/components/SmoothImage';
 import ReelsSection from '@/components/ReelsSection';
 import YouTubeSection from '@/components/YouTubeSection';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
+
 async function fetchCategories() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/categories.php`, {
-      cache: 'no-store',
+      next: { revalidate: 120 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -26,7 +27,7 @@ async function fetchCategories() {
 async function fetchOffers() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/offers.php`, {
-      cache: 'no-store',
+      next: { revalidate: 60 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -39,7 +40,7 @@ async function fetchOffers() {
 async function fetchProducts(limit = 24, offset = 0) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/products.php?limit=${limit}&offset=${offset}`, {
-      cache: 'no-store',
+      next: { revalidate: 60 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -63,7 +64,7 @@ async function fetchProducts(limit = 24, offset = 0) {
 async function fetchSettings() {
   try {
     const res = await fetch(`https://admin.despearl.com/api/settings`, {
-      cache: 'no-store',
+      next: { revalidate: 60 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -76,7 +77,7 @@ async function fetchSettings() {
 async function fetchHeroBanners() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/hero_banners.php`, {
-      cache: 'no-store',
+      next: { revalidate: 60 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -89,7 +90,7 @@ async function fetchHeroBanners() {
 async function fetchReels() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/reels.php`, {
-      cache: 'no-store',
+      next: { revalidate: 120 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -102,7 +103,7 @@ async function fetchReels() {
 async function fetchYouTubeVideos() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/youtube_videos.php`, {
-      cache: 'no-store',
+      next: { revalidate: 120 },
       headers: { 'Origin': process.env.NEXT_PUBLIC_SITE_URL || '' }
     });
     const data = await res.json();
@@ -132,22 +133,8 @@ export default async function HomePage() {
   const showNewArrivals = homeConfig.show_new_arrivals !== false;
   const showYoutubeVideos = homeConfig.show_youtube_videos !== false;
 
-  const firstHeroBannerImage = (heroBanners && heroBanners.length > 0 && heroBanners[0].image) ? heroBanners[0].image : (homeConfig.hero_image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1000');
-
   return (
     <>
-      {/* Preload Primary LCP Hero Image for HTML scanner */}
-      {showHero && firstHeroBannerImage && (
-        <link
-          rel="preload"
-          as="image"
-          href={getOptimizedImageUrl(firstHeroBannerImage, 1920, 100)}
-          imageSrcSet={`${getOptimizedImageUrl(firstHeroBannerImage, 640, 100)} 640w, ${getOptimizedImageUrl(firstHeroBannerImage, 1024, 100)} 1024w, ${getOptimizedImageUrl(firstHeroBannerImage, 1920, 100)} 1920w`}
-          imageSizes="100vw"
-          fetchPriority="high"
-        />
-      )}
-
       {/* Hero Slider */}
       {showHero && (
         <HeroCarousel banners={heroBanners} />
