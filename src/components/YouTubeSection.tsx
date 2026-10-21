@@ -69,6 +69,25 @@ export default function YouTubeSection({
   const [selectedVideo, setSelectedVideo] = useState<YouTubeVideo | null>(null);
   // Modal loading state
   const [modalReady, setModalReady] = useState(false);
+  // Modal playback state (Zero native YouTube controls, custom Reel overlay)
+  const [modalPlaying, setModalPlaying] = useState(true);
+  const [modalMuted, setModalMuted] = useState(false);
+  const modalIframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  // Helper to send postMessage command to modal iframe
+  const sendModalCommand = useCallback((func: string, args: any[] = []) => {
+    const iframe = modalIframeRef.current;
+    if (iframe && iframe.contentWindow) {
+      try {
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func, args }),
+          '*'
+        );
+      } catch (e) {
+        // Ignored
+      }
+    }
+  }, []);
 
   // References to iframes for postMessage control
   const iframeRefs = useRef<Record<number, HTMLIFrameElement | null>>({});
@@ -100,6 +119,8 @@ export default function YouTubeSection({
   // Reset modal ready state when selected video changes
   useEffect(() => {
     setModalReady(false);
+    setModalPlaying(true);
+    setModalMuted(false);
   }, [selectedVideo]);
 
   // Handle iframe postMessages from YouTube API (listening for playback start and quality)
@@ -320,14 +341,17 @@ export default function YouTubeSection({
                   </div>
                 </div>
 
-                {/* Dark Gradient Overlay for optimal text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/20 pointer-events-none transition-opacity duration-300"></div>
+                {/* Dark Bottom Scrim Gradient for Razor-Sharp Text Contrast */}
+                <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none transition-opacity duration-300" />
+
+                {/* Top Subtle Vignette */}
+                <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
 
                 {/* Top-Right Mute Icon */}
-                <div className="absolute top-4 right-4 z-20">
+                <div className="absolute top-3.5 right-3.5 z-20">
                   <button
                     onClick={(e) => toggleCardMute(e, video.id)}
-                    className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md flex items-center justify-center text-white transition-all shadow-md pointer-events-auto"
+                    className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-black/50 hover:bg-black/80 border border-white/15 flex items-center justify-center text-white transition-all shadow-md pointer-events-auto"
                     aria-label={isMuted ? "Unmute" : "Mute"}
                     title={isMuted ? "Click to unmute" : "Click to mute"}
                   >
@@ -339,24 +363,37 @@ export default function YouTubeSection({
                   </button>
                 </div>
 
-                {/* Bottom Overlay: Title & "Watch Reels ▶" Button */}
-                <div className="absolute bottom-4 left-4 right-4 z-20 pointer-events-none">
-                  <h3 className="text-white font-bold text-sm sm:text-base leading-snug drop-shadow-md mb-2 line-clamp-2">
+                {/* Bottom Overlay: Category, Title & "Watch Reels ▶" Button */}
+                <div className="absolute bottom-4 left-4 right-4 z-20 pointer-events-none flex flex-col items-start">
+                  {/* Category / Badge */}
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#D4AF37] font-outfit">
+                      {video.badge_text || "Reels"}
+                    </span>
+                  </div>
+
+                  {/* High Quality Crisp Title */}
+                  <h3 
+                    className="text-white font-extrabold font-outfit text-[15px] sm:text-[17px] leading-[1.25] tracking-tight mb-3 line-clamp-2"
+                    style={{ textShadow: '0 2px 4px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.95)' }}
+                  >
                     {video.title}
                   </h3>
 
+                  {/* Clean High-Contrast Action Button */}
                   {video.button_link ? (
                     <Link
                       href={video.button_link}
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/80 hover:bg-black text-white text-xs font-semibold rounded-lg border border-white/10 shadow-md backdrop-blur-md transition-all group-hover:scale-105 pointer-events-auto"
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/90 hover:bg-black text-white text-[11px] sm:text-xs font-bold rounded-full border border-white/25 shadow-lg transition-all group-hover:scale-105 pointer-events-auto active:scale-95"
                     >
                       <span>{video.button_text || "Watch Reels"}</span>
                       <Play className="w-3 h-3 fill-white text-white" />
                     </Link>
                   ) : (
                     <div 
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/80 hover:bg-black text-white text-xs font-semibold rounded-lg border border-white/10 shadow-md backdrop-blur-md transition-all group-hover:scale-105 pointer-events-auto"
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/90 hover:bg-black text-white text-[11px] sm:text-xs font-bold rounded-full border border-white/25 shadow-lg transition-all group-hover:scale-105 pointer-events-auto"
                     >
                       <span>{video.button_text || "Watch Reels"}</span>
                       <Play className="w-3 h-3 fill-white text-white" />
@@ -372,7 +409,7 @@ export default function YouTubeSection({
       {/* Fullscreen Video Modal Lightbox (True 1080p HQ Playback) */}
       {selectedVideo && (
         <div 
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 md:p-6 animate-fadeIn"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-6 animate-fadeIn"
           onClick={() => setSelectedVideo(null)}
         >
           <div 
@@ -380,18 +417,18 @@ export default function YouTubeSection({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="px-5 py-4 flex items-center justify-between border-b border-white/10 bg-black/40">
+            <div className="px-5 py-4 flex items-center justify-between border-b border-white/10 bg-black/60">
               <div className="min-w-0 pr-4">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#D4AF37] bg-[#D4AF37]/15 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#D4AF37] bg-[#D4AF37]/15 px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30">
                     Full HD 1080p
                   </span>
                 </div>
-                <h3 className="text-white font-bold text-base md:text-lg truncate">
+                <h3 className="text-white font-extrabold font-outfit text-base md:text-lg tracking-tight truncate">
                   {selectedVideo.title}
                 </h3>
                 {selectedVideo.subtitle && (
-                  <p className="text-xs text-gray-400 truncate mt-0.5">
+                  <p className="text-xs text-neutral-300 font-medium truncate mt-0.5">
                     {selectedVideo.subtitle}
                   </p>
                 )}
@@ -405,17 +442,30 @@ export default function YouTubeSection({
               </button>
             </div>
 
-            {/* Video Player Container */}
-            <div className="relative aspect-[9/16] max-h-[70vh] md:max-h-[75vh] w-full bg-black mx-auto overflow-hidden">
+            {/* Video Player Container (Click to Play/Pause with Zero YouTube Controls) */}
+            <div 
+              className="relative aspect-[9/16] max-h-[70vh] md:max-h-[75vh] w-full bg-black mx-auto overflow-hidden cursor-pointer select-none group"
+              onClick={() => {
+                if (modalPlaying) {
+                  sendModalCommand('pauseVideo');
+                  setModalPlaying(false);
+                } else {
+                  sendModalCommand('playVideo');
+                  setModalPlaying(true);
+                }
+              }}
+            >
               {(() => {
                 const ytid = extractYouTubeId(selectedVideo.youtube_url);
                 const modalPoster = selectedVideo.thumbnail_url || `https://img.youtube.com/vi/${ytid}/maxresdefault.jpg`;
+                // YouTube embed with NO CONTROLS (controls=0, modestbranding=1, iv_load_policy=3, fs=0)
+                const modalEmbedUrl = `https://www.youtube-nocookie.com/embed/${ytid}?autoplay=1&mute=0&controls=0&loop=1&playlist=${ytid}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&vq=hd1080&hd=1`;
 
                 return (
                   <>
                     {/* Modal High Quality Loading Spinner */}
                     {!modalReady && (
-                      <div className="absolute inset-0 bg-neutral-950 z-10 flex flex-col items-center justify-center">
+                      <div className="absolute inset-0 bg-neutral-950 z-20 flex flex-col items-center justify-center pointer-events-none">
                         <img
                           src={modalPoster}
                           alt=""
@@ -433,14 +483,55 @@ export default function YouTubeSection({
                       </div>
                     )}
 
-                    <iframe
-                      src={`https://www.youtube-nocookie.com/embed/${ytid}?autoplay=1&mute=0&controls=1&rel=0&playsinline=1&vq=hd1080&hd=1&enablejsapi=1`}
-                      title={selectedVideo.title}
-                      onLoad={() => setModalReady(true)}
-                      className="w-full h-full object-contain border-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
+                    {/* YouTube Iframe - 100% Zero YouTube Controls & Zero Click Interception */}
+                    <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center bg-black pointer-events-none">
+                      <iframe
+                        ref={modalIframeRef}
+                        src={modalEmbedUrl}
+                        title={selectedVideo.title}
+                        onLoad={() => {
+                          setModalReady(true);
+                          sendModalCommand('setPlaybackQuality', ['hd1080']);
+                          sendModalCommand('setPlaybackQualityRange', ['hd1080', 'highres']);
+                        }}
+                        className="w-full h-full object-contain pointer-events-none border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      />
+                    </div>
+
+                    {/* Top Right Floating Mute Button */}
+                    <div className="absolute top-4 right-4 z-30">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const nextMuted = !modalMuted;
+                          setModalMuted(nextMuted);
+                          if (nextMuted) {
+                            sendModalCommand('mute');
+                          } else {
+                            sendModalCommand('unMute');
+                            sendModalCommand('setVolume', [100]);
+                          }
+                        }}
+                        className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md flex items-center justify-center text-white transition-all shadow-md border border-white/10"
+                        aria-label={modalMuted ? "Unmute" : "Mute"}
+                      >
+                        {modalMuted ? (
+                          <VolumeX className="w-4 h-4 text-white" />
+                        ) : (
+                          <Volume2 className="w-4 h-4 text-white" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Floating Center Pause/Play Indicator */}
+                    {!modalPlaying && modalReady && (
+                      <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/35 pointer-events-none transition-all">
+                        <div className="w-16 h-16 rounded-full bg-black/70 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl">
+                          <Play className="w-7 h-7 fill-white text-white ml-1" />
+                        </div>
+                      </div>
+                    )}
                   </>
                 );
               })()}
