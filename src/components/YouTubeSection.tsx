@@ -63,8 +63,12 @@ export default function YouTubeSection({
   const [mutedMap, setMutedMap] = useState<Record<number, boolean>>({});
   // Track active playing state per video
   const [playingMap, setPlayingMap] = useState<Record<number, boolean>>({});
+  // Track which videos have loaded and are ready (to fade out poster cleanly)
+  const [videoReadyMap, setVideoReadyMap] = useState<Record<number, boolean>>({});
   // Active video for fullscreen modal
   const [selectedVideo, setSelectedVideo] = useState<YouTubeVideo | null>(null);
+  // Modal loading state
+  const [modalReady, setModalReady] = useState(false);
 
   // References to iframes for postMessage control
   const iframeRefs = useRef<Record<number, HTMLIFrameElement | null>>({});
@@ -93,6 +97,40 @@ export default function YouTubeSection({
     setMutedMap(initialMuted);
   }, [activeVideos]);
 
+  // Reset modal ready state when selected video changes
+  useEffect(() => {
+    setModalReady(false);
+  }, [selectedVideo]);
+
+  // Handle iframe postMessages from YouTube API (listening for playback start and quality)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        if (!data) return;
+
+        // When YouTube player state becomes 1 (PLAYING)
+        if (data.event === 'onStateChange' && data.info === 1) {
+          // Identify which video started playing
+          Object.entries(iframeRefs.current).forEach(([vidIdStr, iframe]) => {
+            if (iframe && iframe.contentWindow === event.source) {
+              const vidId = Number(vidIdStr);
+              setVideoReadyMap((prev) => ({ ...prev, [vidId]: true }));
+              // Force 1080p high quality playback
+              sendIframeCommand(vidId, 'setPlaybackQuality', ['hd1080']);
+              sendIframeCommand(vidId, 'setPlaybackQualityRange', ['hd1080', 'highres']);
+            }
+          });
+        }
+      } catch (e) {
+        // Not a JSON message or non-YouTube postMessage
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [sendIframeCommand]);
+
   // IntersectionObserver to only autoplay videos when in viewport
   useEffect(() => {
     if (!carouselRef.current) return;
@@ -106,6 +144,8 @@ export default function YouTubeSection({
 
           if (entry.isIntersecting) {
             sendIframeCommand(vidId, 'playVideo');
+            sendIframeCommand(vidId, 'setPlaybackQuality', ['hd1080']);
+            sendIframeCommand(vidId, 'setPlaybackQualityRange', ['hd1080', 'highres']);
             setPlayingMap((prev) => ({ ...prev, [vidId]: true }));
           } else {
             sendIframeCommand(vidId, 'pauseVideo');
@@ -113,7 +153,7 @@ export default function YouTubeSection({
           }
         });
       },
-      { threshold: 0.4 }
+      { threshold: 0.35 }
     );
 
     const cards = carouselRef.current.querySelectorAll('[data-videoid]');
@@ -123,6 +163,16 @@ export default function YouTubeSection({
       cards.forEach((card) => observer.unobserve(card));
     };
   }, [activeVideos, sendIframeCommand]);
+
+  // Handle iframe initial load event
+  const handleIframeLoad = (videoId: number) => {
+    sendIframeCommand(videoId, 'setPlaybackQuality', ['hd1080']);
+    sendIframeCommand(videoId, 'setPlaybackQualityRange', ['hd1080', 'highres']);
+    // Fallback: fade out poster after slight buffer
+    setTimeout(() => {
+      setVideoReadyMap((prev) => ({ ...prev, [videoId]: true }));
+    }, 600);
+  };
 
   // Toggle Mute for a specific card
   const toggleCardMute = (e: React.MouseEvent, videoId: number) => {
@@ -214,7 +264,12 @@ export default function YouTubeSection({
             if (!youtubeId) return null;
 
             const isMuted = mutedMap[video.id] !== false;
-            const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${youtubeId}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0`;
+            const isReady = !!videoReadyMap[video.id];
+
+            // HQ YouTube Embed with 1080p high quality enforcement
+            const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${youtubeId}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&vq=hd1080&hd=1`;
+            
+            // Ultra HQ Maxres Poster
             const posterUrl = video.thumbnail_url || `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
 
             return (
@@ -224,7 +279,7 @@ export default function YouTubeSection({
                 onClick={() => handleCardClick(video)}
                 className="relative w-[240px] sm:w-[260px] md:w-[280px] shrink-0 snap-start aspect-[9/16] rounded-2xl md:rounded-3xl overflow-hidden bg-black group cursor-pointer block select-none shadow-lg transition-transform duration-300 hover:scale-[1.02]"
               >
-                {/* Scaled YouTube Iframe (fills vertical 9:16 frame cleanly) */}
+                {/* Scaled YouTube Iframe (fills vertical 9:16 frame cleanly in HD) */}
                 <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center bg-black pointer-events-none">
                   <iframe
                     ref={(el) => {
@@ -232,9 +287,37 @@ export default function YouTubeSection({
                     }}
                     src={embedUrl}
                     title={video.title || "Video"}
+                    onLoad={() => handleIframeLoad(video.id)}
                     className="w-[325%] h-full max-w-none object-cover pointer-events-none border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   />
+                </div>
+
+                {/* HQ Poster Image with Smooth Cross-Fade */}
+                <div 
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-700 pointer-events-none ${
+                    isReady ? 'opacity-0' : 'opacity-100'
+                  }`}
+                >
+                  <img
+                    src={posterUrl}
+                    alt={video.title}
+                    onError={(e) => {
+                      // Fallback to hqdefault if maxresdefault doesn't exist
+                      (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+                    }}
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  {/* Luxury Loading Ring Indicator */}
+                  <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-black/60 border border-white/20 flex items-center justify-center shadow-lg">
+                      <div className="w-5 h-5 rounded-full border-2 border-transparent border-t-[#D4AF37] border-r-[#D4AF37] animate-spin" />
+                    </div>
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-[#D4AF37] drop-shadow-sm">
+                      HD 1080P
+                    </span>
+                  </div>
                 </div>
 
                 {/* Dark Gradient Overlay for optimal text readability */}
@@ -286,10 +369,10 @@ export default function YouTubeSection({
         </div>
       </div>
 
-      {/* Fullscreen Video Modal Lightbox */}
+      {/* Fullscreen Video Modal Lightbox (True 1080p HQ Playback) */}
       {selectedVideo && (
         <div 
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 md:p-6 animate-fadeIn"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 md:p-6 animate-fadeIn"
           onClick={() => setSelectedVideo(null)}
         >
           <div 
@@ -299,6 +382,11 @@ export default function YouTubeSection({
             {/* Modal Header */}
             <div className="px-5 py-4 flex items-center justify-between border-b border-white/10 bg-black/40">
               <div className="min-w-0 pr-4">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#D4AF37] bg-[#D4AF37]/15 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
+                    Full HD 1080p
+                  </span>
+                </div>
                 <h3 className="text-white font-bold text-base md:text-lg truncate">
                   {selectedVideo.title}
                 </h3>
@@ -317,18 +405,43 @@ export default function YouTubeSection({
               </button>
             </div>
 
-            {/* Video Player */}
+            {/* Video Player Container */}
             <div className="relative aspect-[9/16] max-h-[70vh] md:max-h-[75vh] w-full bg-black mx-auto overflow-hidden">
               {(() => {
                 const ytid = extractYouTubeId(selectedVideo.youtube_url);
+                const modalPoster = selectedVideo.thumbnail_url || `https://img.youtube.com/vi/${ytid}/maxresdefault.jpg`;
+
                 return (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${ytid}?autoplay=1&mute=0&controls=1&rel=0&playsinline=1`}
-                    title={selectedVideo.title}
-                    className="w-full h-full object-contain border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  <>
+                    {/* Modal High Quality Loading Spinner */}
+                    {!modalReady && (
+                      <div className="absolute inset-0 bg-neutral-950 z-10 flex flex-col items-center justify-center">
+                        <img
+                          src={modalPoster}
+                          alt=""
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${ytid}/hqdefault.jpg`;
+                          }}
+                          className="absolute inset-0 w-full h-full object-cover opacity-30 blur-xs"
+                        />
+                        <div className="relative z-20 flex flex-col items-center gap-3">
+                          <div className="w-12 h-12 rounded-full border-2 border-[#D4AF37]/30 border-t-[#D4AF37] animate-spin shadow-lg" />
+                          <span className="text-xs uppercase font-extrabold tracking-[0.25em] text-[#D4AF37]">
+                            Loading in Full HD
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${ytid}?autoplay=1&mute=0&controls=1&rel=0&playsinline=1&vq=hd1080&hd=1&enablejsapi=1`}
+                      title={selectedVideo.title}
+                      onLoad={() => setModalReady(true)}
+                      className="w-full h-full object-contain border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </>
                 );
               })()}
             </div>
