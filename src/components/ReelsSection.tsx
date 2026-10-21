@@ -69,7 +69,7 @@ export default function ReelsSection({ reels }: ReelsSectionProps) {
 
   return (
     <div className="w-full bg-brand-cream/30 py-10 mt-8 mb-4 border-y border-brand-cream/50">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-6 w-full">
+      <div className="max-w-[1440px] mx-auto  w-full">
         <div className="flex items-end justify-between mb-6">
           <div>
             <h2 className="text-lg md:text-xl font-black font-outfit text-gray-900 tracking-tight mb-0.5">
@@ -110,7 +110,7 @@ function ReelCard({
   isPlaying: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  
+
   const innerContent = (
     <Link
       href="/reels"
@@ -126,7 +126,7 @@ function ReelCard({
         preload="auto"
         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
       />
-      
+
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none transition-opacity duration-300"></div>
 

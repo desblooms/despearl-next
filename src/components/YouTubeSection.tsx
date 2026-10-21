@@ -2,12 +2,12 @@
 
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { 
-  Volume2, 
-  VolumeX, 
-  Play, 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  Volume2,
+  VolumeX,
+  Play,
+  ChevronLeft,
+  ChevronRight,
   X,
   ExternalLink,
   Sparkles
@@ -58,7 +58,7 @@ export default function YouTubeSection({
   }, [videos]);
 
   const carouselRef = useRef<HTMLDivElement>(null);
-  
+
   // Track mute state per video
   const [mutedMap, setMutedMap] = useState<Record<number, boolean>>({});
   // Track active playing state per video
@@ -237,7 +237,7 @@ export default function YouTubeSection({
 
   return (
     <section className="w-full py-8 md:py-12 mt-4 mb-8">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-6 w-full">
+      <div className="max-w-[1440px] mx-auto  w-full">
         {/* Section Header */}
         <div className="flex items-end justify-between mb-6 pb-3 border-b border-brand-cream/60">
           <div>
@@ -289,7 +289,7 @@ export default function YouTubeSection({
 
             // HQ YouTube Embed with 1080p high quality enforcement
             const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${youtubeId}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&vq=hd1080&hd=1`;
-            
+
             // Ultra HQ Maxres Poster
             const posterUrl = video.thumbnail_url || `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
 
@@ -315,10 +315,9 @@ export default function YouTubeSection({
                 </div>
 
                 {/* HQ Poster Image with Smooth Cross-Fade */}
-                <div 
-                  className={`absolute inset-0 w-full h-full transition-opacity duration-700 pointer-events-none ${
-                    isReady ? 'opacity-0' : 'opacity-100'
-                  }`}
+                <div
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-700 pointer-events-none ${isReady ? 'opacity-0' : 'opacity-100'
+                    }`}
                 >
                   <img
                     src={posterUrl}
@@ -329,7 +328,7 @@ export default function YouTubeSection({
                     }}
                     className="w-full h-full object-cover"
                   />
-                  
+
                   {/* Luxury Loading Ring Indicator */}
                   <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2">
                     <div className="w-10 h-10 rounded-full bg-black/60 border border-white/20 flex items-center justify-center shadow-lg">
@@ -374,7 +373,7 @@ export default function YouTubeSection({
                   </div>
 
                   {/* High Quality Crisp Title */}
-                  <h3 
+                  <h3
                     className="text-white font-extrabold font-outfit text-[15px] sm:text-[17px] leading-[1.25] tracking-tight mb-3 line-clamp-2"
                     style={{ textShadow: '0 2px 4px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.95)' }}
                   >
@@ -392,7 +391,7 @@ export default function YouTubeSection({
                       <Play className="w-3 h-3 fill-white text-white" />
                     </Link>
                   ) : (
-                    <div 
+                    <div
                       className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/90 hover:bg-black text-white text-[11px] sm:text-xs font-bold rounded-full border border-white/25 shadow-lg transition-all group-hover:scale-105 pointer-events-auto"
                     >
                       <span>{video.button_text || "Watch Reels"}</span>
@@ -408,11 +407,11 @@ export default function YouTubeSection({
 
       {/* Fullscreen Video Modal Lightbox (True 1080p HQ Playback) */}
       {selectedVideo && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-6 animate-fadeIn"
           onClick={() => setSelectedVideo(null)}
         >
-          <div 
+          <div
             className="relative w-full max-w-lg md:max-w-2xl bg-neutral-950 rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
@@ -443,7 +442,7 @@ export default function YouTubeSection({
             </div>
 
             {/* Video Player Container (Click to Play/Pause with Zero YouTube Controls) */}
-            <div 
+            <div
               className="relative aspect-[9/16] max-h-[70vh] md:max-h-[75vh] w-full bg-black mx-auto overflow-hidden cursor-pointer select-none group"
               onClick={() => {
                 if (modalPlaying) {
