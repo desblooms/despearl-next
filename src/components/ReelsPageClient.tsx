@@ -59,8 +59,25 @@ export default function ReelsPageClient({ initialReels, initialTargetId }: Reels
     return initialReels;
   }, [initialReels, initialTargetId]);
 
-  const [reels] = useState<UnifiedReel[]>(orderedReels);
+  const [filterType, setFilterType] = useState<'all' | 'mp4' | 'youtube'>('all');
+
+  const mp4Count = useMemo(() => orderedReels.filter((r) => r.type === 'mp4').length, [orderedReels]);
+  const ytCount = useMemo(() => orderedReels.filter((r) => r.type === 'youtube').length, [orderedReels]);
+  const hasBothTypes = mp4Count > 0 && ytCount > 0;
+
+  const reels = useMemo(() => {
+    if (filterType === 'mp4') return orderedReels.filter((r) => r.type === 'mp4');
+    if (filterType === 'youtube') return orderedReels.filter((r) => r.type === 'youtube');
+    return orderedReels;
+  }, [orderedReels, filterType]);
+
   const [activeReelId, setActiveReelId] = useState<string>(reels[0]?.id || '');
+
+  useEffect(() => {
+    if (reels.length > 0 && !reels.some((r) => r.id === activeReelId)) {
+      setActiveReelId(reels[0].id);
+    }
+  }, [reels, activeReelId]);
   const [muted, setMuted] = useState(true);
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
   const [likeCountMap, setLikeCountMap] = useState<Record<string, number>>({});
@@ -239,38 +256,76 @@ export default function ReelsPageClient({ initialReels, initialTargetId }: Reels
         style={{ scrollSnapType: 'y mandatory' }}
       >
         {/* Floating Top Header Overlay */}
-        <header className="absolute top-0 left-0 right-0 z-40 p-4 pb-8 flex items-center justify-between bg-gradient-to-b from-black/80 via-black/35 to-transparent pointer-events-none">
-          <div className="flex items-center gap-3 pointer-events-auto">
-            <button
-              onClick={handleBack}
-              className="w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md flex items-center justify-center text-white border border-white/15 shadow-lg active:scale-90 transition-all cursor-pointer"
-              aria-label="Back to Store"
-            >
-              <ArrowLeft className="w-5 h-5 text-white" />
-            </button>
-            <div className="flex items-center gap-2">
-              <span className="text-white font-black font-outfit text-base md:text-lg tracking-tight drop-shadow-md">
-                Despearl Reels
-              </span>
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+        <header className="absolute top-0 left-0 right-0 z-40 p-3 md:p-4 pb-4 flex flex-col gap-2.5 bg-gradient-to-b from-black/85 via-black/40 to-transparent pointer-events-none">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-3 pointer-events-auto">
+              <button
+                onClick={handleBack}
+                className="w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md flex items-center justify-center text-white border border-white/15 shadow-lg active:scale-90 transition-all cursor-pointer"
+                aria-label="Back to Store"
+              >
+                <ArrowLeft className="w-5 h-5 text-white" />
+              </button>
+              <div className="flex items-center gap-2">
+                <span className="text-white font-black font-outfit text-base md:text-lg tracking-tight drop-shadow-md">
+                  Despearl Reels
+                </span>
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 pointer-events-auto">
+              {/* Global Sound Button */}
+              <button
+                onClick={toggleGlobalMute}
+                className="w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md flex items-center justify-center text-white border border-white/15 shadow-lg active:scale-90 transition-all cursor-pointer"
+                aria-label={muted ? 'Unmute' : 'Mute'}
+                title={muted ? 'Click to unmute sound' : 'Click to mute'}
+              >
+                {muted ? (
+                  <VolumeX className="w-4.5 h-4.5 text-white" />
+                ) : (
+                  <Volume2 className="w-4.5 h-4.5 text-white text-emerald-400" />
+                )}
+              </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 pointer-events-auto">
-            {/* Global Sound Button */}
-            <button
-              onClick={toggleGlobalMute}
-              className="w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md flex items-center justify-center text-white border border-white/15 shadow-lg active:scale-90 transition-all cursor-pointer"
-              aria-label={muted ? 'Unmute' : 'Mute'}
-              title={muted ? 'Click to unmute sound' : 'Click to mute'}
-            >
-              {muted ? (
-                <VolumeX className="w-4.5 h-4.5 text-white" />
-              ) : (
-                <Volume2 className="w-4.5 h-4.5 text-white text-emerald-400" />
-              )}
-            </button>
-          </div>
+          {/* Type Filter Pills (Direct Reels vs YouTube Shorts) */}
+          {hasBothTypes && (
+            <div className="flex items-center gap-1.5 pointer-events-auto overflow-x-auto no-scrollbar pt-1">
+              <button
+                onClick={() => setFilterType('all')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  filterType === 'all'
+                    ? 'bg-white text-black shadow-md scale-105'
+                    : 'bg-black/50 text-white/80 border border-white/15 hover:bg-black/70'
+                }`}
+              >
+                All ({orderedReels.length})
+              </button>
+              <button
+                onClick={() => setFilterType('mp4')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  filterType === 'mp4'
+                    ? 'bg-brand-burgundy text-white shadow-md scale-105'
+                    : 'bg-black/50 text-white/80 border border-white/15 hover:bg-black/70'
+                }`}
+              >
+                Direct Reels ({mp4Count})
+              </button>
+              <button
+                onClick={() => setFilterType('youtube')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  filterType === 'youtube'
+                    ? 'bg-red-600 text-white shadow-md scale-105'
+                    : 'bg-black/50 text-white/80 border border-white/15 hover:bg-black/70'
+                }`}
+              >
+                YouTube Shorts ({ytCount})
+              </button>
+            </div>
+          )}
         </header>
 
         {/* Reels List */}

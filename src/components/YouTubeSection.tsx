@@ -197,9 +197,13 @@ export default function YouTubeSection({
     }
   };
 
-  // Handle card click - navigate directly to dedicated Reels page
-  const handleCardClick = (video: YouTubeVideo) => {
-    router.push(`/reels?id=${video.id}`);
+  // Handle card click - toggle mute or navigate to link if configured
+  const handleCardClick = (video: YouTubeVideo, e?: React.MouseEvent) => {
+    if (video.button_link) {
+      router.push(video.button_link);
+    } else if (e) {
+      toggleCardMute(e, video.id);
+    }
   };
 
   if (!activeVideos || activeVideos.length === 0) {
@@ -225,15 +229,8 @@ export default function YouTubeSection({
             </p>
           </div>
 
-          {/* Action Links & Controls */}
+          {/* Navigation Controls */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/reels"
-              className="inline-flex items-center gap-1 text-xs md:text-sm font-bold text-brand-burgundy hover:text-brand-burgundy/80 transition"
-            >
-              <span>Explore Reels</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
 
             {/* Left/Right Controls */}
             {activeVideos.length > 2 && (
@@ -279,7 +276,7 @@ export default function YouTubeSection({
               <div
                 key={video.id}
                 data-videoid={video.id}
-                onClick={() => handleCardClick(video)}
+                onClick={(e) => handleCardClick(video, e)}
                 className="relative w-[240px] sm:w-[260px] md:w-[280px] shrink-0 snap-start aspect-[9/16] rounded-2xl md:rounded-3xl overflow-hidden bg-black group cursor-pointer block select-none shadow-lg transition-transform duration-300 hover:scale-[1.02]"
               >
                 {/* Scaled YouTube Iframe (fills vertical 9:16 frame cleanly in HD) */}
@@ -350,7 +347,7 @@ export default function YouTubeSection({
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#D4AF37] font-outfit">
-                      {video.badge_text || "Reels"}
+                      {video.badge_text || "Shorts"}
                     </span>
                   </div>
 
@@ -362,15 +359,19 @@ export default function YouTubeSection({
                     {video.title}
                   </h3>
 
-                  {/* Clean High-Contrast Action Button */}
+                  {/* Action Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      router.push(`/reels?id=${video.id}`);
+                      if (video.button_link) {
+                        router.push(video.button_link);
+                      } else {
+                        toggleCardMute(e, video.id);
+                      }
                     }}
                     className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-black/90 hover:bg-black text-white text-[11px] sm:text-xs font-bold rounded-full border border-white/25 shadow-lg transition-all group-hover:scale-105 pointer-events-auto active:scale-95 cursor-pointer"
                   >
-                    <span>{video.button_text || "Watch Reels"}</span>
+                    <span>{video.button_text || (isMuted ? "Tap for Sound" : "Mute Sound")}</span>
                     <Play className="w-3 h-3 fill-white text-white" />
                   </button>
                 </div>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Volume2, VolumeX, Play, ExternalLink } from 'lucide-react';
+import { Volume2, VolumeX, Play, ExternalLink, ChevronRight } from 'lucide-react';
 import { getOptimizedImageUrl, resolveVideoUrl } from '@/utils/image';
 
 interface Reel {
@@ -77,6 +77,13 @@ export default function ReelsSection({ reels }: ReelsSectionProps) {
             </h2>
             <p className="text-[11px] text-gray-700 font-medium">Watch our latest products in action</p>
           </div>
+          <Link
+            href="/reels"
+            className="inline-flex items-center gap-1 text-xs md:text-sm font-bold text-brand-burgundy hover:text-brand-burgundy/80 transition"
+          >
+            <span>Explore All Reels</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
 
         <div
