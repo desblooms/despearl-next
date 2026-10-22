@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useStore } from '@/context/StoreContext';
 import { useRouter } from 'next/navigation';
 import { Minus, Plus, Trash2, ShoppingBag, ChevronRight, Tag, ShieldCheck, Timer, Percent, ArrowLeft } from 'lucide-react';
+import { getOptimizedImageUrl } from '@/utils/image';
 
 export default function CartPage() {
   const { cart, cartTotal, removeFromCart, updateQty, toast } = useStore();
@@ -187,7 +188,7 @@ export default function CartPage() {
                     {/* Prominent Image */}
                     <div className="w-[96px] h-[120px] md:w-[130px] md:h-[160px] shrink-0 bg-gray-50 border border-brand-rose/10 rounded-lg overflow-hidden relative shadow-sm">
                       <img 
-                        src={item.image || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='160' viewBox='0 0 130 160'%3E%3Crect width='130' height='160' fill='%23f8f9fa'/%3E%3C/svg%3E`}
+                        src={getOptimizedImageUrl(item.image) || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='160' viewBox='0 0 130 160'%3E%3Crect width='130' height='160' fill='%23f8f9fa'/%3E%3C/svg%3E`}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />

@@ -44,6 +44,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/admin-media/:path*',
+        destination: 'https://admin.despearl.com/:path*',
+      },
+      {
+        source: '/votee-media/:path*',
+        destination: 'https://app.votee.in/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

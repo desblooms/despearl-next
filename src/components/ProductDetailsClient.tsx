@@ -7,6 +7,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { Minus, Plus, Heart, ShoppingBag, Check, MapPin, ChevronRight, ChevronDown, Tag, Star, ShieldCheck, Award, Banknote, Palette } from 'lucide-react';
 import { useStore, Product } from '@/context/StoreContext';
 import ProductCard from '@/components/ProductCard';
+import { getOptimizedImageUrl } from '@/utils/image';
 
 interface Props {
   product: any;
@@ -41,11 +42,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
 
   const getImageUrl = (url: string | undefined) => {
     if (!url) return undefined;
-    if (url.startsWith('http')) return url;
-    if (url.startsWith('/')) return `https://app.votee.in${url}`;
-    if (url.startsWith('uploads/')) return `https://app.votee.in/${url}`;
-    if (url.startsWith('gallery_')) return `https://app.votee.in/uploads/products/gallery/${url}`;
-    return `https://app.votee.in/uploads/products/${url}`;
+    return getOptimizedImageUrl(url, 800, 80);
   };
 
   const fallbackImg = `data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8f9fa%22/%3E%3Ctext x=%22200%22 y=%22200%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2248%22%3E📦%3C/text%3E%3C/svg%3E`;

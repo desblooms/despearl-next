@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useStore } from '@/context/StoreContext';
 import { MapPin, CreditCard, Banknote, Receipt, Truck, Lock, ShieldCheck, RotateCcw, Check, List, ShoppingBag, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { getOptimizedImageUrl } from '@/utils/image';
 
 type SavedAddress = {
   id: string;
@@ -622,7 +623,7 @@ export default function CheckoutPage() {
                 {cart.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-2.5 py-1.5 border-b border-gray-50 last:border-0">
                     <img 
-                      src={item.image || `data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22%3E%3Crect width=%2232%22 height=%2232%22 fill=%22%23f8f9fa%22/%3E%3C/svg%3E`} 
+                      src={getOptimizedImageUrl(item.image) || `data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22%3E%3Crect width=%2232%22 height=%2232%22 fill=%22%23f8f9fa%22/%3E%3C/svg%3E`} 
                       className="w-8 h-8 rounded-md object-cover bg-gray-50 shrink-0 border border-brand-rose/10" 
                       alt={item.name}
                       onError={(e) => {

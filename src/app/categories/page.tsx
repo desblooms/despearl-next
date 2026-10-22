@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { getOptimizedImageUrl } from '@/utils/image';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'https://app.votee.in/api/ecommerce';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://despearl.com';
@@ -35,7 +36,7 @@ export default async function CategoriesBannersPage() {
             className="group relative flex flex-col items-center justify-end overflow-hidden bg-brand-cream/50 shadow-sm aspect-[4/5] md:aspect-[4/5] hover:shadow-md transition-all duration-300 rounded-sm"
           >
             <img 
-              src={c.banner || c.thumb || "https://images.unsplash.com/photo-1618220179428-22790b46a0eb?auto=format&fit=crop&q=80&w=500"} 
+              src={getOptimizedImageUrl(c.banner || c.thumb) || "https://images.unsplash.com/photo-1618220179428-22790b46a0eb?auto=format&fit=crop&q=80&w=500"} 
               alt={c.name}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />

@@ -22,15 +22,6 @@ export default function ProductCard({ product, horizontal = false }: ProductCard
   const inCart = isInCart(product.id);
   const canCheckout = canCheckoutProduct ? canCheckoutProduct(product) : true;
   
-  const getImageUrl = (url: string | undefined) => {
-    if (!url) return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f8f9fa'/%3E%3Ctext x='100' y='100' text-anchor='middle' fill='%2394a3b8' font-size='36'%3E📦%3C/text%3E%3C/svg%3E`;
-    if (url.startsWith('http')) return url;
-    if (url.startsWith('/')) return `https://app.votee.in${url}`;
-    if (url.startsWith('uploads/')) return `https://app.votee.in/${url}`;
-    if (url.startsWith('gallery_')) return `https://app.votee.in/uploads/products/gallery/${url}`;
-    // If it's just a filename from ERP
-    return `https://app.votee.in/uploads/products/${url}`;
-  };
 
   const img = getOptimizedImageUrl(product.image, 400, 75);
   const imgSet = `${getOptimizedImageUrl(product.image, 200, 70)} 200w, ${getOptimizedImageUrl(product.image, 400, 70)} 400w`;
