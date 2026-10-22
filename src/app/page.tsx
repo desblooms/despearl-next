@@ -109,6 +109,7 @@ export default async function HomePage() {
   const showCategories = homeConfig.show_categories !== false;
   const showNewArrivals = homeConfig.show_new_arrivals !== false;
   const showYoutubeVideos = homeConfig.show_youtube_videos !== false;
+  const showReels = homeConfig.show_reels !== false;
 
   const effectiveBanners = (heroBanners && heroBanners.length > 0) ? heroBanners : DEFAULT_HERO_BANNERS;
 
@@ -257,7 +258,7 @@ export default async function HomePage() {
         )}
 
         {/* Reels Section */}
-        {reels && reels.length > 0 && (
+        {showReels && reels && reels.length > 0 && (
           <div className="-mx-4 md:-mx-6 px-4 md:px-6">
             <ReelsSection reels={reels} />
           </div>
