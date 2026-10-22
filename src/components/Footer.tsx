@@ -220,13 +220,15 @@ export default function Footer({ logoUrl }: { logoUrl?: string }) {
     pathname.startsWith('/product') || 
     pathname.startsWith('/cart') || 
     pathname.startsWith('/checkout') || 
+    pathname.startsWith('/reels') || 
     pathname.startsWith('/profile/addresses/add') || 
     pathname.startsWith('/profile/addresses/edit') || 
     Boolean(pathname.match(/\/orders\/\d+/));
 
-  // Condition to hide the full site footer (on pure distraction-free checkout flow)
+  // Condition to hide the full site footer (on pure distraction-free checkout flow and reels)
   const hideFullFooter = 
     pathname.startsWith('/checkout') || 
+    pathname.startsWith('/reels') || 
     pathname.startsWith('/profile/addresses/add') || 
     pathname.startsWith('/profile/addresses/edit');
 

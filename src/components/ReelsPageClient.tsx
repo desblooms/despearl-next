@@ -1,363 +1,679 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
-import { Heart, MessageCircle, Share2, ArrowLeft, Volume2, VolumeX, Play, ExternalLink, MoreVertical } from 'lucide-react';
-import { getOptimizedImageUrl, resolveVideoUrl } from '@/utils/image';
 import { useRouter } from 'next/navigation';
+import { 
+  Heart, 
+  Share2, 
+  ArrowLeft, 
+  Volume2, 
+  VolumeX, 
+  Play, 
+  ExternalLink, 
+  ChevronUp, 
+  ChevronDown,
+  Sparkles,
+  Check,
+  Film
+} from 'lucide-react';
+import { resolveVideoUrl } from '@/utils/image';
 
-interface Reel {
-  id: number;
+export interface UnifiedReel {
+  id: string;
+  numericId?: number;
+  type: 'youtube' | 'mp4';
   title: string;
-  video_url: string;
+  subtitle?: string;
+  video_url?: string;
+  youtube_id?: string;
+  youtube_url?: string;
   thumbnail_url?: string;
-  link_url?: string;
+  badge_text?: string;
+  button_text?: string;
+  button_link?: string;
 }
 
 interface ReelsPageClientProps {
-  initialReels: Reel[];
+  initialReels: UnifiedReel[];
+  initialTargetId?: string;
 }
 
-export default function ReelsPageClient({ initialReels }: ReelsPageClientProps) {
-  const safeReels = initialReels || [];
-  const [reels] = useState<Reel[]>(safeReels);
-  const [activeReelId, setActiveReelId] = useState<number | null>(safeReels[0]?.id || null);
-  const [likedReels, setLikedReels] = useState<Record<number, boolean>>({});
-  const [muted, setMuted] = useState(true);
-  const [likeAnimation, setLikeAnimation] = useState<number | null>(null);
-  
-  const containerRef = useRef<HTMLDivElement>(null);
+export default function ReelsPageClient({ initialReels, initialTargetId }: ReelsPageClientProps) {
   const router = useRouter();
 
-  const handleLike = (reelId: number) => {
-    setLikedReels(prev => ({
-      ...prev,
-      [reelId]: !prev[reelId]
-    }));
-    
-    if (!likedReels[reelId]) {
-      setLikeAnimation(reelId);
-      setTimeout(() => setLikeAnimation(null), 1000);
+  // If a specific target ID was requested in URL (?id=...), prioritize it as the first item
+  const orderedReels = useMemo(() => {
+    if (!initialTargetId || !initialReels.length) return initialReels;
+    const targetIdx = initialReels.findIndex(
+      (r) => 
+        r.id === initialTargetId || 
+        String(r.numericId) === String(initialTargetId) || 
+        r.youtube_id === initialTargetId
+    );
+    if (targetIdx > 0) {
+      const copy = [...initialReels];
+      const [targetItem] = copy.splice(targetIdx, 1);
+      return [targetItem, ...copy];
+    }
+    return initialReels;
+  }, [initialReels, initialTargetId]);
+
+  const [reels] = useState<UnifiedReel[]>(orderedReels);
+  const [activeReelId, setActiveReelId] = useState<string>(reels[0]?.id || '');
+  const [muted, setMuted] = useState(true);
+  const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
+  const [likeCountMap, setLikeCountMap] = useState<Record<string, number>>({});
+  const [likeAnimationId, setLikeAnimationId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Initialize randomized like count baseline for realism
+  useEffect(() => {
+    const counts: Record<string, number> = {};
+    reels.forEach((r, idx) => {
+      counts[r.id] = 120 + ((idx * 47 + 13) % 280);
+    });
+    setLikeCountMap(counts);
+  }, [reels]);
+
+  // Handle back button navigation
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/');
     }
   };
 
-  const handleDoubleTap = (reelId: number) => {
-    if (!likedReels[reelId]) {
+  // Global Mute toggle
+  const toggleGlobalMute = () => {
+    setMuted((prev) => !prev);
+  };
+
+  // Like interaction
+  const handleLike = (reelId: string) => {
+    setLikedMap((prev) => {
+      const wasLiked = !!prev[reelId];
+      const nowLiked = !wasLiked;
+      setLikeCountMap((counts) => ({
+        ...counts,
+        [reelId]: (counts[reelId] || 120) + (nowLiked ? 1 : -1)
+      }));
+      return { ...prev, [reelId]: nowLiked };
+    });
+
+    if (!likedMap[reelId]) {
+      setLikeAnimationId(reelId);
+      setTimeout(() => setLikeAnimationId(null), 900);
+    }
+  };
+
+  const handleDoubleTap = (reelId: string) => {
+    if (!likedMap[reelId]) {
       handleLike(reelId);
     } else {
-      setLikeAnimation(reelId);
-      setTimeout(() => setLikeAnimation(null), 1000);
+      setLikeAnimationId(reelId);
+      setTimeout(() => setLikeAnimationId(null), 900);
     }
   };
 
-  const toggleMute = () => {
-    setMuted(!muted);
+  // Share interaction
+  const handleShare = async (reel: UnifiedReel) => {
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : 'https://despearl.com/reels';
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${reel.title} | Despearl Kerala`,
+          text: reel.subtitle || 'Discover premium furniture in motion at Despearl Kerala',
+          url: shareUrl
+        });
+        return;
+      } catch (e) {
+        // Fallback to clipboard
+      }
+    }
+
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setToastMessage('Reel link copied to clipboard!');
+        setTimeout(() => setToastMessage(null), 2500);
+      } catch (err) {
+        setToastMessage('Link ready to share');
+        setTimeout(() => setToastMessage(null), 2000);
+      }
+    }
   };
 
+  // Scroll Up / Down helpers for Desktop Navigation
+  const scrollNext = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+    }
+  };
+
+  const scrollPrev = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
+    }
+  };
+
+  // Keyboard navigation shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        scrollNext();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        scrollPrev();
+      } else if (e.key === 'm' || e.key === 'M') {
+        toggleGlobalMute();
+      } else if (e.key === 'Escape') {
+        handleBack();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
-    <div className="fixed inset-0 bg-black z-50 flex justify-center w-full h-[100dvh]">
-      {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
-        <div className="flex items-center gap-3 pointer-events-auto">
-          <button 
-            onClick={() => router.back()} 
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md text-white transition-transform active:scale-90"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-white font-bold text-lg drop-shadow-md tracking-wide">Reels</h1>
+    <div className="w-full h-[100dvh] min-h-[100dvh] bg-black text-white relative flex justify-center overflow-hidden select-none">
+      
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="absolute top-20 z-50 left-1/2 -translate-x-1/2 bg-white/90 text-black px-4 py-2 rounded-full text-xs font-bold shadow-2xl backdrop-blur-md flex items-center gap-2 animate-fadeIn pointer-events-none">
+          <Check className="w-4 h-4 text-emerald-600" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* DESKTOP SIDEBAR NAVIGATION CONTROLS (visible on lg screens) */}
+      <div className="hidden lg:flex fixed left-8 top-1/2 -translate-y-1/2 z-40 flex-col items-center gap-4">
+        {/* Brand Link */}
+        <Link 
+          href="/" 
+          className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-white/70 hover:text-white group"
+          title="Return to Home Store"
+        >
+          <div className="w-10 h-10 rounded-full bg-brand-burgundy/80 flex items-center justify-center text-white font-black font-outfit text-sm shadow-md group-hover:scale-105 transition-transform">
+            D
+          </div>
+          <span className="text-[10px] font-bold tracking-wider uppercase font-outfit text-white/60 group-hover:text-white">Store</span>
+        </Link>
+
+        {/* Previous Reel Arrow */}
+        <button
+          onClick={scrollPrev}
+          className="w-12 h-12 rounded-full bg-neutral-900/80 hover:bg-neutral-800 border border-white/15 text-white flex items-center justify-center transition-all shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
+          aria-label="Previous Reel"
+          title="Previous Reel (Up Arrow)"
+        >
+          <ChevronUp className="w-6 h-6 text-white" />
+        </button>
+
+        {/* Next Reel Arrow */}
+        <button
+          onClick={scrollNext}
+          className="w-12 h-12 rounded-full bg-neutral-900/80 hover:bg-neutral-800 border border-white/15 text-white flex items-center justify-center transition-all shadow-xl hover:scale-110 active:scale-95 cursor-pointer"
+          aria-label="Next Reel"
+          title="Next Reel (Down Arrow)"
+        >
+          <ChevronDown className="w-6 h-6 text-white" />
+        </button>
+
+        {/* Keyboard Hints */}
+        <div className="mt-2 text-center text-[10px] text-white/40 font-mono tracking-tight leading-relaxed max-w-[80px]">
+          Use <kbd className="text-white/70 font-bold">↑</kbd> <kbd className="text-white/70 font-bold">↓</kbd> or Space
         </div>
       </div>
 
-      {/* Main Reels Container */}
-      <div 
+      {/* MAIN VERTICAL FEED CONTAINER */}
+      <div
         ref={containerRef}
-        className="w-full h-full max-w-[500px] overflow-y-scroll snap-y snap-mandatory no-scrollbar bg-black"
-        style={{ scrollBehavior: 'smooth' }}
+        id="reels-feed-container"
+        className="w-full max-w-[440px] md:max-w-[460px] h-[100dvh] bg-black relative md:border-x md:border-white/10 overflow-y-scroll snap-y snap-mandatory no-scrollbar scroll-smooth"
+        style={{ scrollSnapType: 'y mandatory' }}
       >
+        {/* Floating Top Header Overlay */}
+        <header className="absolute top-0 left-0 right-0 z-40 p-4 pb-8 flex items-center justify-between bg-gradient-to-b from-black/80 via-black/35 to-transparent pointer-events-none">
+          <div className="flex items-center gap-3 pointer-events-auto">
+            <button
+              onClick={handleBack}
+              className="w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md flex items-center justify-center text-white border border-white/15 shadow-lg active:scale-90 transition-all cursor-pointer"
+              aria-label="Back to Store"
+            >
+              <ArrowLeft className="w-5 h-5 text-white" />
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-white font-black font-outfit text-base md:text-lg tracking-tight drop-shadow-md">
+                Despearl Reels
+              </span>
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 pointer-events-auto">
+            {/* Global Sound Button */}
+            <button
+              onClick={toggleGlobalMute}
+              className="w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 backdrop-blur-md flex items-center justify-center text-white border border-white/15 shadow-lg active:scale-90 transition-all cursor-pointer"
+              aria-label={muted ? 'Unmute' : 'Mute'}
+              title={muted ? 'Click to unmute sound' : 'Click to mute'}
+            >
+              {muted ? (
+                <VolumeX className="w-4.5 h-4.5 text-white" />
+              ) : (
+                <Volume2 className="w-4.5 h-4.5 text-white text-emerald-400" />
+              )}
+            </button>
+          </div>
+        </header>
+
+        {/* Reels List */}
         {reels.length === 0 ? (
-          <div className="w-full h-full flex flex-col items-center justify-center text-white/50">
-            <Play className="w-12 h-12 mb-4 opacity-20" />
-            <p>No reels available</p>
+          <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 gap-4">
+            <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center text-white/50">
+              <Film className="w-8 h-8" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white mb-1">No reels available right now</h2>
+              <p className="text-xs text-white/50 max-w-xs">
+                Check back soon for fresh videos and custom furniture in motion!
+              </p>
+            </div>
+            <Link
+              href="/"
+              className="px-6 py-2.5 bg-brand-burgundy text-white text-xs font-bold rounded-xl shadow-lg hover:bg-brand-burgundy/90 transition"
+            >
+              Back to Store
+            </Link>
           </div>
         ) : (
           reels.map((reel) => (
-            <ReelItem
+            <SingleReelItem
               key={reel.id}
               reel={reel}
               isActive={activeReelId === reel.id}
               setActiveReelId={setActiveReelId}
-              isLiked={likedReels[reel.id] || false}
-              handleLike={() => handleLike(reel.id)}
-              handleDoubleTap={() => handleDoubleTap(reel.id)}
-              showLikeAnimation={likeAnimation === reel.id}
+              isLiked={!!likedMap[reel.id]}
+              likeCount={likeCountMap[reel.id] || 120}
+              onLike={() => handleLike(reel.id)}
+              onDoubleTap={() => handleDoubleTap(reel.id)}
+              showLikeBurst={likeAnimationId === reel.id}
+              onShare={() => handleShare(reel)}
               muted={muted}
-              toggleMute={toggleMute}
+              onToggleMute={toggleGlobalMute}
             />
           ))
         )}
       </div>
+
+      {/* Heart Burst CSS Animation */}
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes scaleUpDownCustom {
+        @keyframes customHeartBurst {
           0% { transform: scale(0); opacity: 0; }
-          30% { transform: scale(1.4); opacity: 1; }
-          50% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(0.8); opacity: 0; }
+          40% { transform: scale(1.35); opacity: 1; }
+          70% { transform: scale(1.1); opacity: 1; }
+          100% { transform: scale(0.85); opacity: 0; }
         }
-        .animate-custom-heart {
-          animation: scaleUpDownCustom 1s ease-in-out forwards;
+        .animate-heart-burst {
+          animation: customHeartBurst 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
       `}} />
     </div>
   );
 }
 
-interface ReelItemProps {
-  reel: Reel;
+// ─────────────────────────────────────────────────────────────
+// SINGLE REEL ITEM COMPONENT
+// ─────────────────────────────────────────────────────────────
+
+interface SingleReelItemProps {
+  reel: UnifiedReel;
   isActive: boolean;
-  setActiveReelId: (id: number) => void;
+  setActiveReelId: (id: string) => void;
   isLiked: boolean;
-  handleLike: () => void;
-  handleDoubleTap: () => void;
-  showLikeAnimation: boolean;
+  likeCount: number;
+  onLike: () => void;
+  onDoubleTap: () => void;
+  showLikeBurst: boolean;
+  onShare: () => void;
   muted: boolean;
-  toggleMute: () => void;
+  onToggleMute: () => void;
 }
 
-function ReelItem({ 
-  reel, 
-  isActive, 
-  setActiveReelId, 
-  isLiked, 
-  handleLike, 
-  handleDoubleTap, 
-  showLikeAnimation,
+function SingleReelItem({
+  reel,
+  isActive,
+  setActiveReelId,
+  isLiked,
+  likeCount,
+  onLike,
+  onDoubleTap,
+  showLikeBurst,
+  onShare,
   muted,
-  toggleMute
-}: ReelItemProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  onToggleMute
+}: SingleReelItemProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [iframeReady, setIframeReady] = useState(false);
   const lastTapRef = useRef<number>(0);
 
-  // Sync muted state directly to the video element (required for autoplay)
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = muted;
+  // Helper to send postMessage command to YouTube iframe
+  const sendYouTubeCommand = useCallback((func: string, args: any[] = []) => {
+    const iframe = iframeRef.current;
+    if (iframe && iframe.contentWindow) {
+      try {
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func, args }),
+          '*'
+        );
+      } catch (e) {
+        // Ignored
+      }
     }
-  }, [muted]);
+  }, []);
 
-  // Handle visibility and playing state
+  // IntersectionObserver to determine active reel on vertical scroll snap
   useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
           setActiveReelId(reel.id);
-        } else {
-          // Pause and reset when scrolled away
-          if (videoRef.current) {
-            videoRef.current.pause();
-            videoRef.current.currentTime = 0;
-          }
-          setIsPlaying(false);
         }
       },
-      { threshold: 0.5 }
+      { threshold: [0.5, 0.75] }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => {
-      if (containerRef.current) observer.unobserve(containerRef.current);
-    };
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [reel.id, setActiveReelId]);
 
-  // Play/pause based on active state
+  // Handle Play/Pause when isActive changes
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    if (reel.type === 'mp4') {
+      const vid = videoRef.current;
+      if (!vid) return;
 
-    if (isActive) {
-      // Ensure muted before attempting autoplay
-      video.muted = true;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => setIsPlaying(true))
-          .catch(() => setIsPlaying(false));
+      if (isActive) {
+        vid.muted = muted;
+        vid.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      } else {
+        vid.pause();
+        vid.currentTime = 0;
+        setIsPlaying(false);
       }
-    } else {
-      video.pause();
-      video.currentTime = 0;
-      setIsPlaying(false);
+    } else if (reel.type === 'youtube') {
+      if (isActive) {
+        sendYouTubeCommand('playVideo');
+        setIsPlaying(true);
+      } else {
+        sendYouTubeCommand('pauseVideo');
+        sendYouTubeCommand('seekTo', [0, true]);
+        setIsPlaying(false);
+      }
     }
-  }, [isActive]);
+  }, [isActive, reel.type, sendYouTubeCommand, muted]);
 
-  const handleTimeUpdate = () => {
-    if (videoRef.current && videoRef.current.duration) {
-      const current = videoRef.current.currentTime;
-      const total = videoRef.current.duration;
-      setProgress((current / total) * 100);
+  // Sync mute state dynamically
+  useEffect(() => {
+    if (reel.type === 'mp4') {
+      if (videoRef.current) {
+        videoRef.current.muted = muted;
+      }
+    } else if (reel.type === 'youtube') {
+      if (muted) {
+        sendYouTubeCommand('mute');
+      } else {
+        sendYouTubeCommand('unMute');
+        sendYouTubeCommand('setVolume', [100]);
+      }
     }
-  };
+  }, [muted, reel.type, sendYouTubeCommand]);
 
-  const togglePlay = (e: React.MouseEvent) => {
+  // Tap to Play/Pause with double-tap detection for Like
+  const handlePlayerClick = (e: React.MouseEvent) => {
     const now = Date.now();
-    const DOUBLE_TAP_DELAY = 300;
-    
-    if (now - lastTapRef.current < DOUBLE_TAP_DELAY) {
-      handleDoubleTap();
+    const DOUBLE_TAP_GAP = 280;
+
+    if (now - lastTapRef.current < DOUBLE_TAP_GAP) {
+      // Double tap triggered
+      onDoubleTap();
       lastTapRef.current = 0;
     } else {
       lastTapRef.current = now;
       setTimeout(() => {
         if (lastTapRef.current === now) {
-          if (videoRef.current) {
+          // Single tap - toggle play/pause
+          if (reel.type === 'mp4') {
+            const vid = videoRef.current;
+            if (vid) {
+              if (isPlaying) {
+                vid.pause();
+                setIsPlaying(false);
+              } else {
+                vid.play().then(() => setIsPlaying(true)).catch(() => {});
+              }
+            }
+          } else if (reel.type === 'youtube') {
             if (isPlaying) {
-              videoRef.current.pause();
+              sendYouTubeCommand('pauseVideo');
               setIsPlaying(false);
             } else {
-              videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+              sendYouTubeCommand('playVideo');
+              setIsPlaying(true);
             }
           }
           lastTapRef.current = 0;
         }
-      }, DOUBLE_TAP_DELAY);
+      }, DOUBLE_TAP_GAP);
     }
   };
 
+  // YouTube embed URL configuration (Zero controls, loop, playsinline, HQ)
+  const embedUrl = reel.youtube_id
+    ? `https://www.youtube-nocookie.com/embed/${reel.youtube_id}?autoplay=1&mute=${muted ? 1 : 0}&controls=0&loop=1&playlist=${reel.youtube_id}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&vq=hd1080&hd=1`
+    : '';
+
+  const posterUrl = reel.thumbnail_url || (reel.youtube_id ? `https://img.youtube.com/vi/${reel.youtube_id}/maxresdefault.jpg` : '');
+
   return (
-    <div 
+    <div
       ref={containerRef}
-      className="relative w-full h-[100dvh] snap-start bg-black flex items-center justify-center overflow-hidden"
+      data-reel-id={reel.id}
+      className="relative w-full h-[100dvh] snap-start snap-always bg-black flex items-center justify-center overflow-hidden"
     >
-      {/* Video Element */}
-      <video
-        ref={videoRef}
-        src={resolveVideoUrl(reel.video_url)}
-        loop
-        playsInline
-        muted
-        preload="auto"
-        onTimeUpdate={handleTimeUpdate}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        className="w-full h-full object-cover cursor-pointer"
-        onClick={togglePlay}
+      {/* ── VIDEO / IFRAME PLAYER ── */}
+      {reel.type === 'youtube' && reel.youtube_id ? (
+        <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center bg-black">
+          <iframe
+            ref={iframeRef}
+            src={embedUrl}
+            title={reel.title}
+            onLoad={() => {
+              setIframeReady(true);
+              sendYouTubeCommand('setPlaybackQuality', ['hd1080']);
+              sendYouTubeCommand('setPlaybackQualityRange', ['hd1080', 'highres']);
+            }}
+            className="w-full h-full object-cover pointer-events-none border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          />
+
+          {/* Poster Cross-Fade for YouTube embed */}
+          <div
+            className={`absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-700 ${
+              iframeReady ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            {posterUrl && (
+              <img
+                src={posterUrl}
+                alt={reel.title}
+                onError={(e) => {
+                  if (reel.youtube_id) {
+                    (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${reel.youtube_id}/hqdefault.jpg`;
+                  }
+                }}
+                className="w-full h-full object-cover"
+              />
+            )}
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full border-2 border-[#D4AF37]/30 border-t-[#D4AF37] animate-spin" />
+            </div>
+          </div>
+        </div>
+      ) : reel.type === 'mp4' && reel.video_url ? (
+        <video
+          ref={videoRef}
+          src={resolveVideoUrl(reel.video_url)}
+          loop
+          playsInline
+          muted={muted}
+          preload="auto"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          className="w-full h-full object-cover pointer-events-none"
+        />
+      ) : null}
+
+      {/* Transparent Click Overlay: handles Tap to Play/Pause & Double-Tap to Like */}
+      <div
+        onClick={handlePlayerClick}
+        className="absolute inset-0 z-20 cursor-pointer"
+        aria-label="Click to play or pause, double click to like"
       />
 
-      {/* Play/Pause Indicator overlay */}
+      {/* Visual Play/Pause Indicator */}
       {!isPlaying && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 bg-black/10">
-          <div className="w-16 h-16 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white/90">
-            <Play className="w-8 h-8 ml-1" fill="currentColor" />
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-25 bg-black/25">
+          <div className="w-16 h-16 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-2xl">
+            <Play className="w-8 h-8 ml-1 fill-white text-white" />
           </div>
         </div>
       )}
 
-      {/* Double Tap Like Animation Overlay */}
-      {showLikeAnimation && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-          <Heart 
-            className="w-32 h-32 text-red-500 fill-red-500 animate-custom-heart drop-shadow-2xl" 
-          />
+      {/* Double Tap Heart Burst Animation */}
+      {showLikeBurst && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
+          <Heart className="w-28 h-28 text-red-500 fill-red-500 animate-heart-burst drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]" />
         </div>
       )}
 
-      {/* Dark overlay at bottom for readability */}
-      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
+      {/* Gradient Vignettes for clear text readability */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/70 via-black/20 to-transparent pointer-events-none z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
 
-      {/* Top right controls */}
-      <div className="absolute top-4 right-4 z-20">
-        <button
-          onClick={toggleMute}
-          className="w-10 h-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-white transition-transform active:scale-90"
-        >
-          {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-        </button>
-      </div>
-
-      {/* UI Overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 pb-6 flex items-end justify-between z-20">
-        {/* Left side: Info */}
-        <div className="flex-1 pr-12 pb-2">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-burgundy to-orange-500 p-[1px]">
-              <div className="w-full h-full rounded-full bg-black overflow-hidden border border-black">
-                 {/* Replace with brand avatar if available */}
-                 <div className="w-full h-full bg-brand-cream flex items-center justify-center text-brand-burgundy font-bold text-sm">
-                   B
-                 </div>
-              </div>
-            </div>
-            <span className="text-white font-bold text-sm tracking-wide drop-shadow-md">Billgix</span>
-            <button className="px-3 py-1 rounded-full border border-white/40 text-white text-[10px] font-bold backdrop-blur-sm ml-2">
-              Follow
-            </button>
+      {/* ── OVERLAYS & CONTROLS ── */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 pb-6 flex items-end justify-between z-30 pointer-events-none">
+        
+        {/* Left Side: Product Details & Action Button */}
+        <div className="flex-1 pr-6 pointer-events-auto">
+          {/* Badge & Brand */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30 backdrop-blur-xs">
+              <Sparkles className="w-3 h-3" /> {reel.badge_text || 'Despearl'}
+            </span>
+            <span className="text-xs font-bold text-white/90 drop-shadow-md">
+              Despearl Kerala
+            </span>
           </div>
-          
-          <h2 className="text-white font-medium text-[15px] leading-snug drop-shadow-md mb-2">
+
+          {/* Title */}
+          <h2 className="text-white font-extrabold font-outfit text-base sm:text-lg leading-tight tracking-tight drop-shadow-md mb-2 line-clamp-2">
             {reel.title}
           </h2>
-          
-          {reel.link_url && (
-            <Link 
-              href={reel.link_url}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 backdrop-blur-md rounded-xl text-white text-xs font-bold hover:bg-white/30 transition-colors active:scale-95 shadow-lg"
+
+          {/* Subtitle / Description */}
+          {reel.subtitle && (
+            <p className="text-white/80 text-xs leading-relaxed line-clamp-2 mb-3 max-w-sm drop-shadow-sm font-medium">
+              {reel.subtitle}
+            </p>
+          )}
+
+          {/* Direct Product Link / Explore Button */}
+          {reel.button_link && (
+            <Link
+              href={reel.button_link}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-brand-burgundy hover:bg-brand-burgundy/90 text-white text-xs font-bold rounded-xl shadow-lg border border-white/20 active:scale-95 transition-all group backdrop-blur-md"
             >
-              View Product <ExternalLink className="w-3.5 h-3.5" />
+              <span>{reel.button_text || 'Explore Collection'}</span>
+              <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           )}
         </div>
 
-        {/* Right side: Action Buttons */}
-        <div className="flex flex-col items-center gap-5 pb-2">
-          <button 
-            onClick={handleLike}
-            className="flex flex-col items-center gap-1 group active:scale-90 transition-transform"
+        {/* Right Side: Action Rail (Like, Share, Mute) */}
+        <div className="flex flex-col items-center gap-4 pointer-events-auto pb-1">
+          {/* Like Button */}
+          <button
+            onClick={onLike}
+            className="flex flex-col items-center gap-1 group active:scale-90 transition-transform cursor-pointer"
+            aria-label={isLiked ? 'Unlike' : 'Like'}
           >
-            <div className={`w-11 h-11 rounded-full flex items-center justify-center backdrop-blur-md transition-colors ${isLiked ? 'bg-black/20' : 'bg-black/20'}`}>
-              <Heart className={`w-6 h-6 ${isLiked ? 'text-red-500 fill-red-500' : 'text-white group-hover:text-red-400'}`} />
+            <div className={`w-11 h-11 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 transition-colors shadow-lg ${
+              isLiked ? 'bg-red-500/20 text-red-500' : 'bg-black/40 text-white hover:bg-black/60'
+            }`}>
+              <Heart
+                className={`w-6 h-6 transition-all duration-200 ${
+                  isLiked ? 'fill-red-500 text-red-500 scale-110' : 'text-white group-hover:text-red-400'
+                }`}
+              />
             </div>
-            <span className="text-white text-[11px] font-semibold drop-shadow-md">
-              {isLiked ? '1.2k' : 'Like'}
-            </span>
-          </button>
-          
-          <button className="flex flex-col items-center gap-1 group active:scale-90 transition-transform">
-            <div className="w-11 h-11 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center">
-              <MessageCircle className="w-6 h-6 text-white group-hover:text-gray-200" />
-            </div>
-            <span className="text-white text-[11px] font-semibold drop-shadow-md">
-              128
+            <span className="text-white text-[11px] font-bold drop-shadow-md">
+              {likeCount}
             </span>
           </button>
 
-          <button className="flex flex-col items-center gap-1 group active:scale-90 transition-transform">
-            <div className="w-11 h-11 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center">
-              <Share2 className="w-6 h-6 text-white group-hover:text-gray-200" />
+          {/* Share Button */}
+          <button
+            onClick={onShare}
+            className="flex flex-col items-center gap-1 group active:scale-90 transition-transform cursor-pointer"
+            aria-label="Share Reel"
+            title="Share Reel link"
+          >
+            <div className="w-11 h-11 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-colors shadow-lg">
+              <Share2 className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
             </div>
-            <span className="text-white text-[11px] font-semibold drop-shadow-md">
+            <span className="text-white text-[11px] font-bold drop-shadow-md">
               Share
             </span>
           </button>
-          
-          <button className="flex flex-col items-center gap-1 group active:scale-90 transition-transform mt-2">
-            <MoreVertical className="w-5 h-5 text-white/80" />
+
+          {/* Mute Button on Rail */}
+          <button
+            onClick={onToggleMute}
+            className="flex flex-col items-center gap-1 group active:scale-90 transition-transform cursor-pointer"
+            aria-label={muted ? 'Unmute' : 'Mute'}
+          >
+            <div className="w-11 h-11 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-white transition-colors shadow-lg">
+              {muted ? (
+                <VolumeX className="w-5 h-5 text-white/80" />
+              ) : (
+                <Volume2 className="w-5 h-5 text-emerald-400" />
+              )}
+            </div>
+            <span className="text-white text-[10px] font-bold drop-shadow-md uppercase tracking-wider">
+              {muted ? 'Muted' : 'Sound'}
+            </span>
           </button>
         </div>
+
       </div>
 
-      {/* Progress bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-30">
-        <div 
-          className="h-full bg-brand-burgundy rounded-r-full"
-          style={{ width: `${progress}%` }}
-        />
+      {/* Top 2px Subtle Progress Accent */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/15 z-30">
+        <div className={`h-full bg-brand-burgundy transition-all duration-300 ${isActive ? 'w-full' : 'w-0'}`} />
       </div>
     </div>
   );

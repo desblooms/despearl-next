@@ -113,7 +113,7 @@ function ReelCard({
 
   const innerContent = (
     <Link
-      href="/reels"
+      href={`/reels?id=${reel.id}`}
       className="relative w-[240px] md:w-[280px] shrink-0 snap-center aspect-[9/16] rounded-2xl overflow-hidden bg-black group cursor-pointer block focus:outline-none"
     >
       <video

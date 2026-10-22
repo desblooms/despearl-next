@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { StoreProvider } from "@/context/StoreContext";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import MainLayout from "@/components/MainLayout";
 import ClientProviders from "@/components/ClientProviders";
 import { getOptimizedImageUrl } from "@/utils/image";
 
@@ -293,13 +292,9 @@ export default async function RootLayout({
       </head>
       <body className="min-h-screen w-full m-0 font-sans">
         <StoreProvider>
-          <div id="app" className="flex flex-col min-h-screen w-full mx-auto bg-white relative transition-all duration-300">
-            <Header logoUrl={logoUrl} />
-            <main id="app-main" className="flex-1 overflow-x-hidden relative pb-[96px] md:pb-0">
-              {children}
-            </main>
-            <Footer logoUrl={logoUrl} />
-          </div>
+          <MainLayout logoUrl={logoUrl}>
+            {children}
+          </MainLayout>
           <ClientProviders />
         </StoreProvider>
       </body>
