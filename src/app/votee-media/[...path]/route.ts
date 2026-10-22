@@ -39,10 +39,9 @@ export async function GET(
     clearTimeout(timeout);
 
     if (!upstreamRes.ok) {
-      return new NextResponse(FALLBACK_PNG, {
-        status: 200,
+      return new NextResponse('Media not found', {
+        status: 404,
         headers: {
-          'Content-Type': 'image/png',
           'Cache-Control': 'no-store',
         },
       });
@@ -63,10 +62,9 @@ export async function GET(
     });
   } catch (error) {
     console.error(`Failed to proxy media from ${targetUrl}:`, error);
-    return new NextResponse(FALLBACK_PNG, {
-      status: 200,
+    return new NextResponse('Media proxy error', {
+      status: 502,
       headers: {
-        'Content-Type': 'image/png',
         'Cache-Control': 'no-store',
       },
     });

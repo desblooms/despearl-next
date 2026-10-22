@@ -37,11 +37,9 @@ export async function GET(
     clearTimeout(timeout);
 
     if (!upstreamRes.ok) {
-      // Return a 1×1 transparent PNG so <img> onerror still fires correctly
-      return new NextResponse(FALLBACK_PNG, {
-        status: 200,
+      return new NextResponse('Media not found', {
+        status: 404,
         headers: {
-          'Content-Type': 'image/png',
           'Cache-Control': 'no-store',
         },
       });
@@ -62,11 +60,9 @@ export async function GET(
     });
   } catch (error) {
     console.error(`Failed to proxy image from ${targetUrl}:`, error);
-    // Return 1×1 transparent PNG — browser onError will handle the UI fallback
-    return new NextResponse(FALLBACK_PNG, {
-      status: 200,
+    return new NextResponse('Media proxy error', {
+      status: 502,
       headers: {
-        'Content-Type': 'image/png',
         'Cache-Control': 'no-store',
       },
     });

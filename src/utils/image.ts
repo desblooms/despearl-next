@@ -34,8 +34,14 @@ export function getOptimizedImageUrl(url: string | undefined, width: number = 64
   }
 
   // Relative admin paths
-  if (url.startsWith('/public/images/')) {
+  if (url.startsWith('/public/')) {
     return `/admin-media${url}`;
+  }
+  if (url.startsWith('public/')) {
+    return `/admin-media/${url}`;
+  }
+  if (url.startsWith('product-')) {
+    return `/admin-media/public/images/products/${url}`;
   }
 
   // If already full external URL (e.g. other CDNs)
@@ -57,8 +63,15 @@ export function getOptimizedImageUrl(url: string | undefined, width: number = 64
 
 export function resolveVideoUrl(url: string | undefined) {
   if (!url) return '';
-  if (url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('/votee-media/')) return url;
+  if (url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('/votee-media/') || url.startsWith('/admin-media/')) return url;
   
+  if (url.startsWith('https://admin.despearl.com/')) {
+    return url.replace('https://admin.despearl.com/', '/admin-media/');
+  }
+  if (url.startsWith('http://admin.despearl.com/')) {
+    return url.replace('http://admin.despearl.com/', '/admin-media/');
+  }
+
   if (url.startsWith('https://app.votee.in/')) {
     return url.replace('https://app.votee.in/', '/votee-media/');
   }
@@ -67,6 +80,9 @@ export function resolveVideoUrl(url: string | undefined) {
   }
 
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/public/')) return `/admin-media${url}`;
+  if (url.startsWith('public/')) return `/admin-media/${url}`;
+  if (url.startsWith('reel-vid-')) return `/admin-media/public/reels/${url}`;
   if (url.startsWith('/')) return `/votee-media${url}`;
   if (url.startsWith('uploads/')) return `/votee-media/${url}`;
   return `/votee-media/uploads/reels/${url}`;
