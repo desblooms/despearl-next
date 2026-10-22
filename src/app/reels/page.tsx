@@ -1,7 +1,7 @@
 import React from 'react';
 import ReelsPageClient, { UnifiedReel } from '@/components/ReelsPageClient';
 import { Metadata } from 'next';
-import { extractYouTubeId } from '@/components/YouTubeSection';
+import { extractYouTubeId } from '@/utils/image';
 
 export const metadata: Metadata = {
   title: 'Reels | Despearl Kerala – Furniture & Custom Sofa in Motion',
