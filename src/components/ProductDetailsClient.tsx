@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Minus, Plus, Heart, ShoppingBag, Check, MapPin, ChevronRight, ChevronDown, Tag, Star, ShieldCheck, Award, Banknote, Palette } from 'lucide-react';
+import { Minus, Plus, Heart, ShoppingBag, Check, MapPin, ChevronLeft, ChevronRight, ChevronDown, Tag, Star, ShieldCheck, Award, Banknote, Palette } from 'lucide-react';
 import { useStore, Product } from '@/context/StoreContext';
 import ProductCard from '@/components/ProductCard';
 import { getOptimizedImageUrl } from '@/utils/image';
@@ -65,6 +65,12 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
+
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.reInit();
+    }
+  }, [emblaApi, images]);
 
   const wished = isWished(product.id);
 
@@ -144,16 +150,52 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 flex flex-col md:flex-row items-start gap-6 lg:gap-8">
         <div className={`md:w-1/2 flex flex-col md:grid gap-4 md:sticky md:top-[0px] md:self-start ${images.length > 1 ? 'md:grid-cols-[80px_1fr]' : 'md:grid-cols-1'}`}>
           
-          {/* Main Image (Visible everywhere) */}
-          <div className="w-full bg-[#f8f9fa] overflow-hidden relative shadow-sm aspect-square order-1 md:order-2">
-            <img
-              src={mainImg}
-              alt={product.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = fallbackImg;
-              }}
-            />
+          {/* Main Image Slider with Embla Carousel (Swipeable, Draggable, Responsive) */}
+          <div className="w-full bg-[#f8f9fa] overflow-hidden relative shadow-sm aspect-square order-1 md:order-2 group select-none">
+            <div className="w-full h-full overflow-hidden" ref={emblaRef}>
+              <div className="flex h-full touch-pan-y select-none">
+                {images.map((img: string, idx: number) => (
+                  <div key={idx} className="flex-[0_0_100%] min-w-0 relative h-full w-full">
+                    <img
+                      src={img}
+                      alt={`${product.name} view ${idx + 1}`}
+                      draggable={false}
+                      className="w-full h-full object-cover pointer-events-none select-none"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = fallbackImg;
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Previous / Next Navigation Arrows */}
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => emblaApi?.scrollPrev()}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 cursor-pointer active:scale-90"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => emblaApi?.scrollNext()}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 cursor-pointer active:scale-90"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+
+                {/* Slide Counter Badge */}
+                <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm pointer-events-none">
+                  {currentSlide + 1} / {images.length}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Thumbnails (Horizontal row on mobile, Vertical column on desktop) */}
@@ -162,10 +204,24 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
               {images.map((img: string, i: number) => (
                 <div
                   key={i}
-                  className={`w-[70px] md:w-full aspect-square overflow-hidden cursor-pointer border-[2px] transition-all shrink-0 snap-start ${mainImg === img ? 'border-brand-espresso shadow-sm opacity-100' : 'border-transparent hover:border-brand-rose/30 opacity-60 hover:opacity-100 bg-[#f8f9fa]'}`}
-                  onClick={() => setMainImg(img)}
+                  className={`w-[70px] md:w-full aspect-square overflow-hidden cursor-pointer border-[2px] transition-all shrink-0 snap-start ${
+                    currentSlide === i
+                      ? 'border-brand-espresso shadow-sm opacity-100'
+                      : 'border-transparent hover:border-brand-rose/30 opacity-60 hover:opacity-100 bg-[#f8f9fa]'
+                  }`}
+                  onClick={() => {
+                    emblaApi?.scrollTo(i);
+                    setCurrentSlide(i);
+                  }}
                 >
-                  <img src={img} className="w-full h-full object-cover" alt="" onError={(e) => { (e.target as HTMLImageElement).src = fallbackImg; }} />
+                  <img
+                    src={img}
+                    className="w-full h-full object-cover pointer-events-none"
+                    alt=""
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = fallbackImg;
+                    }}
+                  />
                 </div>
               ))}
             </div>
