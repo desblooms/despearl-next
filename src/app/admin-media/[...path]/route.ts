@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+// 1×1 transparent PNG — minimal valid image for dead-upstream fallback
+const FALLBACK_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+  'base64'
+);
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ path: string[] }> }
@@ -17,19 +23,33 @@ export async function GET(
   const targetUrl = `https://admin.despearl.com/${subPath}${search}`;
 
   try {
+    // 8-second timeout so mobile browsers never wait indefinitely
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+
     const upstreamRes = await fetch(targetUrl, {
+      signal: controller.signal,
       headers: {
-        'Accept': request.headers.get('accept') || '*/*',
-        'User-Agent': request.headers.get('user-agent') || 'NextJS-Media-Proxy',
+        'Accept': request.headers.get('accept') || 'image/*,*/*',
+        'User-Agent': 'DespEarl-Proxy/1.0',
       },
     });
+    clearTimeout(timeout);
 
     if (!upstreamRes.ok) {
-      return new NextResponse(null, { status: upstreamRes.status });
+      // Return a 1×1 transparent PNG so <img> onerror still fires correctly
+      return new NextResponse(FALLBACK_PNG, {
+        status: 200,
+        headers: {
+          'Content-Type': 'image/png',
+          'Cache-Control': 'no-store',
+        },
+      });
     }
 
     const contentType = upstreamRes.headers.get('content-type') || 'application/octet-stream';
-    const cacheControl = upstreamRes.headers.get('cache-control') || 'public, max-age=31536000, stale-while-revalidate=86400';
+    // Long-lived CDN cache for immutable media assets
+    const cacheControl = 'public, max-age=31536000, stale-while-revalidate=86400, immutable';
 
     return new NextResponse(upstreamRes.body, {
       status: 200,
@@ -37,10 +57,18 @@ export async function GET(
         'Content-Type': contentType,
         'Cache-Control': cacheControl,
         'Access-Control-Allow-Origin': '*',
+        'Vary': 'Accept',
       },
     });
   } catch (error) {
     console.error(`Failed to proxy image from ${targetUrl}:`, error);
-    return new NextResponse(null, { status: 502 });
+    // Return 1×1 transparent PNG — browser onError will handle the UI fallback
+    return new NextResponse(FALLBACK_PNG, {
+      status: 200,
+      headers: {
+        'Content-Type': 'image/png',
+        'Cache-Control': 'no-store',
+      },
+    });
   }
 }

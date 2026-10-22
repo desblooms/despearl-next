@@ -165,7 +165,7 @@ export default function ProductDetailsClient({ product, relatedProducts = [] }: 
                   className={`w-[70px] md:w-full aspect-square overflow-hidden cursor-pointer border-[2px] transition-all shrink-0 snap-start ${mainImg === img ? 'border-brand-espresso shadow-sm opacity-100' : 'border-transparent hover:border-brand-rose/30 opacity-60 hover:opacity-100 bg-[#f8f9fa]'}`}
                   onClick={() => setMainImg(img)}
                 >
-                  <img src={img} className="w-full h-full object-cover" alt="" />
+                  <img src={img} className="w-full h-full object-cover" alt="" onError={(e) => { (e.target as HTMLImageElement).src = fallbackImg; }} />
                 </div>
               ))}
             </div>

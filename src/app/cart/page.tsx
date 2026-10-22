@@ -191,6 +191,7 @@ export default function CartPage() {
                         src={getOptimizedImageUrl(item.image) || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='160' viewBox='0 0 130 160'%3E%3Crect width='130' height='160' fill='%23f8f9fa'/%3E%3C/svg%3E`}
                         alt={item.name}
                         className="w-full h-full object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='160' viewBox='0 0 130 160'%3E%3Crect width='130' height='160' fill='%23f8f9fa'/%3E%3C/svg%3E`; }}
                       />
                     </div>
                     

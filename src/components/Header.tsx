@@ -126,9 +126,9 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             
              <Link href="/" prefetch={false} className="font-black text-xl md:text-2xl tracking-tighter cursor-pointer text-gray-900 flex items-center font-outfit group">
               {logoUrl ? (
-                <img src={getOptimizedImageUrl(logoUrl, 160, 85)} alt="Store Logo" className="h-8 md:h-13 object-contain group-hover:opacity-90 transition" />
+                <img src={getOptimizedImageUrl(logoUrl, 160, 85)} alt="Store Logo" className="h-8 md:h-13 object-contain group-hover:opacity-90 transition" onError={(e) => { (e.target as HTMLImageElement).src = '/despearl.png'; }} />
               ) : (
-                <img src="/despearl.png" alt="Despearl Logo" className="h-8 md:h-12 object-contain group-hover:opacity-90 transition" />
+                <img src="/despearl.png" alt="Despearl Logo" className="h-8 md:h-12 object-contain group-hover:opacity-90 transition" onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }} />
               )}
             </Link>
           </div>
